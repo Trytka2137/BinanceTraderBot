@@ -1,12 +1,11 @@
 import json
 import os
-import random
 import sys
 
 import numpy as np
 
-from data_fetcher import fetch_klines
-from backtest import backtest_strategy
+from .data_fetcher import fetch_klines
+from .backtest import backtest_strategy
 
 STATE_PATH = os.path.join(os.path.dirname(__file__), 'model_state.json')
 

@@ -1,6 +1,7 @@
 import sys
-from data_fetcher import fetch_klines
-from backtest import backtest_strategy
+
+from .data_fetcher import fetch_klines
+from .backtest import backtest_strategy
 import numpy as np
 
 def optimize(symbol):

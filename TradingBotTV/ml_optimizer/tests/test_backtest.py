@@ -7,7 +7,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-from TradingBotTV.ml_optimizer.backtest import compute_rsi, compute_macd, backtest_strategy
+from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, backtest_strategy
 
 
 def test_compute_rsi_basic_uptrend():
