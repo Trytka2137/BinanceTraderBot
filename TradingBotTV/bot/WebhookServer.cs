@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
+using System;
+using System.IO;
 namespace Bot
 {
     public static class WebhookServer
@@ -15,20 +17,33 @@ namespace Bot
 
             app.MapPost("/webhook", async (HttpContext context) =>
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var json = JObject.Parse(body);
-                var signal = json["signal"]?.ToString();
-
-                Console.WriteLine($"📩 Otrzymano sygnał: {signal}");
-
-                if (signal == "buy" || signal == "sell")
+                try
                 {
-                    var trader = new BinanceTrader();
-                    await trader.ExecuteTrade(signal);
-                }
+                    using var reader = new StreamReader(context.Request.Body);
+                    var body = await reader.ReadToEndAsync();
+                    var json = JObject.Parse(body);
+                    var signal =
+                        (string?)json["strategy"]? ["order_action"] ??
+                        (string?)json["action"] ??
+                        (string?)json["signal"];
+                    var pair = json["ticker"]?.ToString() ?? json["symbol"]?.ToString();
 
-                await context.Response.WriteAsync("OK");
+                    Console.WriteLine($"📩 Otrzymano sygnał: {signal} dla {pair}");
+
+                    if (signal == "buy" || signal == "sell")
+                    {
+                        var trader = new BinanceTrader();
+                        await trader.ExecuteTrade(signal, pair);
+                    }
+
+                    await context.Response.WriteAsync("OK");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Błąd obsługi webhooka: {ex.Message}");
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Error");
+                }
             });
 
             app.Run("http://localhost:5000");

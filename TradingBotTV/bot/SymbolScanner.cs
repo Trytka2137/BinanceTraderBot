@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -9,16 +10,24 @@ namespace Bot
     {
         public static async Task<List<string>> GetTradingPairsAsync()
         {
-            using var client = new HttpClient();
-            var response = await client.GetStringAsync("https://api.binance.com/api/v3/exchangeInfo");
-            var json = JObject.Parse(response);
             var pairs = new List<string>();
-
-            foreach (var symbol in json["symbols"])
+            try
             {
-                if (symbol["quoteAsset"].ToString() == "USDT" && symbol["status"].ToString() == "TRADING")
-                    pairs.Add(symbol["symbol"].ToString());
+                using var client = new HttpClient();
+                var response = await client.GetStringAsync("https://api.binance.com/api/v3/exchangeInfo");
+                var json = JObject.Parse(response);
+
+                foreach (var symbol in json["symbols"])
+                {
+                    if (symbol["quoteAsset"].ToString() == "USDT" && symbol["status"].ToString() == "TRADING")
+                        pairs.Add(symbol["symbol"].ToString());
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Błąd pobierania listy par: {ex.Message}");
+            }
+
             return pairs;
         }
     }
