@@ -24,5 +24,10 @@ namespace Bot
         public static decimal TakeProfitPercent => (decimal)_config["trading"]["takeProfitPercent"];
 
         public static void Reload() => Load();
+
+        public static void OverrideSymbol(string symbol)
+        {
+            _config["trading"]["symbol"] = symbol;
+        }
     }
 }

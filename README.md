@@ -1,10 +1,15 @@
 # BinanceTraderBot
 
 
-Zaawansowany bot handlujący na giełdzie Binance napisany w C# i Pythonie. 
+Zaawansowany bot handlujący na giełdzie Binance napisany w C# i Pythonie.
 C# obsługuje sygnały z TradingView, automatycznie generuje zlecenia z wbudowanej
 strategii RSI oraz zarządza stop-lossem i take-profitem. Moduł Python służy do
-optymalizacji parametrów strategii.
+optymalizacji parametrów strategii oraz porównywania kilku podejść (RSI, MACD).
+
+Najnowsza wersja skanuje pary z największym wolumenem, a strategia w C# bierze
+pod uwagę wzrost aktywności wolumenowej. W katalogu `ml_optimizer` znajdują się
+skrypty do trenowania prostego modelu RL (`rl_optimizer.py`) oraz testu kilku
+strategii (`compare_strategies.py`).
 
 
 ## Wymagania
@@ -33,13 +38,19 @@ W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercen
 i `takeProfitPercent`, które określają dystans w procentach od ceny wejścia.
 
 Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces samouczenia strategii. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
-`StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia na podstawie RSI.
+`StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
 
+Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) uruchamia się raz na godzinę i zapisuje najlepsze parametry w `model_state.json`.
 
-`Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces samouczenia strategii. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
+### Narzędzia ML
+* `auto_optimizer.py` – losowe poszukiwanie progów RSI
+* `rl_optimizer.py` – prosty przykład uczenia ze wzmocnieniem
+* `compare_strategies.py` – backtest RSI vs. MACD
 
-
-Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces optymalizacji parametrów strategii.
+Aby uruchomić test porównawczy strategii:
+```bash
+python TradingBotTV/ml_optimizer/compare_strategies.py BTCUSDT
+```
 
 
 ### Sygnały z TradingView

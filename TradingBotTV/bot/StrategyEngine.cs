@@ -11,22 +11,27 @@ namespace Bot
     {
         private static readonly HttpClient client = new HttpClient();
 
+        private record Kline(decimal Close, decimal Volume);
+
         public static async Task StartAsync()
         {
             while (true)
             {
                 try
                 {
-                    var prices = await FetchCloses(ConfigManager.Symbol, 50);
-                    if (prices.Count >= 15)
+                    var klines = await FetchKlines(ConfigManager.Symbol, 50);
+                    if (klines.Count >= 15)
                     {
-                        var rsi = ComputeRsi(prices);
-                        if (rsi < ConfigManager.RsiBuyThreshold)
+                        var closes = klines.Select(k => k.Close).ToList();
+                        var volumes = klines.Select(k => k.Volume).ToList();
+                        var rsi = ComputeRsi(closes);
+                        var volFactor = ComputeVolumeFactor(volumes);
+                        if (rsi < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("BUY");
                         }
-                        else if (rsi > ConfigManager.RsiSellThreshold)
+                        else if (rsi > ConfigManager.RsiSellThreshold && volFactor > 1.2m)
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("SELL");
@@ -42,12 +47,28 @@ namespace Bot
             }
         }
 
-        private static async Task<List<decimal>> FetchCloses(string symbol, int limit)
+        private static async Task<List<Kline>> FetchKlines(string symbol, int limit)
         {
             var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1m&limit={limit}";
             var json = await client.GetStringAsync(url);
             var arr = JArray.Parse(json);
-            return arr.Select(x => decimal.Parse(x[4].ToString())).ToList();
+            var list = new List<Kline>();
+            foreach (var x in arr)
+            {
+                var close = decimal.Parse(x[4].ToString());
+                var volume = decimal.Parse(x[5].ToString());
+                list.Add(new Kline(close, volume));
+            }
+            return list;
+        }
+
+        private static decimal ComputeVolumeFactor(List<decimal> volumes, int lookback = 20)
+        {
+            if (volumes.Count < lookback + 1) return 0m;
+            var avg = volumes.Skip(volumes.Count - lookback).Average();
+            var last = volumes.Last();
+            if (avg == 0) return 0m;
+            return decimal.Round(last / avg, 2);
         }
 
         private static decimal ComputeRsi(List<decimal> closes, int period = 14)

@@ -30,5 +30,31 @@ namespace Bot
 
             return pairs;
         }
+
+        public static async Task<string?> GetHighestVolumePairAsync(IEnumerable<string> pairs)
+        {
+            string? best = null;
+            decimal bestVol = 0m;
+            using var client = new HttpClient();
+            foreach (var p in pairs)
+            {
+                try
+                {
+                    var resp = await client.GetStringAsync($"https://api.binance.com/api/v3/ticker/24hr?symbol={p}");
+                    var obj = JObject.Parse(resp);
+                    var vol = decimal.Parse(obj["quoteVolume"].ToString());
+                    if (vol > bestVol)
+                    {
+                        bestVol = vol;
+                        best = p;
+                    }
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+            return best;
+        }
     }
 }
