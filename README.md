@@ -42,6 +42,11 @@ Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proce
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) uruchamia się raz na godzinę i zapisuje najlepsze parametry w `model_state.json`.
 
+Źródłem danych do uczenia jest Binance. Moduł `data_fetcher.py` pobiera historyczne
+dane świecowe z API giełdy i zapisuje je w katalogu `ml_optimizer/data`. Przy
+braku połączenia z siecią wykorzystywana jest ostatnia zapisana kopia, dzięki
+czemu optymalizacja może przebiegać również offline.
+
 ### Narzędzia ML
 * `auto_optimizer.py` – losowe poszukiwanie progów RSI
 * `rl_optimizer.py` – prosty przykład uczenia ze wzmocnieniem
@@ -79,3 +84,5 @@ Komunikaty o błędach połączeń z API są wypisywane w konsoli, dzięki czemu
 ## Licencja
 
 Projekt jest dostępny na licencji MIT. Szczegóły znajdziesz w pliku [LICENSE](LICENSE).
+
+Więcej informacji znajdziesz w pliku [docs/README_pl.md](docs/README_pl.md).
