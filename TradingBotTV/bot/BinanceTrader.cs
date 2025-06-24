@@ -8,7 +8,7 @@ namespace Bot
     {
         private readonly string apiKey;
         private readonly string apiSecret;
-        private readonly string symbol;
+        private readonly string defaultSymbol;
         private readonly decimal amount;
 
         public BinanceTrader()
@@ -16,12 +16,13 @@ namespace Bot
             ConfigManager.Load();
             apiKey = ConfigManager.ApiKey;
             apiSecret = ConfigManager.ApiSecret;
-            symbol = ConfigManager.Symbol;
+            defaultSymbol = ConfigManager.Symbol;
             amount = ConfigManager.Amount;
         }
 
-        public async Task ExecuteTrade(string signal)
+        public async Task ExecuteTrade(string signal, string? symbolOverride = null)
         {
+            var symbol = symbolOverride ?? defaultSymbol;
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
 
@@ -33,12 +34,40 @@ namespace Bot
 
             var url = $"{endpoint}?{query}";
 
-            Console.WriteLine($"🚀 Wysyłam zlecenie {side} {amount} {symbol}");
+            // Oblicz stop loss i take profit na podstawie bieżącej ceny
+            var price = await GetCurrentPrice(symbol);
+            var sl = price * (1 - ConfigManager.StopLossPercent / 100m);
+            var tp = price * (1 + ConfigManager.TakeProfitPercent / 100m);
 
-            var response = await client.PostAsync(url, null);
-            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"🚀 Wysyłam zlecenie {side} {amount} {symbol} (SL={sl:F2}, TP={tp:F2})");
 
-            Console.WriteLine($"✅ Binance Response: {content}");
+            try
+            {
+                var response = await client.PostAsync(url, null);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Błąd API {response.StatusCode}: {content}");
+                }
+                else
+                {
+                    Console.WriteLine($"✅ Binance Response: {content}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Błąd wysyłania zlecenia: {ex.Message}");
+            }
+        }
+
+        private async Task<decimal> GetCurrentPrice(string symbol)
+        {
+            using var client = new HttpClient();
+            var url = $"https://api.binance.com/api/v3/ticker/price?symbol={symbol}";
+            var json = await client.GetStringAsync(url);
+            var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
+            return decimal.Parse(obj["price"].ToString());
         }
     }
 }

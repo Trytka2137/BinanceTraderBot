@@ -7,6 +7,8 @@
     "symbol": "BTCUSDT",
     "amount": 0.001,
     "rsiBuyThreshold": 30,
-    "rsiSellThreshold": 70
+    "rsiSellThreshold": 70,
+    "stopLossPercent": 1.5,
+    "takeProfitPercent": 3.0
   }
 }

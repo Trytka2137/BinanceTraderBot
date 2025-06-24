@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json.Linq;
 namespace Bot
 {
     public static class OptimizerRunner
@@ -13,7 +14,7 @@ namespace Bot
             {
                 var psi = new ProcessStartInfo();
                 psi.FileName = "python";
-                psi.Arguments = $"ml_optimizer/optimizer.py {symbol}";
+                psi.Arguments = $"ml_optimizer/auto_optimizer.py {symbol}";
                 psi.RedirectStandardOutput = true;
                 psi.RedirectStandardError = true;
                 psi.UseShellExecute = false;
