@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Bot
 {
@@ -33,28 +35,37 @@ namespace Bot
 
         public static async Task<string?> GetHighestVolumePairAsync(IEnumerable<string> pairs)
         {
-            string? best = null;
-            decimal bestVol = 0m;
+            const int maxPairsToCheck = 50;   // limit number of pairs processed
+            const int maxConcurrentRequests = 5; // avoid hitting API rate limits
+
+            var limitedPairs = pairs.Take(maxPairsToCheck).ToList();
             using var client = new HttpClient();
-            foreach (var p in pairs)
+            using var semaphore = new SemaphoreSlim(maxConcurrentRequests);
+
+            var tasks = limitedPairs.Select(async p =>
             {
+                await semaphore.WaitAsync();
                 try
                 {
                     var resp = await client.GetStringAsync($"https://api.binance.com/api/v3/ticker/24hr?symbol={p}");
                     var obj = JObject.Parse(resp);
                     var vol = decimal.Parse(obj["quoteVolume"].ToString());
-                    if (vol > bestVol)
-                    {
-                        bestVol = vol;
-                        best = p;
-                    }
+                    return (pair: p, volume: vol);
                 }
                 catch
                 {
-                    // ignore
+                    return (pair: p, volume: 0m);
                 }
-            }
-            return best;
+                finally
+                {
+                    semaphore.Release();
+                }
+            }).ToArray();
+
+            var results = await Task.WhenAll(tasks);
+
+            var best = results.OrderByDescending(r => r.volume).FirstOrDefault();
+            return best.volume > 0 ? best.pair : null;
         }
     }
 }
