@@ -11,8 +11,9 @@ namespace Bot
 
             ConfigManager.Load();
 
-            // Start serwera webhook w tle
+            // Start serwera webhook i silnika strategii w tle
             Task.Run(() => WebhookServer.Start());
+            Task.Run(() => StrategyEngine.StartAsync());
 
             // Odpalamy optymalizację ML co np. 1h i przeładowujemy config
             while (true)

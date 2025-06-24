@@ -20,6 +20,8 @@ namespace Bot
         public static decimal Amount => (decimal)_config["trading"]["amount"];
         public static int RsiBuyThreshold => (int)_config["trading"]["rsiBuyThreshold"];
         public static int RsiSellThreshold => (int)_config["trading"]["rsiSellThreshold"];
+        public static decimal StopLossPercent => (decimal)_config["trading"]["stopLossPercent"];
+        public static decimal TakeProfitPercent => (decimal)_config["trading"]["takeProfitPercent"];
 
         public static void Reload() => Load();
     }

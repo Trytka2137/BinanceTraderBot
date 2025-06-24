@@ -3,8 +3,13 @@ import pandas as pd
 
 def fetch_klines(symbol, interval='1h', limit=1000):
     url = f'https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}'
-    response = requests.get(url)
-    data = response.json()
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching klines: {e}")
+        return pd.DataFrame(columns=['open_time', 'close'])
     
     df = pd.DataFrame(data, columns=[
         'open_time', 'open', 'high', 'low', 'close', 'volume',
