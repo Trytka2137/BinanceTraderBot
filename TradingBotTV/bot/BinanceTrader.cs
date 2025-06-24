@@ -8,6 +8,23 @@ namespace Bot
     {
         private readonly string apiKey;
         private readonly string apiSecret;
+ hm8wp8-codex/sprawdź-poprawność-kodu
+        private readonly string defaultSymbol;
+        private readonly decimal amount;
+
+        public BinanceTrader()
+        {
+            ConfigManager.Load();
+            apiKey = ConfigManager.ApiKey;
+            apiSecret = ConfigManager.ApiSecret;
+            defaultSymbol = ConfigManager.Symbol;
+            amount = ConfigManager.Amount;
+        }
+
+        public async Task ExecuteTrade(string signal, string? symbolOverride = null)
+        {
+            var symbol = symbolOverride ?? defaultSymbol;
+
         private readonly string symbol;
         private readonly decimal amount;
 
@@ -22,6 +39,7 @@ namespace Bot
 
         public async Task ExecuteTrade(string signal)
         {
+ BOT
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
 
