@@ -23,9 +23,14 @@ Prosty bot handlujący na giełdzie Binance napisany w C# i Pythonie. Część C
    dotnet run --project BinanceTraderBot.csproj
    ```
 
+ 5xz69j-codex/sprawdź-poprawność-kodu
+Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces samouczenia strategii. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
+
+
 Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces optymalizacji parametrów strategii.
 
 hm8wp8-codex/sprawdź-poprawność-kodu
+BOT
 ### Sygnały z TradingView
 W alertach TradingView ustaw adres webhook na `http://localhost:5000/webhook`.
 Przykładowa treść powiadomienia:
@@ -38,7 +43,10 @@ Przykładowa treść powiadomienia:
 ```
 Pole `order_action` może przyjmować wartości `buy` lub `sell`.
 
+5xz69j-codex/sprawdź-poprawność-kodu
+
 BOT
+
 Komunikaty o błędach połączeń z API są wypisywane w konsoli, dzięki czemu łatwiej zdiagnozować problemy sieciowe.
 
 > **Uwaga:** W środowiskach bez dostępu do API Binance wykonywanie zapytań do `api.binance.com` może zakończyć się błędem.
