@@ -52,6 +52,12 @@ Aby uruchomić test porównawczy strategii:
 python TradingBotTV/ml_optimizer/compare_strategies.py BTCUSDT
 ```
 
+### Testy
+W katalogu projektu uruchom testy poleceniem:
+```bash
+pytest
+```
+
 
 ### Sygnały z TradingView
 W alertach TradingView ustaw adres webhook na `http://localhost:5000/webhook`.
