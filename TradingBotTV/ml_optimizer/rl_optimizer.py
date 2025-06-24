@@ -1,7 +1,9 @@
 import json
+
 import numpy as np
-from data_fetcher import fetch_klines
-from backtest import backtest_strategy
+
+from .data_fetcher import fetch_klines
+from .backtest import backtest_strategy
 
 STATE_PATH = 'rl_state.json'
 

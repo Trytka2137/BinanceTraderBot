@@ -1,6 +1,7 @@
 import sys
-from data_fetcher import fetch_klines
-from backtest import compare_strategies
+
+from .data_fetcher import fetch_klines
+from .backtest import compare_strategies
 
 
 def run(symbol):
