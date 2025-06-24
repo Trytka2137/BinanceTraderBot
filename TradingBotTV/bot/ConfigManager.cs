@@ -22,6 +22,10 @@ namespace Bot
         public static int RsiSellThreshold => (int)_config["trading"]["rsiSellThreshold"];
         public static decimal StopLossPercent => (decimal)_config["trading"]["stopLossPercent"];
         public static decimal TakeProfitPercent => (decimal)_config["trading"]["takeProfitPercent"];
+        public static string BinanceWsUrl =>
+            _config["websocket"]?["binanceUrl"]?.ToString() ?? "wss://stream.binance.com:9443/ws";
+        public static string TradingViewWsUrl =>
+            _config["websocket"]?["tradingViewUrl"]?.ToString() ?? string.Empty;
 
         public static void Reload() => Load();
 

@@ -19,9 +19,11 @@ namespace Bot
                 ConfigManager.OverrideSymbol(best);
             }
 
-            // Start serwera webhook i silnika strategii w tle
+            // Start serwera webhook, silnika strategii oraz WebSocketów w tle
             Task.Run(() => WebhookServer.Start());
             Task.Run(() => StrategyEngine.StartAsync());
+            Task.Run(() => BinanceWebSocket.StartAsync());
+            Task.Run(() => TradingViewWebSocket.StartAsync());
 
             // Odpalamy optymalizację ML co np. 1h i przeładowujemy config
             while (true)

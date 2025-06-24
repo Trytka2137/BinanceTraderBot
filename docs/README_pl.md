@@ -46,6 +46,10 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
     "rsiSellThreshold": 70,
     "stopLossPercent": 1.5,
     "takeProfitPercent": 3.0
+  },
+  "websocket": {
+    "binanceUrl": "wss://stream.binance.com:9443/ws",
+    "tradingViewUrl": ""
   }
 }
 ```
@@ -54,6 +58,8 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 - `amount` – ilość kupowana/sprzedawana w pojedynczej transakcji.
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
 - `stopLossPercent` i `takeProfitPercent` – ustawienia SL/TP w procentach.
+- `websocket.binanceUrl` – adres WebSocket Binance z którego pobierane są dane na żywo.
+- `websocket.tradingViewUrl` – opcjonalny adres WebSocket z alertami TradingView.
 
 Optymalizatory Pythona mogą modyfikować te wartości automatycznie (zapis w `model_state.json` i aktualizacja przez `OptimizerRunner`).
 

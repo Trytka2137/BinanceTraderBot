@@ -39,6 +39,7 @@ i `takeProfitPercent`, które określają dystans w procentach od ceny wejścia.
 
 Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces samouczenia strategii. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
+Bot nawiązuje także stałe połączenie WebSocket z Binance, a opcjonalnie z TradingView, jeśli podasz adres w konfiguracji.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) uruchamia się raz na godzinę i zapisuje najlepsze parametry w `model_state.json`.
 
