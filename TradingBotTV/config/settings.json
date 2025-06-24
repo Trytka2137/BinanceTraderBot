@@ -10,5 +10,9 @@
     "rsiSellThreshold": 70,
     "stopLossPercent": 1.5,
     "takeProfitPercent": 3.0
+  },
+  "websocket": {
+    "binanceUrl": "wss://stream.binance.com:9443/ws",
+    "tradingViewUrl": ""
   }
 }
