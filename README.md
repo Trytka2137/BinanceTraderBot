@@ -84,3 +84,5 @@ Komunikaty o błędach połączeń z API są wypisywane w konsoli, dzięki czemu
 ## Licencja
 
 Projekt jest dostępny na licencji MIT. Szczegóły znajdziesz w pliku [LICENSE](LICENSE).
+
+Więcej informacji znajdziesz w pliku [docs/README_pl.md](docs/README_pl.md).
