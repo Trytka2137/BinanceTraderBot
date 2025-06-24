@@ -8,7 +8,7 @@ namespace Bot
     {
         private readonly string apiKey;
         private readonly string apiSecret;
-        private readonly string symbol;
+        private readonly string defaultSymbol;
         private readonly decimal amount;
 
         public BinanceTrader()
@@ -16,12 +16,13 @@ namespace Bot
             ConfigManager.Load();
             apiKey = ConfigManager.ApiKey;
             apiSecret = ConfigManager.ApiSecret;
-            symbol = ConfigManager.Symbol;
+            defaultSymbol = ConfigManager.Symbol;
             amount = ConfigManager.Amount;
         }
 
-        public async Task ExecuteTrade(string signal)
+        public async Task ExecuteTrade(string signal, string? symbolOverride = null)
         {
+            var symbol = symbolOverride ?? defaultSymbol;
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
 
@@ -35,10 +36,24 @@ namespace Bot
 
             Console.WriteLine($"🚀 Wysyłam zlecenie {side} {amount} {symbol}");
 
-            var response = await client.PostAsync(url, null);
-            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var response = await client.PostAsync(url, null);
+                var content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"✅ Binance Response: {content}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Błąd API {response.StatusCode}: {content}");
+                }
+                else
+                {
+                    Console.WriteLine($"✅ Binance Response: {content}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Błąd wysyłania zlecenia: {ex.Message}");
+            }
         }
     }
 }
