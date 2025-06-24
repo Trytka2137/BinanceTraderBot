@@ -1,0 +1,12 @@
+{
+  "binance": {
+    "apiKey": "TWOJ_API_KEY",
+    "apiSecret": "TWOJ_SECRET_KEY"
+  },
+  "trading": {
+    "symbol": "BTCUSDT",
+    "amount": 0.001,
+    "rsiBuyThreshold": 30,
+    "rsiSellThreshold": 70
+  }
+}
