@@ -17,20 +17,29 @@ namespace Bot
 
             app.MapPost("/webhook", async (HttpContext context) =>
             {
-                using var reader = new StreamReader(context.Request.Body);
-                var body = await reader.ReadToEndAsync();
-                var json = JObject.Parse(body);
-                var signal = json["signal"]?.ToString();
-
-                Console.WriteLine($"📩 Otrzymano sygnał: {signal}");
-
-                if (signal == "buy" || signal == "sell")
+                try
                 {
-                    var trader = new BinanceTrader();
-                    await trader.ExecuteTrade(signal);
-                }
+                    using var reader = new StreamReader(context.Request.Body);
+                    var body = await reader.ReadToEndAsync();
+                    var json = JObject.Parse(body);
+                    var signal = json["signal"]?.ToString();
 
-                await context.Response.WriteAsync("OK");
+                    Console.WriteLine($"📩 Otrzymano sygnał: {signal}");
+
+                    if (signal == "buy" || signal == "sell")
+                    {
+                        var trader = new BinanceTrader();
+                        await trader.ExecuteTrade(signal);
+                    }
+
+                    await context.Response.WriteAsync("OK");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Błąd obsługi webhooka: {ex.Message}");
+                    context.Response.StatusCode = 400;
+                    await context.Response.WriteAsync("Error");
+                }
             });
 
             app.Run("http://localhost:5000");

@@ -35,10 +35,24 @@ namespace Bot
 
             Console.WriteLine($"🚀 Wysyłam zlecenie {side} {amount} {symbol}");
 
-            var response = await client.PostAsync(url, null);
-            var content = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var response = await client.PostAsync(url, null);
+                var content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"✅ Binance Response: {content}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Błąd API {response.StatusCode}: {content}");
+                }
+                else
+                {
+                    Console.WriteLine($"✅ Binance Response: {content}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Błąd wysyłania zlecenia: {ex.Message}");
+            }
         }
     }
 }
