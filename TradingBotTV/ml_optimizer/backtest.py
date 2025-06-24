@@ -33,3 +33,44 @@ def backtest_strategy(df, rsi_buy_threshold=30, rsi_sell_threshold=70):
             position = 0
 
     return pnl
+
+
+def compute_macd(series, short=12, long=26, signal=9):
+    exp1 = series.ewm(span=short, adjust=False).mean()
+    exp2 = series.ewm(span=long, adjust=False).mean()
+    macd = exp1 - exp2
+    signal_line = macd.ewm(span=signal, adjust=False).mean()
+    return macd, signal_line
+
+
+def backtest_macd_strategy(df, short=12, long=26, signal=9):
+    macd, signal_line = compute_macd(df['close'], short, long, signal)
+    position = 0
+    entry_price = 0
+    pnl = 0
+
+    for i in range(1, len(df)):
+        if position == 0:
+            if macd.iloc[i] > signal_line.iloc[i]:
+                position = 1
+                entry_price = df['close'].iloc[i]
+            elif macd.iloc[i] < signal_line.iloc[i]:
+                position = -1
+                entry_price = df['close'].iloc[i]
+        elif position == 1 and macd.iloc[i] < signal_line.iloc[i]:
+            pnl += df['close'].iloc[i] - entry_price
+            position = 0
+        elif position == -1 and macd.iloc[i] > signal_line.iloc[i]:
+            pnl += entry_price - df['close'].iloc[i]
+            position = 0
+
+    return pnl
+
+
+def compare_strategies(df):
+    rsi_pnl = backtest_strategy(df)
+    macd_pnl = backtest_macd_strategy(df)
+    return {
+        'rsi': rsi_pnl,
+        'macd': macd_pnl
+    }
