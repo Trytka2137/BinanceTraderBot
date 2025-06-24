@@ -25,6 +25,7 @@ Prosty bot handlujący na giełdzie Binance napisany w C# i Pythonie. Część C
 
 Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces optymalizacji parametrów strategii.
 
+hm8wp8-codex/sprawdź-poprawność-kodu
 ### Sygnały z TradingView
 W alertach TradingView ustaw adres webhook na `http://localhost:5000/webhook`.
 Przykładowa treść powiadomienia:
@@ -37,6 +38,7 @@ Przykładowa treść powiadomienia:
 ```
 Pole `order_action` może przyjmować wartości `buy` lub `sell`.
 
+BOT
 Komunikaty o błędach połączeń z API są wypisywane w konsoli, dzięki czemu łatwiej zdiagnozować problemy sieciowe.
 
 > **Uwaga:** W środowiskach bez dostępu do API Binance wykonywanie zapytań do `api.binance.com` może zakończyć się błędem.

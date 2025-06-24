@@ -22,6 +22,7 @@ namespace Bot
                     using var reader = new StreamReader(context.Request.Body);
                     var body = await reader.ReadToEndAsync();
                     var json = JObject.Parse(body);
+ hm8wp8-codex/sprawdź-poprawność-kodu
                     var signal =
                         (string?)json["strategy"]? ["order_action"] ??
                         (string?)json["action"] ??
@@ -30,10 +31,19 @@ namespace Bot
 
                     Console.WriteLine($"📩 Otrzymano sygnał: {signal} dla {pair}");
 
+                    var signal = json["signal"]?.ToString();
+
+                    Console.WriteLine($"📩 Otrzymano sygnał: {signal}");
+ BOT
+
                     if (signal == "buy" || signal == "sell")
                     {
                         var trader = new BinanceTrader();
+ hm8wp8-codex/sprawdź-poprawność-kodu
                         await trader.ExecuteTrade(signal, pair);
+
+                        await trader.ExecuteTrade(signal);
+ BOT
                     }
 
                     await context.Response.WriteAsync("OK");
