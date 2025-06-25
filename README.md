@@ -28,6 +28,11 @@ strategii (`compare_strategies.py`).
      ```powershell
      winget install Microsoft.DotNet.SDK.6
      ```
+1. Zainstaluj pakiet `.NET 6 SDK` (np. w systemie Ubuntu):
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y dotnet-sdk-6.0
+   ```
 2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
