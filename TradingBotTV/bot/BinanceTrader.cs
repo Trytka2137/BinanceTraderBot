@@ -21,11 +21,11 @@ namespace Bot
             defaultSymbol = ConfigManager.Symbol;
         }
 
-        public async Task ExecuteTrade(string signal, string? symbolOverride = null)
+        public async Task ExecuteTrade(string signal, string? symbolOverride = null, decimal volatility = 0m)
         {
             if (!BotController.TradingEnabled)
             {
-                Console.WriteLine("⏸️ Trading is disabled – zlecenie pominięte.");
+                BotLogger.Log("⏸️ Trading is disabled – zlecenie pominięte.");
                 return;
             }
             var symbol = symbolOverride ?? defaultSymbol;
@@ -36,24 +36,27 @@ namespace Bot
             var price = await GetCurrentPrice(symbol).ConfigureAwait(false);
             if (price <= 0)
             {
-                Console.WriteLine($"❌ Nie udało się pobrać ceny dla {symbol}");
+                BotLogger.Log($"❌ Nie udało się pobrać ceny dla {symbol}");
                 return;
             }
             var sl = price * (1 - ConfigManager.StopLossPercent / 100m);
             var tp = price * (1 + ConfigManager.TakeProfitPercent / 100m);
+            var trailing = ConfigManager.TrailingStopPercent > 0
+                ? price * (ConfigManager.TrailingStopPercent / 100m)
+                : 0m;
 
-            var quantity = PositionSizer.GetTradeAmount(price, side);
+            var quantity = PositionSizer.GetTradeAmount(price, side, volatility);
 
             if (quantity <= 0)
             {
-                Console.WriteLine("❌ Ilość zlecenia wynosi 0 – przerwano");
+                BotLogger.Log("❌ Ilość zlecenia wynosi 0 – przerwano");
                 return;
             }
 
             var request = new HttpRequestMessage(HttpMethod.Post, GetOrderUrl(symbol, side, quantity));
             request.Headers.Add("X-MBX-APIKEY", apiKey);
 
-            Console.WriteLine($"🚀 Wysyłam zlecenie {side} {quantity} {symbol} (SL={sl:F2}, TP={tp:F2})");
+            BotLogger.Log($"🚀 Wysyłam zlecenie {side} {quantity} {symbol} (SL={sl:F2}, TP={tp:F2}, TRL={trailing:F2})");
 
             try
             {
@@ -62,20 +65,21 @@ namespace Bot
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"❌ Błąd API {response.StatusCode}: {content}");
+                    BotLogger.Log($"❌ Błąd API {response.StatusCode}: {content}");
                 }
                 else
                 {
-                    Console.WriteLine($"✅ Binance Response: {content}");
+                    BotLogger.Log($"✅ Binance Response: {content}");
                     TradeLogger.LogTrade(symbol, side, price, quantity);
                     var pnl = TradeLogger.AnalyzePnL();
-                    Console.WriteLine($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
+                    BotLogger.Log($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
                     await TradeLogger.CompareWithStrategiesAsync(symbol).ConfigureAwait(false);
+                    _ = MonitorTrailingStop(symbol, side, price, trailing);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Błąd wysyłania zlecenia: {ex.Message}");
+                BotLogger.Log($"❌ Błąd wysyłania zlecenia: {ex.Message}");
                 await CloseAllPositionsAsync().ConfigureAwait(false);
             }
         }
@@ -91,7 +95,7 @@ namespace Bot
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Błąd pobierania ceny: {ex.Message}");
+                BotLogger.Log($"❌ Błąd pobierania ceny: {ex.Message}");
                 return 0m;
             }
         }
@@ -109,6 +113,38 @@ namespace Bot
             return GetOrderUrl(symbol, signal.ToUpper(), ConfigManager.Amount);
         }
 
+        private async Task MonitorTrailingStop(string symbol, string side, decimal entryPrice, decimal trailing)
+        {
+            if (trailing <= 0) return;
+            var stop = side == "BUY" ? entryPrice - trailing : entryPrice + trailing;
+            while (true)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
+                var price = await GetCurrentPrice(symbol).ConfigureAwait(false);
+                if (price == 0) continue;
+                if (side == "BUY")
+                {
+                    if (price <= stop)
+                    {
+                        BotLogger.Log($"⏹ Trailing stop hit at {price:F2}");
+                        await ExecuteTrade("SELL", symbol, 0m).ConfigureAwait(false);
+                        break;
+                    }
+                    if (price - trailing > stop) stop = price - trailing;
+                }
+                else
+                {
+                    if (price >= stop)
+                    {
+                        BotLogger.Log($"⏹ Trailing stop hit at {price:F2}");
+                        await ExecuteTrade("BUY", symbol, 0m).ConfigureAwait(false);
+                        break;
+                    }
+                    if (price + trailing < stop) stop = price + trailing;
+                }
+            }
+        }
+
         private async Task CloseAllPositionsAsync()
         {
             var net = TradeLogger.GetNetPosition();
@@ -123,16 +159,16 @@ namespace Bot
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
-                    Console.WriteLine($"❌ Błąd zamykania pozycji: {response.StatusCode}: {content}");
+                    BotLogger.Log($"❌ Błąd zamykania pozycji: {response.StatusCode}: {content}");
                 else
                 {
-                    Console.WriteLine($"⚠️ Zamknięto wszystkie pozycje: {content}");
+                    BotLogger.Log($"⚠️ Zamknięto wszystkie pozycje: {content}");
                     TradeLogger.LogTrade(defaultSymbol, side, price, quantity);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Błąd wysyłania zlecenia zamykającego: {ex.Message}");
+                BotLogger.Log($"❌ Błąd wysyłania zlecenia zamykającego: {ex.Message}");
             }
         }
     }

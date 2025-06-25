@@ -7,9 +7,12 @@ strategii RSI oraz zarządza stop-lossem i take-profitem. Moduł Python służy 
 optymalizacji parametrów strategii oraz porównywania kilku podejść (RSI, MACD).
 
 Najnowsza wersja skanuje pary z największym wolumenem, a strategia w C# bierze
-pod uwagę wzrost aktywności wolumenowej. W katalogu `ml_optimizer` znajdują się
-skrypty do trenowania prostego modelu RL (`rl_optimizer.py`) oraz testu kilku
-strategii (`compare_strategies.py`).
+pod uwagę wzrost aktywności wolumenowej. Dodano obsługę trailing stop oraz
+dynamiczne dostosowanie wielkości pozycji w zależności od zmienności rynku.
+Strategia łączy sygnały z interwału 1m i 1h, a logi zapisywane są do pliku
+`logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do trenowania
+prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
+(`compare_strategies.py`).
 
 
 ## Wymagania

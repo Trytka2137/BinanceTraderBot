@@ -7,7 +7,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
-from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, backtest_strategy
+from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, compute_atr, backtest_strategy
 
 
 def test_compute_rsi_basic_uptrend():
@@ -40,4 +40,13 @@ def test_backtest_strategy_simple_scenario():
     df = pd.DataFrame({'close': series})
     pnl = backtest_strategy(df)
     assert pnl == 9
+
+
+def test_compute_atr_basic():
+    high = pd.Series([10, 11, 12, 13])
+    low = pd.Series([9, 10, 11, 12])
+    close = pd.Series([9.5, 10.5, 11.5, 12.5])
+    atr = compute_atr(high, low, close, period=2)
+    assert len(atr) == 4
+    assert atr.iloc[1] > 0
 

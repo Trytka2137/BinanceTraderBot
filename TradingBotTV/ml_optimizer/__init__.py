@@ -5,6 +5,7 @@ from .backtest import (
     backtest_strategy,
     compare_strategies,
     compute_macd,
+    compute_atr,
     compute_rsi,
 )
 from .data_fetcher import fetch_klines
@@ -15,6 +16,7 @@ from .tradingview_auto_trader import auto_trade_from_tv
 __all__ = [
     "compute_rsi",
     "compute_macd",
+    "compute_atr",
     "backtest_strategy",
     "backtest_macd_strategy",
     "compare_strategies",

@@ -43,6 +43,15 @@ def compute_macd(series, short=12, long=26, signal=9):
     return macd, signal_line
 
 
+def compute_atr(high, low, close, period=14):
+    hl = high - low
+    hc = (high - close.shift()).abs()
+    lc = (low - close.shift()).abs()
+    tr = pd.concat([hl, hc, lc], axis=1).max(axis=1)
+    atr = tr.rolling(window=period).mean()
+    return atr
+
+
 def backtest_macd_strategy(df, short=12, long=26, signal=9):
     macd, signal_line = compute_macd(df['close'], short, long, signal)
     position = 0
