@@ -1,4 +1,7 @@
+"""Simple reinforcement learning optimizer for RSI thresholds."""
+
 import json
+import random
 
 import numpy as np
 
@@ -6,6 +9,10 @@ from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
 
 STATE_PATH = 'rl_state.json'
+
+# Search space for RSI thresholds
+BUY_SPACE = list(range(20, 41, 2))
+SELL_SPACE = list(range(60, 81, 2))
 
 def load_state():
     try:
@@ -18,19 +25,47 @@ def save_state(state):
     with open(STATE_PATH, 'w') as f:
         json.dump(state, f)
 
-def train(symbol, episodes=10):
+def train(symbol, episodes=30, population=20, elite_frac=0.2):
+    """Train thresholds using a simple cross-entropy method."""
+
     state = load_state()
-    q = state.get('q', {})
+
+    mean_buy = state.get('mean_buy', 30.0)
+    std_buy = state.get('std_buy', 5.0)
+    mean_sell = state.get('mean_sell', 70.0)
+    std_sell = state.get('std_sell', 5.0)
+
+    df = fetch_klines(symbol, interval='1h', limit=500)
+    if df.empty:
+        print('No data fetched – aborting training')
+        return int(round(mean_buy)), int(round(mean_sell))
+
     for _ in range(episodes):
-        buy = np.random.randint(20, 40)
-        sell = np.random.randint(60, 80)
-        df = fetch_klines(symbol, interval='1h', limit=500)
-        pnl = backtest_strategy(df, rsi_buy_threshold=buy, rsi_sell_threshold=sell)
-        key = f'{buy}-{sell}'
-        q[key] = max(q.get(key, -np.inf), pnl)
-    best_key = max(q, key=q.get)
-    best_buy, best_sell = map(int, best_key.split('-'))
-    save_state({'q': q, 'best_buy': best_buy, 'best_sell': best_sell})
+        buys = np.random.normal(mean_buy, std_buy, population).astype(int)
+        sells = np.random.normal(mean_sell, std_sell, population).astype(int)
+        results = []
+        for b, s in zip(buys, sells):
+            b = int(np.clip(b, 20, 40))
+            s = int(np.clip(s, 60, 80))
+            pnl = backtest_strategy(df, rsi_buy_threshold=b, rsi_sell_threshold=s)
+            results.append((pnl, b, s))
+        results.sort(reverse=True)
+        elite = results[: max(1, int(population * elite_frac))]
+        mean_buy = np.mean([b for _, b, _ in elite])
+        std_buy = np.std([b for _, b, _ in elite]) + 1e-6
+        mean_sell = np.mean([s for _, _, s in elite])
+        std_sell = np.std([s for _, _, s in elite]) + 1e-6
+
+    best_buy = int(round(mean_buy))
+    best_sell = int(round(mean_sell))
+    save_state({
+        'mean_buy': mean_buy,
+        'std_buy': std_buy,
+        'mean_sell': mean_sell,
+        'std_sell': std_sell,
+        'best_buy': best_buy,
+        'best_sell': best_sell,
+    })
     print(f'Best params: {best_buy} {best_sell}')
     return best_buy, best_sell
 

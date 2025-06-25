@@ -26,7 +26,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `auto_optimizer.py` – losowe poszukiwanie najlepszych progów RSI; wyniki zapisywane są w `model_state.json`.
 - `optimizer.py` – przykład prostej optymalizacji parametrów w pętli.
 - `compare_strategies.py` – porównanie wyników strategii RSI i MACD.
-- `rl_optimizer.py` – uproszczony przykład uczenia ze wzmocnieniem.
+- `rl_optimizer.py` – rozbudowany przykład uczenia ze wzmocnieniem.
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
