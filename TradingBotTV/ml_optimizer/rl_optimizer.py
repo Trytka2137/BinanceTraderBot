@@ -14,6 +14,7 @@ STATE_PATH = 'rl_state.json'
 BUY_SPACE = list(range(20, 41, 2))
 SELL_SPACE = list(range(60, 81, 2))
 
+
 def load_state():
     try:
         with open(STATE_PATH, 'r') as f:
@@ -21,9 +22,11 @@ def load_state():
     except FileNotFoundError:
         return {}
 
+
 def save_state(state):
     with open(STATE_PATH, 'w') as f:
         json.dump(state, f)
+
 
 def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
     """Train thresholds using a simple cross-entropy method.
@@ -70,7 +73,11 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
         for b, s in zip(buys, sells):
             b = int(np.clip(b, 20, 40))
             s = int(np.clip(s, 60, 80))
-            pnl = backtest_strategy(df, rsi_buy_threshold=b, rsi_sell_threshold=s)
+            pnl = backtest_strategy(
+                df,
+                rsi_buy_threshold=b,
+                rsi_sell_threshold=s,
+            )
             results.append((pnl, b, s))
         results.sort(reverse=True)
         elite = results[: max(1, int(population * elite_frac))]
@@ -91,6 +98,7 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
     })
     print(f'Best params: {best_buy} {best_sell}')
     return best_buy, best_sell
+
 
 if __name__ == '__main__':
     import sys

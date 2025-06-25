@@ -4,8 +4,12 @@ import pandas as pd
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
+
 def fetch_klines(symbol, interval='1h', limit=1000):
-    url = f'https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}'
+    url = (
+        'https://api.binance.com/api/v3/klines'
+        f'?symbol={symbol}&interval={interval}&limit={limit}'
+    )
     csv_path = os.path.join(DATA_DIR, f'{symbol}_{interval}.csv')
     try:
         response = requests.get(url, timeout=10)
@@ -19,13 +23,13 @@ def fetch_klines(symbol, interval='1h', limit=1000):
             df['open_time'] = pd.to_datetime(df['open_time'])
             return df[['open_time', 'close']]
         return pd.DataFrame(columns=['open_time', 'close'])
-    
+
     df = pd.DataFrame(data, columns=[
         'open_time', 'open', 'high', 'low', 'close', 'volume',
         'close_time', 'quote_asset_volume', 'number_of_trades',
         'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume', 'ignore'
     ])
-    
+
     df['close'] = df['close'].astype(float)
     df['open_time'] = pd.to_datetime(df['open_time'], unit='ms')
     os.makedirs(DATA_DIR, exist_ok=True)
