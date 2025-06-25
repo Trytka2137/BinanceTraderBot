@@ -14,6 +14,11 @@ Strategia łączy sygnały z interwału 1m i 1h oraz filtruje trend na podstawie
 przebiegu średnich EMA (domyślnie 50 i 200 okresów). Logi zapisywane są do
 pliku `logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do
 trenowania prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
+
+Strategia łączy sygnały z interwału 1m i 1h, a logi zapisywane są do pliku
+`logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do trenowania
+prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
+
 (`compare_strategies.py`).
 
 

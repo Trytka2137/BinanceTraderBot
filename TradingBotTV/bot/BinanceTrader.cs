@@ -29,6 +29,13 @@ namespace Bot
                 BotLogger.Log("⏸️ Trading is disabled – zlecenie pominięte.");
                 return;
             }
+
+            if (!BotController.TradingEnabled)
+            {
+                BotLogger.Log("⏸️ Trading is disabled – zlecenie pominięte.");
+                return;
+            }
+
             var symbol = symbolOverride ?? defaultSymbol;
 
             var side = signal.ToUpper(); // BUY or SELL
@@ -72,10 +79,16 @@ namespace Bot
                 {
                     BotLogger.Log($"✅ Binance Response: {content}");
                     TradeLogger.LogTrade(symbol, side, price, quantity);
+
                     var pnl = TradeLogger.AnalyzePnL();
                     BotLogger.Log($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
                     BotController.CheckDrawdown();
                     await TradeLogger.CompareWithStrategiesAsync(symbol).ConfigureAwait(false);
+
+                    var pnl = TradeLogger.AnalyzePnL();
+                    BotLogger.Log($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
+                    await TradeLogger.CompareWithStrategiesAsync(symbol).ConfigureAwait(false);
+
                     _ = MonitorTrailingStop(symbol, side, price, trailing);
                 }
             }

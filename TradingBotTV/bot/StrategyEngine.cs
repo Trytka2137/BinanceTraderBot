@@ -32,6 +32,8 @@ namespace Bot
                 {
                     var task1m = FetchKlines(ConfigManager.Symbol, 50, "1m");
                     var task1h = FetchKlines(ConfigManager.Symbol, ConfigManager.EmaLongPeriod, "1h");
+                    var task1h = FetchKlines(ConfigManager.Symbol, 50, "1h");
+
                     await Task.WhenAll(task1m, task1h).ConfigureAwait(false);
                     var klines1m = task1m.Result;
                     var klines1h = task1h.Result;
@@ -50,11 +52,20 @@ namespace Bot
                         var downtrend = emaShort < emaLong;
 
                         if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m && uptrend)
+
+                        var volatility = ComputeVolatility(closes1m);
+                        var volFactor = ComputeVolumeFactor(volumes);
+                        if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
+
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("BUY", null, volatility).ConfigureAwait(false);
                         }
+
                         else if (rsi1m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m && downtrend)
+
+                        else if (rsi1m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m)
+
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("SELL", null, volatility).ConfigureAwait(false);

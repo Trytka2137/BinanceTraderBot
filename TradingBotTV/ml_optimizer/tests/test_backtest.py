@@ -7,6 +7,7 @@ ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+
 from TradingBotTV.ml_optimizer import (
     compute_rsi,
     compute_macd,
@@ -14,6 +15,9 @@ from TradingBotTV.ml_optimizer import (
     compute_ema,
     backtest_strategy,
 )
+
+from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, compute_atr, backtest_strategy
+
 
 
 def test_compute_rsi_basic_uptrend():
@@ -57,9 +61,9 @@ def test_compute_atr_basic():
     assert atr.iloc[1] > 0
 
 
+
 def test_compute_ema_simple():
     series = pd.Series([1, 2, 3, 4])
     ema = compute_ema(series, period=2)
     expected = series.ewm(span=2, adjust=False).mean()
     pd.testing.assert_series_equal(ema.round(6), expected.round(6))
-

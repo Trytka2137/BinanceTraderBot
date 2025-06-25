@@ -43,9 +43,11 @@ def compute_macd(series, short=12, long=26, signal=9):
     return macd, signal_line
 
 
+
 def compute_ema(series, period=20):
     """Return exponential moving average for the given ``series``."""
     return series.ewm(span=period, adjust=False).mean()
+
 
 
 def compute_atr(high, low, close, period=14):
