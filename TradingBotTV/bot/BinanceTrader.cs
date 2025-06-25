@@ -10,6 +10,10 @@ namespace Bot
         private readonly string apiSecret;
         private readonly string defaultSymbol;
         private readonly decimal amount;
+        private static readonly HttpClient httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
 
         public BinanceTrader()
         {
@@ -23,16 +27,11 @@ namespace Bot
         public async Task ExecuteTrade(string signal, string? symbolOverride = null)
         {
             var symbol = symbolOverride ?? defaultSymbol;
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, GetOrderUrl(symbol, signal));
+            request.Headers.Add("X-MBX-APIKEY", apiKey);
 
             var side = signal.ToUpper(); // BUY or SELL
-            var endpoint = "https://api.binance.com/api/v3/order/test"; // test order for safety
-
-            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var query = $"symbol={symbol}&side={side}&type=MARKET&quantity={amount}&timestamp={timestamp}";
-
-            var url = $"{endpoint}?{query}";
 
             // Oblicz stop loss i take profit na podstawie bieżącej ceny
             var price = await GetCurrentPrice(symbol);
@@ -43,7 +42,7 @@ namespace Bot
 
             try
             {
-                var response = await client.PostAsync(url, null);
+                var response = await httpClient.SendAsync(request);
                 var content = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -53,6 +52,10 @@ namespace Bot
                 else
                 {
                     Console.WriteLine($"✅ Binance Response: {content}");
+                    TradeLogger.LogTrade(symbol, side, price, amount);
+                    var pnl = TradeLogger.AnalyzePnL();
+                    Console.WriteLine($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
+                    await TradeLogger.CompareWithStrategiesAsync(symbol);
                 }
             }
             catch (Exception ex)
@@ -61,13 +64,29 @@ namespace Bot
             }
         }
 
-        private async Task<decimal> GetCurrentPrice(string symbol)
+        private static async Task<decimal> GetCurrentPrice(string symbol)
         {
-            using var client = new HttpClient();
             var url = $"https://api.binance.com/api/v3/ticker/price?symbol={symbol}";
-            var json = await client.GetStringAsync(url);
-            var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
-            return decimal.Parse(obj["price"].ToString());
+            try
+            {
+                var json = await httpClient.GetStringAsync(url);
+                var obj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                return decimal.Parse(obj["price"].ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Błąd pobierania ceny: {ex.Message}");
+                return 0m;
+            }
+        }
+
+        private string GetOrderUrl(string symbol, string signal)
+        {
+            var side = signal.ToUpper();
+            var endpoint = "https://api.binance.com/api/v3/order/test"; // test order for safety
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var query = $"symbol={symbol}&side={side}&type=MARKET&quantity={amount}&timestamp={timestamp}";
+            return $"{endpoint}?{query}";
         }
     }
 }
