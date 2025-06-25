@@ -31,7 +31,9 @@ namespace Bot
                 try
                 {
                     var task1m = FetchKlines(ConfigManager.Symbol, 50, "1m");
+                    var task1h = FetchKlines(ConfigManager.Symbol, ConfigManager.EmaLongPeriod, "1h");
                     var task1h = FetchKlines(ConfigManager.Symbol, 50, "1h");
+
                     await Task.WhenAll(task1m, task1h).ConfigureAwait(false);
                     var klines1m = task1m.Result;
                     var klines1h = task1h.Result;
@@ -42,14 +44,28 @@ namespace Bot
                         var volumes = klines1m.Select(k => k.Volume).ToList();
                         var rsi1m = ComputeRsi(closes1m);
                         var rsi1h = ComputeRsi(closes1h);
+                        var emaShort = ComputeEma(closes1h, ConfigManager.EmaShortPeriod);
+                        var emaLong = ComputeEma(closes1h, ConfigManager.EmaLongPeriod);
+                        var volatility = ComputeVolatility(closes1m);
+                        var volFactor = ComputeVolumeFactor(volumes);
+                        var uptrend = emaShort > emaLong;
+                        var downtrend = emaShort < emaLong;
+
+                        if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m && uptrend)
+
                         var volatility = ComputeVolatility(closes1m);
                         var volFactor = ComputeVolumeFactor(volumes);
                         if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
+
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("BUY", null, volatility).ConfigureAwait(false);
                         }
+
+                        else if (rsi1m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m && downtrend)
+
                         else if (rsi1m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m)
+
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("SELL", null, volatility).ConfigureAwait(false);
@@ -118,6 +134,18 @@ namespace Bot
             var rs = avgGain / avgLoss;
             var rsi = 100 - (100 / (1 + rs));
             return decimal.Round((decimal)rsi, 2);
+        }
+
+        private static decimal ComputeEma(List<decimal> closes, int period)
+        {
+            if (closes.Count == 0) return 0m;
+            decimal multiplier = 2m / (period + 1);
+            decimal ema = closes[0];
+            for (int i = 1; i < closes.Count; i++)
+            {
+                ema = ((closes[i] - ema) * multiplier) + ema;
+            }
+            return decimal.Round(ema, 4);
         }
     }
 }

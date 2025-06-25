@@ -30,6 +30,10 @@ namespace Bot
         public static decimal StopLossPercent => (decimal)_config["trading"]["stopLossPercent"];
         public static decimal TakeProfitPercent => (decimal)_config["trading"]["takeProfitPercent"];
         public static decimal TrailingStopPercent => (decimal?)_config["trading"]?["trailingStopPercent"] ?? 0.5m;
+        public static decimal MaxDrawdownPercent => (decimal?)_config["trading"]?["maxDrawdownPercent"] ?? 20m;
+        public static int EmaShortPeriod => (int?)_config["trading"]?["emaShortPeriod"] ?? 50;
+        public static int EmaLongPeriod => (int?)_config["trading"]?["emaLongPeriod"] ?? 200;
+
         public static string BinanceWsUrl =>
             _config["websocket"]?["binanceUrl"]?.ToString() ?? "wss://stream.binance.com:9443/ws";
         public static string TradingViewWsUrl =>
