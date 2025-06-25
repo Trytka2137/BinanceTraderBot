@@ -1,25 +1,20 @@
-import os
 import sys
-import pandas as pd
+from pathlib import Path
+
 import numpy as np
+import pandas as pd
 
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-if ROOT_DIR not in sys.path:
-    sys.path.insert(0, ROOT_DIR)
+ROOT_DIR = Path(__file__).resolve().parents[3]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
-
-from TradingBotTV.ml_optimizer import (
+from TradingBotTV.ml_optimizer import (  # noqa: E402
     compute_rsi,
     compute_macd,
     compute_atr,
     compute_ema,
     backtest_strategy,
 )
-
-
-from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, compute_atr, backtest_strategy
-
-
 
 
 def test_compute_rsi_basic_uptrend():
@@ -48,8 +43,10 @@ def test_compute_macd_known_values():
 
 
 def test_backtest_strategy_simple_scenario():
-    series = pd.Series(list(range(1,16)) + list(range(15,5,-1)) + list(range(6,16)))
-    df = pd.DataFrame({'close': series})
+    series = pd.Series(
+        list(range(1, 16)) + list(range(15, 5, -1)) + list(range(6, 16))
+    )
+    df = pd.DataFrame({"close": series})
     pnl = backtest_strategy(df)
     assert pnl == 9
 
@@ -68,4 +65,3 @@ def test_compute_ema_simple():
     ema = compute_ema(series, period=2)
     expected = series.ewm(span=2, adjust=False).mean()
     pd.testing.assert_series_equal(ema.round(6), expected.round(6))
-

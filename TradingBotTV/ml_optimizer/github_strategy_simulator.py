@@ -1,5 +1,5 @@
-"""Clone an external GitHub repo containing a simple strategy definition and
-run an offline backtest using local market data.
+"""Clone an external GitHub repo with a simple strategy definition and run a
+backtest using local market data.
 
 Expected repository layout:
     strategy.json
@@ -13,8 +13,8 @@ strategy.json example::
 Usage:
     python github_strategy_simulator.py <repo_url> <symbol>
 
-If the environment lacks network access, you can provide a local path instead
-of a URL.
+If the environment lacks network access, you can provide a local path
+instead of a URL.
 """
 
 import json
@@ -31,7 +31,8 @@ def clone_repo(src: str, dst: str) -> None:
     """Clone *src* into directory *dst*.
 
     If *src* is a local path, it is copied using ``git clone`` as well.
-    Errors are printed and propagated as :class:`subprocess.CalledProcessError`.
+    Errors are printed and propagated as
+    :class:`subprocess.CalledProcessError`.
     """
     print(f"Cloning repository {src}...")
     subprocess.run(["git", "clone", "--depth", "1", src, dst], check=True)
@@ -65,7 +66,11 @@ def simulate_strategy(repo: str, symbol: str) -> None:
         if df.empty:
             print("No data fetched for backtest")
             return
-        pnl = backtest_strategy(df, rsi_buy_threshold=buy, rsi_sell_threshold=sell)
+        pnl = backtest_strategy(
+            df,
+            rsi_buy_threshold=buy,
+            rsi_sell_threshold=sell,
+        )
         print(f"Backtest result for {symbol}: PnL={pnl}")
 
 
