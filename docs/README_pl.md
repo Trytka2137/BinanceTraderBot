@@ -29,6 +29,8 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `rl_optimizer.py` – uproszczony przykład uczenia ze wzmocnieniem.
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
+- `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
+  i wysyłanie sygnałów do lokalnego webhooka.
 - `tests/test_backtest.py` – testy jednostkowe dla modułu `backtest.py`.
 
 ## Edycja ustawień

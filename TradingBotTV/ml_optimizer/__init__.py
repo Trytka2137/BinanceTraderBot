@@ -9,6 +9,8 @@ from .backtest import (
 )
 from .data_fetcher import fetch_klines
 from .github_strategy_simulator import simulate_strategy
+from .tradingview_auto_trader import auto_trade_from_tv
+
 
 __all__ = [
     "compute_rsi",
@@ -18,4 +20,5 @@ __all__ = [
     "compare_strategies",
     "fetch_klines",
     "simulate_strategy",
+    "auto_trade_from_tv",
 ]
