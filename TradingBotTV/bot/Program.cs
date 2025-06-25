@@ -7,7 +7,7 @@ namespace Bot
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("🚀 Bot uruchomiony. Oczekuję na sygnały z TradingView...");
+            BotLogger.Log("🚀 Bot uruchomiony. Oczekuję na sygnały z TradingView...");
 
             ConfigManager.Load();
 
@@ -15,7 +15,7 @@ namespace Bot
             var best = await SymbolScanner.GetHighestVolumePairAsync(pairs).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(best))
             {
-                Console.WriteLine($"\uD83D\uDCCA Wybrano par\u0119 o najwy\u017Cszej likwidno\u015Bci: {best}");
+                BotLogger.Log($"\uD83D\uDCCA Wybrano par\u0119 o najwy\u017Cszej likwidno\u015Bci: {best}");
                 ConfigManager.OverrideSymbol(best);
             }
 
@@ -31,7 +31,8 @@ namespace Bot
             {
                 RunOptimizerLoop(TimeSpan.FromMinutes(15)),
                 RunOptimizerLoop(TimeSpan.FromMinutes(30)),
-                RunOptimizerLoop(TimeSpan.FromHours(1))
+                RunOptimizerLoop(TimeSpan.FromHours(1)),
+                RunTradingViewLoop(TimeSpan.FromMinutes(10))
             };
 
             await Task.WhenAll(optTasks);
@@ -41,10 +42,19 @@ namespace Bot
         {
             while (true)
             {
-                Console.WriteLine($"🧠 ({interval}) Uruchamiam optymalizację ML...");
+                BotLogger.Log($"🧠 ({interval}) Uruchamiam optymalizację ML...");
                 await OptimizerRunner.RunOptimizationAndReloadAsync(ConfigManager.Symbol).ConfigureAwait(false);
 
-                Console.WriteLine($"⏳ Czekam {interval} na kolejną optymalizację...");
+                BotLogger.Log($"⏳ Czekam {interval} na kolejną optymalizację...");
+                await Task.Delay(interval).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task RunTradingViewLoop(TimeSpan interval)
+        {
+            while (true)
+            {
+                await OptimizerRunner.RunTradingViewAutoTradeAsync(ConfigManager.Symbol).ConfigureAwait(false);
                 await Task.Delay(interval).ConfigureAwait(false);
             }
         }

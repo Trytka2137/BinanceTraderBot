@@ -68,5 +68,34 @@ namespace Bot
             File.WriteAllText(path, obj.ToString());
             ConfigManager.Reload();
         }
+
+        public static async Task RunTradingViewAutoTradeAsync(string symbol)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "python",
+                    Arguments = $"ml_optimizer/tradingview_auto_trader.py {symbol}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var process = Process.Start(psi);
+                if (process == null) return;
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+                BotLogger.Log("📈 TradingView auto trader output:");
+                BotLogger.Log(output.Trim());
+                if (!string.IsNullOrEmpty(error))
+                    BotLogger.Log("⚠️ TradingView errors: " + error);
+            }
+            catch (Exception ex)
+            {
+                BotLogger.Log("❌ Błąd TradingView auto trader: " + ex.Message);
+            }
+        }
     }
 }
