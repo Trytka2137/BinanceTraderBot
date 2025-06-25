@@ -52,6 +52,8 @@ czemu optymalizacja może przebiegać również offline.
 * `auto_optimizer.py` – losowe poszukiwanie progów RSI
 * `rl_optimizer.py` – prosty przykład uczenia ze wzmocnieniem
 * `compare_strategies.py` – backtest RSI vs. MACD
+* `github_strategy_simulator.py` – klonuje repozytoria z GitHub i symuluje
+  zdefiniowane w nich strategie offline
 
 Aby uruchomić test porównawczy strategii:
 ```bash

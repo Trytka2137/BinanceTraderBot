@@ -8,6 +8,7 @@ from .backtest import (
     compute_rsi,
 )
 from .data_fetcher import fetch_klines
+from .github_strategy_simulator import simulate_strategy
 
 __all__ = [
     "compute_rsi",
@@ -16,4 +17,5 @@ __all__ = [
     "backtest_macd_strategy",
     "compare_strategies",
     "fetch_klines",
+    "simulate_strategy",
 ]
