@@ -9,6 +9,7 @@ optymalizacji parametrów strategii oraz porównywania kilku podejść (RSI, MAC
 Najnowsza wersja skanuje pary z największym wolumenem, a strategia w C# bierze
 pod uwagę wzrost aktywności wolumenowej. Dodano obsługę trailing stop oraz
 dynamiczne dostosowanie wielkości pozycji w zależności od zmienności rynku.
+Bot samoczynnie wyłącza handel, gdy łączna strata przekroczy ustawiony próg `maxDrawdownPercent`.
 Strategia łączy sygnały z interwału 1m i 1h oraz filtruje trend na podstawie
 przebiegu średnich EMA (domyślnie 50 i 200 okresów). Logi zapisywane są do
 pliku `logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do
@@ -54,9 +55,7 @@ trenowania prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
    ```
 
 
-W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercent`
-i `takeProfitPercent`, a także okresy `emaShortPeriod` i `emaLongPeriod`
-wykorzystywane w filtrze trendu.
+W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercent` i `takeProfitPercent`, a także `maxDrawdownPercent`, który określa poziom straty (w % od kapitału początkowego) po przekroczeniu którego handel zostanie automatycznie wyłączony. Można też zmienić okresy `emaShortPeriod` i `emaLongPeriod` wykorzystywane w filtrze trendu.
 
 Bot nasłuchuje na `http://localhost:5000/webhook` i uruchamia proces samouczenia strategii co 15, 30 oraz 60 minut. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.

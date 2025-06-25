@@ -52,6 +52,7 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
     "stopLossPercent": 1.5,
   "takeProfitPercent": 3.0,
   "trailingStopPercent": 0.5,
+  "maxDrawdownPercent": 20,
   "emaShortPeriod": 50,
   "emaLongPeriod": 200
   },
@@ -68,8 +69,8 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
 - `stopLossPercent` i `takeProfitPercent` – ustawienia SL/TP w procentach.
 - `trailingStopPercent` – wielkość trailing stopu aktualizowana po każdej zmianie ceny.
-- `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA
-  używane w filtrze trendu.
+- `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
+- `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.
 - `websocket.binanceUrl` – adres WebSocket Binance z którego pobierane są dane na żywo.
 - `websocket.tradingViewUrl` – opcjonalny adres WebSocket z alertami TradingView.
 

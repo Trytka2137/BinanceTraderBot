@@ -12,6 +12,7 @@
     "stopLossPercent": 1.5,
     "takeProfitPercent": 3.0,
     "trailingStopPercent": 0.5,
+    "maxDrawdownPercent": 20,
     "emaShortPeriod": 50,
     "emaLongPeriod": 200
   },

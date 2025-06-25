@@ -23,6 +23,7 @@ namespace Bot
 
         public async Task ExecuteTrade(string signal, string? symbolOverride = null, decimal volatility = 0m)
         {
+            BotController.CheckDrawdown();
             if (!BotController.TradingEnabled)
             {
                 BotLogger.Log("⏸️ Trading is disabled – zlecenie pominięte.");
@@ -73,6 +74,7 @@ namespace Bot
                     TradeLogger.LogTrade(symbol, side, price, quantity);
                     var pnl = TradeLogger.AnalyzePnL();
                     BotLogger.Log($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
+                    BotController.CheckDrawdown();
                     await TradeLogger.CompareWithStrategiesAsync(symbol).ConfigureAwait(false);
                     _ = MonitorTrailingStop(symbol, side, price, trailing);
                 }
