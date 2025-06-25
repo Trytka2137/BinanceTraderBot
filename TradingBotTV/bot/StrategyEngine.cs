@@ -16,43 +16,67 @@ namespace Bot
 
         private record Kline(decimal Close, decimal Volume);
 
+        private static decimal ComputeVolatility(List<decimal> closes)
+        {
+            if (closes.Count < 2) return 0m;
+            var mean = closes.Average();
+            var variance = closes.Select(c => (c - mean) * (c - mean)).Average();
+            return Math.Round((decimal)Math.Sqrt((double)variance), 4);
+        }
+
         public static async Task StartAsync()
         {
             while (true)
             {
                 try
                 {
-                    var klines = await FetchKlines(ConfigManager.Symbol, 50).ConfigureAwait(false);
-                    if (klines.Count >= 15)
+                    var task1m = FetchKlines(ConfigManager.Symbol, 50, "1m");
+                    var task30m = FetchKlines(ConfigManager.Symbol, 50, "30m");
+                    var task1h = FetchKlines(ConfigManager.Symbol, ConfigManager.EmaLongPeriod, "1h");
+                    await Task.WhenAll(task1m, task30m, task1h).ConfigureAwait(false);
+                    var klines1m = task1m.Result;
+                    var klines30m = task30m.Result;
+                    var klines1h = task1h.Result;
+                    if (klines1m.Count >= 15 && klines30m.Count >= 15 && klines1h.Count >= 15)
                     {
-                        var closes = klines.Select(k => k.Close).ToList();
-                        var volumes = klines.Select(k => k.Volume).ToList();
-                        var rsi = ComputeRsi(closes);
+                        var closes1m = klines1m.Select(k => k.Close).ToList();
+                        var closes30m = klines30m.Select(k => k.Close).ToList();
+                        var closes1h = klines1h.Select(k => k.Close).ToList();
+                        var volumes = klines1m.Select(k => k.Volume).ToList();
+                        var rsi1m = ComputeRsi(closes1m);
+                        var rsi30m = ComputeRsi(closes30m);
+                        var rsi1h = ComputeRsi(closes1h);
+                        var emaShort = ComputeEma(closes1h, ConfigManager.EmaShortPeriod);
+                        var emaLong = ComputeEma(closes1h, ConfigManager.EmaLongPeriod);
+                        var volatility = ComputeVolatility(closes1m);
                         var volFactor = ComputeVolumeFactor(volumes);
-                        if (rsi < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
+                        var uptrend = emaShort > emaLong;
+                        var downtrend = emaShort < emaLong;
+
+                        if (rsi1m < ConfigManager.RsiBuyThreshold && rsi30m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m && uptrend)
                         {
                             var trader = new BinanceTrader();
-                            await trader.ExecuteTrade("BUY").ConfigureAwait(false);
+                            await trader.ExecuteTrade("BUY", null, volatility).ConfigureAwait(false);
                         }
-                        else if (rsi > ConfigManager.RsiSellThreshold && volFactor > 1.2m)
+                        else if (rsi1m > ConfigManager.RsiSellThreshold && rsi30m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m && downtrend)
                         {
                             var trader = new BinanceTrader();
-                            await trader.ExecuteTrade("SELL").ConfigureAwait(false);
+                            await trader.ExecuteTrade("SELL", null, volatility).ConfigureAwait(false);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Błąd strategii: {ex.Message}");
+                    BotLogger.Log($"❌ Błąd strategii: {ex.Message}");
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
             }
         }
 
-        private static async Task<List<Kline>> FetchKlines(string symbol, int limit)
+        private static async Task<List<Kline>> FetchKlines(string symbol, int limit, string interval)
         {
-            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1m&limit={limit}";
+            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={limit}";
             var json = await client.GetStringAsync(url).ConfigureAwait(false);
             var arr = JArray.Parse(json);
             var list = new List<Kline>();
@@ -103,6 +127,18 @@ namespace Bot
             var rs = avgGain / avgLoss;
             var rsi = 100 - (100 / (1 + rs));
             return decimal.Round((decimal)rsi, 2);
+        }
+
+        private static decimal ComputeEma(List<decimal> closes, int period)
+        {
+            if (closes.Count == 0) return 0m;
+            decimal multiplier = 2m / (period + 1);
+            decimal ema = closes[0];
+            for (int i = 1; i < closes.Count; i++)
+            {
+                ema = ((closes[i] - ema) * multiplier) + ema;
+            }
+            return decimal.Round(ema, 4);
         }
     }
 }
