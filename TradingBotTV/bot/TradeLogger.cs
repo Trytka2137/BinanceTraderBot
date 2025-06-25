@@ -16,9 +16,6 @@ namespace Bot
         public static string LogPath => _logPath;
         private static readonly object _lock = new object();
 
-        private static readonly string LogPath =
-            Path.Combine(AppContext.BaseDirectory, "data", "trade_log.csv");
-
 
         public static void LogTrade(string symbol, string side, decimal price, decimal amount)
         {
@@ -37,8 +34,6 @@ namespace Bot
                     File.AppendAllText(LogPath, line + Environment.NewLine);
                 }
 
-                var line = $"{DateTime.UtcNow:o},{symbol},{side},{price},{amount}";
-                File.AppendAllText(LogPath, line + Environment.NewLine);
 
             }
             catch (Exception ex)
@@ -69,8 +64,6 @@ namespace Bot
                     if (!decimal.TryParse(parts[4], NumberStyles.Any, CultureInfo.InvariantCulture, out var amount))
                         continue;
 
-                    var price = decimal.Parse(parts[3]);
-                    var amount = decimal.Parse(parts[4]);
 
                     if (side.Equals("BUY", StringComparison.OrdinalIgnoreCase))
                     {
@@ -142,11 +135,6 @@ namespace Bot
                 var output = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
                 var error = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
                 await process.WaitForExitAsync().ConfigureAwait(false);
-
-                var output = await process.StandardOutput.ReadToEndAsync();
-                var error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-
 
                 Console.WriteLine("\uD83D\uDCCA Wyniki porównania strategii:");
                 Console.WriteLine(output);
