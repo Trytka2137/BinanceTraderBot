@@ -10,13 +10,16 @@ namespace Bot
 {
     public static class SymbolScanner
     {
+        private static readonly HttpClient httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
         public static async Task<List<string>> GetTradingPairsAsync()
         {
             var pairs = new List<string>();
             try
             {
-                using var client = new HttpClient();
-                var response = await client.GetStringAsync("https://api.binance.com/api/v3/exchangeInfo");
+                var response = await httpClient.GetStringAsync("https://api.binance.com/api/v3/exchangeInfo");
                 var json = JObject.Parse(response);
 
                 foreach (var symbol in json["symbols"])
@@ -39,7 +42,6 @@ namespace Bot
             const int maxConcurrentRequests = 5; // avoid hitting API rate limits
 
             var limitedPairs = pairs.Take(maxPairsToCheck).ToList();
-            using var client = new HttpClient();
             using var semaphore = new SemaphoreSlim(maxConcurrentRequests);
 
             var tasks = limitedPairs.Select(async p =>
@@ -47,7 +49,7 @@ namespace Bot
                 await semaphore.WaitAsync();
                 try
                 {
-                    var resp = await client.GetStringAsync($"https://api.binance.com/api/v3/ticker/24hr?symbol={p}");
+                    var resp = await httpClient.GetStringAsync($"https://api.binance.com/api/v3/ticker/24hr?symbol={p}");
                     var obj = JObject.Parse(resp);
                     var vol = decimal.Parse(obj["quoteVolume"].ToString());
                     return (pair: p, volume: vol);
