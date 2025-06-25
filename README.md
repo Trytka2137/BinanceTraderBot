@@ -13,25 +13,25 @@ strategii (`compare_strategies.py`).
 
 
 ## Wymagania
-- .NET 6 SDK
+- .NET 8 SDK
 - Python 3.8+
 
 ## Instalacja
-1. Zainstaluj pakiet `.NET 6 SDK`:
+1. Zainstaluj pakiet `.NET 8 SDK`:
    - **Ubuntu**
      ```bash
      sudo apt-get update
-     sudo apt-get install -y dotnet-sdk-6.0
+     sudo apt-get install -y dotnet-sdk-8.0
      ```
-   - **Windows** – pobierz instalator z [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/6.0)
+   - **Windows** – pobierz instalator z [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/8.0)
      i uruchom lub skorzystaj z `winget`:
      ```powershell
-     winget install Microsoft.DotNet.SDK.6
+     winget install Microsoft.DotNet.SDK.8
      ```
-1. Zainstaluj pakiet `.NET 6 SDK` (np. w systemie Ubuntu):
+1. Zainstaluj pakiet `.NET 8 SDK` (np. w systemie Ubuntu):
    ```bash
    sudo apt-get update
-   sudo apt-get install -y dotnet-sdk-6.0
+   sudo apt-get install -y dotnet-sdk-8.0
    ```
 2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
