@@ -53,11 +53,14 @@ strategii (`compare_strategies.py`).
 W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercent`
 i `takeProfitPercent`, które określają dystans w procentach od ceny wejścia.
 
-Bot nasłuchuje na `http://localhost:5000/webhook` i co godzinę uruchamia proces samouczenia strategii. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
+Bot nasłuchuje na `http://localhost:5000/webhook` i uruchamia proces samouczenia strategii co 15, 30 oraz 60 minut. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
 Bot nawiązuje także stałe połączenie WebSocket z Binance, a opcjonalnie z TradingView, jeśli podasz adres w konfiguracji.
 
-Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) uruchamia się raz na godzinę i zapisuje najlepsze parametry w `model_state.json`.
+Uruchomiono również panel na `http://localhost:5001`, który pozwala podejrzeć logi,
+wynik PnL i w razie potrzeby włączyć lub zatrzymać handel.
+
+Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
 
 Źródłem danych do uczenia jest Binance. Moduł `data_fetcher.py` pobiera historyczne
 dane świecowe z API giełdy i zapisuje je w katalogu `ml_optimizer/data`. Przy

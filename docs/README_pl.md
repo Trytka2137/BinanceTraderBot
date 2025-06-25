@@ -46,6 +46,7 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
   "trading": {
     "symbol": "BTCUSDT",
     "amount": 0.001,
+    "initialCapital": 1000,
     "rsiBuyThreshold": 30,
     "rsiSellThreshold": 70,
     "stopLossPercent": 1.5,
@@ -60,12 +61,21 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 
 - `symbol` – domyślna para handlowa.
 - `amount` – ilość kupowana/sprzedawana w pojedynczej transakcji.
+- `initialCapital` – początkowy kapitał używany do obliczania wielkości pozycji.
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
 - `stopLossPercent` i `takeProfitPercent` – ustawienia SL/TP w procentach.
 - `websocket.binanceUrl` – adres WebSocket Binance z którego pobierane są dane na żywo.
 - `websocket.tradingViewUrl` – opcjonalny adres WebSocket z alertami TradingView.
 
 Optymalizatory Pythona mogą modyfikować te wartości automatycznie (zapis w `model_state.json` i aktualizacja przez `OptimizerRunner`).
+
+Bot monitoruje również błędy krytyczne. Jeśli podczas wysyłania zlecenia wystąpi poważny problem, wszystkie otwarte pozycje są natychmiast zamykane, a wielkość kolejnych zleceń obliczana jest dynamicznie na podstawie aktualnego stanu kapitału.
+
+## Panel WWW
+
+Po uruchomieniu aplikacji dostępny jest prosty panel pod adresem `http://localhost:5001`.
+Znajdziesz tam kafelki z podsumowaniem PnL, wielkości pozycji oraz przycisk do
+włączania i wyłączania handlu. Możesz również podejrzeć ostatni log transakcji.
 
 ## Jak uruchomić testy
 
