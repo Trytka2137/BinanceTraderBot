@@ -25,8 +25,31 @@ def save_state(state):
     with open(STATE_PATH, 'w') as f:
         json.dump(state, f)
 
-def train(symbol, episodes=30, population=20, elite_frac=0.2):
-    """Train thresholds using a simple cross-entropy method."""
+def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
+    """Train thresholds using a simple cross-entropy method.
+
+    Parameters
+    ----------
+    symbol : str
+        Trading pair symbol.
+    episodes : int, optional
+        Number of training iterations. Default ``30``.
+    population : int, optional
+        Size of the sample population per iteration. Default ``20``.
+    elite_frac : float, optional
+        Fraction of top performing samples used to update the distribution.
+        Default ``0.2``.
+    seed : int, optional
+        Random seed ensuring deterministic behaviour. When ``None`` a seed
+        is drawn from ``random`` module's state. This makes the function
+        reproducible when ``random.seed`` has been called by the caller.
+    """
+
+    if seed is not None:
+        random.seed(seed)
+        np.random.seed(seed)
+    else:
+        np.random.seed(random.randint(0, 2**32 - 1))
 
     state = load_state()
 
