@@ -11,8 +11,8 @@ namespace Bot
 
             ConfigManager.Load();
 
-            var pairs = await SymbolScanner.GetTradingPairsAsync();
-            var best = await SymbolScanner.GetHighestVolumePairAsync(pairs);
+            var pairs = await SymbolScanner.GetTradingPairsAsync().ConfigureAwait(false);
+            var best = await SymbolScanner.GetHighestVolumePairAsync(pairs).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(best))
             {
                 Console.WriteLine($"\uD83D\uDCCA Wybrano par\u0119 o najwy\u017Cszej likwidno\u015Bci: {best}");
@@ -24,15 +24,28 @@ namespace Bot
             Task.Run(() => StrategyEngine.StartAsync());
             Task.Run(() => BinanceWebSocket.StartAsync());
             Task.Run(() => TradingViewWebSocket.StartAsync());
+            Task.Run(() => DashboardServer.Start());
 
-            // Odpalamy optymalizację ML co np. 1h i przeładowujemy config
+            // Uruchamiamy kilka pętli optymalizacji w różnych odstępach czasu
+            var optTasks = new[]
+            {
+                RunOptimizerLoop(TimeSpan.FromMinutes(15)),
+                RunOptimizerLoop(TimeSpan.FromMinutes(30)),
+                RunOptimizerLoop(TimeSpan.FromHours(1))
+            };
+
+            await Task.WhenAll(optTasks);
+        }
+
+        private static async Task RunOptimizerLoop(TimeSpan interval)
+        {
             while (true)
             {
-                Console.WriteLine("🧠 Uruchamiam optymalizację ML...");
-                await OptimizerRunner.RunOptimizationAndReloadAsync(ConfigManager.Symbol);
+                Console.WriteLine($"🧠 ({interval}) Uruchamiam optymalizację ML...");
+                await OptimizerRunner.RunOptimizationAndReloadAsync(ConfigManager.Symbol).ConfigureAwait(false);
 
-                Console.WriteLine("⏳ Czekam 1h na kolejną optymalizację...");
-                await Task.Delay(TimeSpan.FromHours(1));
+                Console.WriteLine($"⏳ Czekam {interval} na kolejną optymalizację...");
+                await Task.Delay(interval).ConfigureAwait(false);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -5,11 +6,15 @@ namespace Bot
 {
     public static class ConfigManager
     {
-        private static string _filePath = "config/settings.json";
+        private static readonly string _filePath =
+            Path.Combine(AppContext.BaseDirectory, "config", "settings.json");
         private static JObject _config;
 
         public static void Load()
         {
+            if (!File.Exists(_filePath))
+                throw new FileNotFoundException($"Config file not found: {_filePath}");
+
             var text = File.ReadAllText(_filePath);
             _config = JObject.Parse(text);
         }
@@ -18,6 +23,8 @@ namespace Bot
         public static string ApiSecret => _config["binance"]["apiSecret"].ToString();
         public static string Symbol => _config["trading"]["symbol"].ToString();
         public static decimal Amount => (decimal)_config["trading"]["amount"];
+        public static decimal InitialCapital =>
+            (decimal?)_config["trading"]?["initialCapital"] ?? 1000m;
         public static int RsiBuyThreshold => (int)_config["trading"]["rsiBuyThreshold"];
         public static int RsiSellThreshold => (int)_config["trading"]["rsiSellThreshold"];
         public static decimal StopLossPercent => (decimal)_config["trading"]["stopLossPercent"];
