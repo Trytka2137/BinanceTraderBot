@@ -1,4 +1,5 @@
-"""Fetch TradingView analysis and optionally trigger trades via local webhook."""
+"""Fetch TradingView analysis and optionally trigger trades via a local
+webhook."""
 
 from __future__ import annotations
 
@@ -7,9 +8,14 @@ from tradingview_ta import TA_Handler, Interval
 
 
 def get_tv_recommendation(symbol: str) -> str:
-    """Return TradingView recommendation for *symbol* or ``"ERROR"`` on failure."""
-    handler = TA_Handler(symbol=symbol, screener="crypto", exchange="BINANCE",
-                         interval=Interval.INTERVAL_1_HOUR)
+    """Return TradingView recommendation for *symbol* or ``"ERROR"`` on
+    failure."""
+    handler = TA_Handler(
+        symbol=symbol,
+        screener="crypto",
+        exchange="BINANCE",
+        interval=Interval.INTERVAL_1_HOUR,
+    )
     try:
         analysis = handler.get_analysis()
     except Exception as exc:  # pragma: no cover - network failure case
@@ -18,18 +24,27 @@ def get_tv_recommendation(symbol: str) -> str:
     return analysis.summary.get("RECOMMENDATION", "NEUTRAL")
 
 
-def send_webhook(signal: str, symbol: str, url: str = "http://localhost:5000/webhook") -> None:
+def send_webhook(
+    signal: str,
+    symbol: str,
+    url: str = "http://localhost:5000/webhook",
+) -> None:
     """Send trading ``signal`` for ``symbol`` to webhook ``url``."""
-    data = {"ticker": symbol, "strategy": {"order_action": signal.lower()}}
+    data = {
+        "ticker": symbol,
+        "strategy": {"order_action": signal.lower()},
+    }
     try:
         resp = requests.post(url, json=data, timeout=5)
         print(f"Webhook status: {resp.status_code}")
-    except requests.RequestException as exc:  # pragma: no cover - network failure
+    # pragma: no cover - network failure
+    except requests.RequestException as exc:
         print(f"Error sending webhook: {exc}")
 
 
 def auto_trade_from_tv(symbol: str) -> None:
-    """Fetch TradingView recommendation and send trade signal if appropriate."""
+    """Fetch TradingView recommendation and send trade signal if
+    appropriate."""
     rec = get_tv_recommendation(symbol)
     print(f"TradingView recommendation for {symbol}: {rec}")
     if rec in {"STRONG_BUY", "BUY"}:
