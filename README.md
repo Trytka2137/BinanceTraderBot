@@ -17,11 +17,22 @@ strategii (`compare_strategies.py`).
 - Python 3.8+
 
 ## Instalacja
-1. Zainstaluj wymagane biblioteki Pythona:
+1. Zainstaluj pakiet `.NET 6 SDK`:
+   - **Ubuntu**
+     ```bash
+     sudo apt-get update
+     sudo apt-get install -y dotnet-sdk-6.0
+     ```
+   - **Windows** – pobierz instalator z [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/6.0)
+     i uruchom lub skorzystaj z `winget`:
+     ```powershell
+     winget install Microsoft.DotNet.SDK.6
+     ```
+2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
    ```
-2. Zbuduj projekt C#:
+3. Zbuduj projekt C#:
    ```bash
    dotnet build TradingBotTV/bot/BinanceTraderBot.csproj
    ```
