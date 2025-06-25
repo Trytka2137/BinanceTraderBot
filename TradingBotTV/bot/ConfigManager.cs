@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
 
@@ -5,11 +6,15 @@ namespace Bot
 {
     public static class ConfigManager
     {
-        private static string _filePath = "config/settings.json";
+        private static readonly string _filePath =
+            Path.Combine(AppContext.BaseDirectory, "config", "settings.json");
         private static JObject _config;
 
         public static void Load()
         {
+            if (!File.Exists(_filePath))
+                throw new FileNotFoundException($"Config file not found: {_filePath}");
+
             var text = File.ReadAllText(_filePath);
             _config = JObject.Parse(text);
         }
