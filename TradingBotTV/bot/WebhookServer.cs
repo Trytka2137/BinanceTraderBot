@@ -33,7 +33,7 @@ namespace Bot
                     if (signal == "buy" || signal == "sell")
                     {
                         var trader = new BinanceTrader();
-                        await trader.ExecuteTrade(signal, pair);
+                        await trader.ExecuteTrade(signal, pair, 0m);
                     }
 
                     await context.Response.WriteAsync("OK");
