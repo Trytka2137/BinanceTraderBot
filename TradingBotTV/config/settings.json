@@ -6,6 +6,7 @@
   "trading": {
     "symbol": "BTCUSDT",
     "amount": 0.001,
+    "initialCapital": 1000,
     "rsiBuyThreshold": 30,
     "rsiSellThreshold": 70,
     "stopLossPercent": 1.5,

@@ -9,7 +9,10 @@ namespace Bot
 {
     public static class StrategyEngine
     {
-        private static readonly HttpClient client = new HttpClient();
+        private static readonly HttpClient client = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
 
         private record Kline(decimal Close, decimal Volume);
 
@@ -19,7 +22,7 @@ namespace Bot
             {
                 try
                 {
-                    var klines = await FetchKlines(ConfigManager.Symbol, 50);
+                    var klines = await FetchKlines(ConfigManager.Symbol, 50).ConfigureAwait(false);
                     if (klines.Count >= 15)
                     {
                         var closes = klines.Select(k => k.Close).ToList();
@@ -29,12 +32,12 @@ namespace Bot
                         if (rsi < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
                         {
                             var trader = new BinanceTrader();
-                            await trader.ExecuteTrade("BUY");
+                            await trader.ExecuteTrade("BUY").ConfigureAwait(false);
                         }
                         else if (rsi > ConfigManager.RsiSellThreshold && volFactor > 1.2m)
                         {
                             var trader = new BinanceTrader();
-                            await trader.ExecuteTrade("SELL");
+                            await trader.ExecuteTrade("SELL").ConfigureAwait(false);
                         }
                     }
                 }
@@ -43,14 +46,14 @@ namespace Bot
                     Console.WriteLine($"❌ Błąd strategii: {ex.Message}");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1));
+                await Task.Delay(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
             }
         }
 
         private static async Task<List<Kline>> FetchKlines(string symbol, int limit)
         {
             var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1m&limit={limit}";
-            var json = await client.GetStringAsync(url);
+            var json = await client.GetStringAsync(url).ConfigureAwait(false);
             var arr = JArray.Parse(json);
             var list = new List<Kline>();
             foreach (var x in arr)

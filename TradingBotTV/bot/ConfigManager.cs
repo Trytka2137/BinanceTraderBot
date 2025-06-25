@@ -23,6 +23,8 @@ namespace Bot
         public static string ApiSecret => _config["binance"]["apiSecret"].ToString();
         public static string Symbol => _config["trading"]["symbol"].ToString();
         public static decimal Amount => (decimal)_config["trading"]["amount"];
+        public static decimal InitialCapital =>
+            (decimal?)_config["trading"]?["initialCapital"] ?? 1000m;
         public static int RsiBuyThreshold => (int)_config["trading"]["rsiBuyThreshold"];
         public static int RsiSellThreshold => (int)_config["trading"]["rsiSellThreshold"];
         public static decimal StopLossPercent => (decimal)_config["trading"]["stopLossPercent"];
