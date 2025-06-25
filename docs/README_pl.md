@@ -82,5 +82,5 @@ włączania i wyłączania handlu. Możesz również podejrzeć ostatni log tran
 1. Zainstaluj zależności Pythona: `pip install -r TradingBotTV/ml_optimizer/requirements.txt`
 2. Uruchom testy: `pytest`
 
-Pliki w C# wymagają .NET 6. Informacje o budowaniu i uruchamianiu znajdują się w głównym pliku `README.md`.
+Pliki w C# wymagają .NET 8. Informacje o budowaniu i uruchamianiu znajdują się w głównym pliku `README.md`.
 
