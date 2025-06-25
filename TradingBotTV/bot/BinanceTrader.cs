@@ -1,6 +1,9 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Bot
 {
@@ -52,6 +55,10 @@ namespace Bot
                 else
                 {
                     Console.WriteLine($"✅ Binance Response: {content}");
+                    TradeLogger.LogTrade(symbol, side, price, amount);
+                    var pnl = TradeLogger.AnalyzePnL();
+                    Console.WriteLine($"\uD83D\uDCC8 Aktualny wynik: {pnl:F2}");
+                    await TradeLogger.CompareWithStrategiesAsync(symbol);
                 }
             }
             catch (Exception ex)
