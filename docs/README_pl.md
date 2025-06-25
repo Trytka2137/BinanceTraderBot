@@ -26,7 +26,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `auto_optimizer.py` – losowe poszukiwanie najlepszych progów RSI; wyniki zapisywane są w `model_state.json`.
 - `optimizer.py` – przykład prostej optymalizacji parametrów w pętli.
 - `compare_strategies.py` – porównanie wyników strategii RSI i MACD.
-- `rl_optimizer.py` – uproszczony przykład uczenia ze wzmocnieniem.
+- `rl_optimizer.py` – rozbudowany przykład uczenia ze wzmocnieniem.
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
@@ -73,6 +73,9 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
 - `stopLossPercent` i `takeProfitPercent` – ustawienia SL/TP w procentach.
 - `trailingStopPercent` – wielkość trailing stopu aktualizowana po każdej zmianie ceny.
+- `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
+- `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.
+
 
 - `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
 - `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.

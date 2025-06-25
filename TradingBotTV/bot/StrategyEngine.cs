@@ -31,6 +31,20 @@ namespace Bot
                 try
                 {
                     var task1m = FetchKlines(ConfigManager.Symbol, 50, "1m");
+                    var task30m = FetchKlines(ConfigManager.Symbol, 50, "30m");
+                    var task1h = FetchKlines(ConfigManager.Symbol, ConfigManager.EmaLongPeriod, "1h");
+                    await Task.WhenAll(task1m, task30m, task1h).ConfigureAwait(false);
+                    var klines1m = task1m.Result;
+                    var klines30m = task30m.Result;
+                    var klines1h = task1h.Result;
+                    if (klines1m.Count >= 15 && klines30m.Count >= 15 && klines1h.Count >= 15)
+                    {
+                        var closes1m = klines1m.Select(k => k.Close).ToList();
+                        var closes30m = klines30m.Select(k => k.Close).ToList();
+                        var closes1h = klines1h.Select(k => k.Close).ToList();
+                        var volumes = klines1m.Select(k => k.Volume).ToList();
+                        var rsi1m = ComputeRsi(closes1m);
+                        var rsi30m = ComputeRsi(closes30m);
                     var task1h = FetchKlines(ConfigManager.Symbol, ConfigManager.EmaLongPeriod, "1h");
                     var task1h = FetchKlines(ConfigManager.Symbol, 50, "1h");
 
@@ -43,6 +57,7 @@ namespace Bot
                         var closes1h = klines1h.Select(k => k.Close).ToList();
                         var volumes = klines1m.Select(k => k.Volume).ToList();
                         var rsi1m = ComputeRsi(closes1m);
+
                         var rsi1h = ComputeRsi(closes1h);
                         var emaShort = ComputeEma(closes1h, ConfigManager.EmaShortPeriod);
                         var emaLong = ComputeEma(closes1h, ConfigManager.EmaLongPeriod);
@@ -51,16 +66,22 @@ namespace Bot
                         var uptrend = emaShort > emaLong;
                         var downtrend = emaShort < emaLong;
 
+
+                        if (rsi1m < ConfigManager.RsiBuyThreshold && rsi30m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m && uptrend)
                         if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m && uptrend)
 
                         var volatility = ComputeVolatility(closes1m);
                         var volFactor = ComputeVolumeFactor(volumes);
                         if (rsi1m < ConfigManager.RsiBuyThreshold && rsi1h < ConfigManager.RsiBuyThreshold && volFactor > 1.2m)
 
+
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("BUY", null, volatility).ConfigureAwait(false);
                         }
+
+                        else if (rsi1m > ConfigManager.RsiSellThreshold && rsi30m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m && downtrend)
+
 
                         else if (rsi1m > ConfigManager.RsiSellThreshold && rsi1h > ConfigManager.RsiSellThreshold && volFactor > 1.2m && downtrend)
 

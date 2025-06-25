@@ -16,7 +16,9 @@ from TradingBotTV.ml_optimizer import (
     backtest_strategy,
 )
 
+
 from TradingBotTV.ml_optimizer import compute_rsi, compute_macd, compute_atr, backtest_strategy
+
 
 
 
@@ -61,9 +63,9 @@ def test_compute_atr_basic():
     assert atr.iloc[1] > 0
 
 
-
 def test_compute_ema_simple():
     series = pd.Series([1, 2, 3, 4])
     ema = compute_ema(series, period=2)
     expected = series.ewm(span=2, adjust=False).mean()
     pd.testing.assert_series_equal(ema.round(6), expected.round(6))
+

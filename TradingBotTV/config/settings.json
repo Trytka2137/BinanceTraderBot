@@ -15,7 +15,9 @@
     "maxDrawdownPercent": 20,
     "emaShortPeriod": 50,
     "emaLongPeriod": 200
+
     "trailingStopPercent": 0.5
+
 
   },
   "websocket": {
