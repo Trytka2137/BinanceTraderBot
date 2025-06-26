@@ -1,5 +1,10 @@
+
 import sys
 from dataclasses import dataclass
+import json
+import sys
+from dataclasses import asdict, dataclass
+
 from pathlib import Path
 
 import numpy as np
@@ -11,6 +16,7 @@ from .state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
 )
+
 
 logger = get_logger(__name__)
 
@@ -24,6 +30,7 @@ DEFAULT_SELL = 70
 class OptimizerState:
     """Stored optimizer parameters."""
 
+
     buy: int = DEFAULT_BUY
     sell: int = DEFAULT_SELL
     pnl: float = -np.inf
@@ -34,9 +41,32 @@ def load_state() -> OptimizerState:
     return load_json_state(STATE_PATH, OptimizerState)
 
 
+    buy: int = DEFAULT_BUY
+    sell: int = DEFAULT_SELL
+    pnl: float = -np.inf
+
+
 def save_state(state: OptimizerState) -> None:
     """Persist ``state`` to :data:`STATE_PATH`."""
     save_json_state(STATE_PATH, state)
+
+
+def load_state() -> OptimizerState:
+    """Return stored optimization parameters."""
+    if STATE_PATH.exists():
+        data = json.loads(STATE_PATH.read_text())
+        return OptimizerState(
+            buy=int(data.get("buy", DEFAULT_BUY)),
+            sell=int(data.get("sell", DEFAULT_SELL)),
+            pnl=float(data.get("pnl", -np.inf)),
+        )
+    return OptimizerState()
+
+
+def save_state(state: OptimizerState) -> None:
+    """Persist ``state`` to :data:`STATE_PATH`."""
+    STATE_PATH.write_text(json.dumps(asdict(state)))
+
 
 
 def optimize(symbol, iterations=20):
@@ -63,11 +93,17 @@ def optimize(symbol, iterations=20):
             best_sell = sell_th
 
     save_state(OptimizerState(best_buy, best_sell, best_pnl))
+
     logger.info(
         "Najlepsze parametry: Buy=%s Sell=%s PnL=%s",
         best_buy,
         best_sell,
         best_pnl,
+
+    print(
+        f'Najlepsze parametry: Buy={best_buy} '
+        f'Sell={best_sell} PnL={best_pnl}'
+
     )
     return best_buy, best_sell, best_pnl
 
