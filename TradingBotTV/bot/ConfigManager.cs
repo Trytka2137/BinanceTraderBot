@@ -18,7 +18,7 @@ namespace Bot
             if (!File.Exists(_filePath))
                 throw new FileNotFoundException($"Config file not found: {_filePath}");
 
-            var text = File.ReadAllText(_filePath);
+            var text = File.ReadAllTextAsync(_filePath).GetAwaiter().GetResult();
             _config = JObject.Parse(text);
             Validate();
         }
@@ -94,6 +94,15 @@ namespace Bot
         public static void OverrideSymbol(string symbol)
         {
             _config["trading"]["symbol"] = symbol;
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
+                File.WriteAllTextAsync(_filePath, _config.ToString()).GetAwaiter().GetResult();
+            }
+            catch
+            {
+                // ignore save errors
+            }
         }
     }
 }

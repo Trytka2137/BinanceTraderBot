@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -7,6 +8,12 @@ namespace Bot
     {
         static async Task Main(string[] args)
         {
+            Console.CancelKeyPress += (s, e) =>
+            {
+                e.Cancel = true;
+                AppLifetime.Source.Cancel();
+            };
+
             BotLogger.Log("🚀 Bot uruchomiony. Oczekuję na sygnały z TradingView...");
 
             ConfigManager.Load();
@@ -20,42 +27,43 @@ namespace Bot
             }
 
             // Start serwera webhook, silnika strategii oraz WebSocketów w tle
-            Task.Run(() => WebhookServer.Start());
-            Task.Run(() => StrategyEngine.StartAsync());
-            Task.Run(() => BinanceWebSocket.StartAsync());
-            Task.Run(() => TradingViewWebSocket.StartAsync());
-            Task.Run(() => DashboardServer.Start());
+            var token = AppLifetime.Source.Token;
+            Task.Run(() => WebhookServer.Start(token));
+            Task.Run(() => StrategyEngine.StartAsync(token));
+            Task.Run(() => BinanceWebSocket.StartAsync(token));
+            Task.Run(() => TradingViewWebSocket.StartAsync(token));
+            Task.Run(() => DashboardServer.Start(token));
 
             // Uruchamiamy kilka pętli optymalizacji w różnych odstępach czasu
             var optTasks = new[]
             {
-                RunOptimizerLoop(TimeSpan.FromMinutes(15)),
-                RunOptimizerLoop(TimeSpan.FromMinutes(30)),
-                RunOptimizerLoop(TimeSpan.FromHours(1)),
-                RunTradingViewLoop(TimeSpan.FromMinutes(10))
+                RunOptimizerLoop(TimeSpan.FromMinutes(15), token),
+                RunOptimizerLoop(TimeSpan.FromMinutes(30), token),
+                RunOptimizerLoop(TimeSpan.FromHours(1), token),
+                RunTradingViewLoop(TimeSpan.FromMinutes(10), token)
             };
 
             await Task.WhenAll(optTasks);
         }
 
-        private static async Task RunOptimizerLoop(TimeSpan interval)
+        private static async Task RunOptimizerLoop(TimeSpan interval, CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 BotLogger.Log($"🧠 ({interval}) Uruchamiam optymalizację ML...");
                 await OptimizerRunner.RunOptimizationAndReloadAsync(ConfigManager.Symbol).ConfigureAwait(false);
 
                 BotLogger.Log($"⏳ Czekam {interval} na kolejną optymalizację...");
-                await Task.Delay(interval).ConfigureAwait(false);
+                await Task.Delay(interval, token).ConfigureAwait(false);
             }
         }
 
-        private static async Task RunTradingViewLoop(TimeSpan interval)
+        private static async Task RunTradingViewLoop(TimeSpan interval, CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 await OptimizerRunner.RunTradingViewAutoTradeAsync(ConfigManager.Symbol).ConfigureAwait(false);
-                await Task.Delay(interval).ConfigureAwait(false);
+                await Task.Delay(interval, token).ConfigureAwait(false);
             }
         }
     }

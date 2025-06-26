@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 using System;
 using System.IO;
@@ -10,7 +11,7 @@ namespace Bot
 {
     public static class WebhookServer
     {
-        public static void Start()
+        public static void Start(CancellationToken token)
         {
             var builder = WebApplication.CreateBuilder();
             var app = builder.Build();
@@ -46,7 +47,7 @@ namespace Bot
                 }
             });
 
-            app.Run("http://localhost:5000");
+            app.RunAsync("http://localhost:5000", token).GetAwaiter().GetResult();
         }
     }
 }
