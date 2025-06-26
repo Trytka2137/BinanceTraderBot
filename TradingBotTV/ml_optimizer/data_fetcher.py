@@ -1,8 +1,9 @@
-import os
-import requests
-import pandas as pd
+from pathlib import Path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+import pandas as pd
+import requests
+
+DATA_DIR = Path(__file__).with_name('data')
 
 
 def fetch_klines(symbol, interval='1h', limit=1000):
@@ -10,14 +11,14 @@ def fetch_klines(symbol, interval='1h', limit=1000):
         'https://api.binance.com/api/v3/klines'
         f'?symbol={symbol}&interval={interval}&limit={limit}'
     )
-    csv_path = os.path.join(DATA_DIR, f'{symbol}_{interval}.csv')
+    csv_path = DATA_DIR / f"{symbol}_{interval}.csv"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         data = response.json()
     except requests.RequestException as e:
         print(f"Error fetching klines: {e}")
-        if os.path.exists(csv_path):
+        if csv_path.exists():
             print(f'Loading cached data from {csv_path}')
             df = pd.read_csv(csv_path)
             df['open_time'] = pd.to_datetime(df['open_time'])
@@ -32,6 +33,6 @@ def fetch_klines(symbol, interval='1h', limit=1000):
 
     df['close'] = df['close'].astype(float)
     df['open_time'] = pd.to_datetime(df['open_time'], unit='ms')
-    os.makedirs(DATA_DIR, exist_ok=True)
+    DATA_DIR.mkdir(exist_ok=True)
     df.to_csv(csv_path, index=False)
     return df[['open_time', 'close']]
