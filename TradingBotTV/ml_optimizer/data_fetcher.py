@@ -1,4 +1,14 @@
 from pathlib import Path
+import aiohttp
+import pandas as pd
+import requests
+
+from .logger import get_logger
+
+logger = get_logger(__name__)
+
+DATA_DIR = Path(__file__).with_name('data')
+
 
 import aiohttp
 import pandas as pd
@@ -7,6 +17,22 @@ import requests
 from .logger import get_logger
 
 logger = get_logger(__name__)
+import aiohttp
+import pandas as pd
+import requests
+
+from .logger import get_logger
+
+logger = get_logger(__name__)
+
+import pandas as pd
+import requests
+
+DATA_DIR = Path(__file__).with_name('data')
+
+
+DATA_DIR = Path(__file__).with_name('data')
+
 
 DATA_DIR = Path(__file__).with_name('data')
 
@@ -25,6 +51,19 @@ def fetch_klines(symbol, interval="1h", limit=1000):
         logger.error("Error fetching klines: %s", e)
         if csv_path.exists():
             logger.info("Loading cached data from %s", csv_path)
+
+
+        logger.error("Error fetching klines: %s", e)
+        if csv_path.exists():
+            logger.info("Loading cached data from %s", csv_path)
+        logger.error("Error fetching klines: %s", e)
+        if csv_path.exists():
+            logger.info("Loading cached data from %s", csv_path)
+
+        print(f"Error fetching klines: {e}")
+        if csv_path.exists():
+            print(f'Loading cached data from {csv_path}')
+
             df = pd.read_csv(csv_path)
             df["open_time"] = pd.to_datetime(df["open_time"])
             return df[["open_time", "close"]]
