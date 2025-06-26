@@ -1,4 +1,3 @@
-import sys
 
 import numpy as np
 
@@ -56,7 +55,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Grid search RSI parameters")
     parser.add_argument("symbol", help="Trading symbol")
-    parser.add_argument("--log-level", default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR"], help="Logging verbosity")
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        help="Logging verbosity",
+    )
     parser.add_argument("--buy-start", type=int, default=20)
     parser.add_argument("--buy-end", type=int, default=40)
     parser.add_argument("--buy-step", type=int, default=5)
