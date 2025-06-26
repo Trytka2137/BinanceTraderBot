@@ -16,7 +16,8 @@ from .state_utils import (
 
 logger = get_logger(__name__)
 
-STATE_PATH = Path(__file__).with_name("rl_state.json")
+STATE_DIR = Path(__file__).resolve().parent / "state"
+STATE_PATH = STATE_DIR / "rl_state.json"
 
 # Search space for RSI thresholds
 BUY_SPACE = list(range(20, 41, 2))
@@ -37,15 +38,23 @@ class RLState:
 
 def load_state() -> RLState:
     """Load persisted :class:`RLState` from :data:`STATE_PATH`."""
+    STATE_DIR.mkdir(exist_ok=True)
     return load_json_state(STATE_PATH, RLState)
 
 
 def save_state(state: RLState) -> None:
     """Persist ``state`` to :data:`STATE_PATH`."""
+    STATE_DIR.mkdir(exist_ok=True)
     save_json_state(STATE_PATH, state)
 
 
-def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
+def train(
+    symbol: str,
+    episodes: int = 30,
+    population: int = 20,
+    elite_frac: float = 0.2,
+    seed: int | None = None,
+) -> tuple[int, int]:
     """Train thresholds using a simple cross-entropy method.
 
     Parameters
@@ -120,8 +129,21 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
 
 
 if __name__ == '__main__':
-    import sys
-    if len(sys.argv) < 2:
-        logger.error('Usage: python rl_optimizer.py SYMBOL')
-        sys.exit(1)
-    train(sys.argv[1])
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Reinforcement optimizer')
+    parser.add_argument('symbol', help='Trading symbol')
+    parser.add_argument('--episodes', type=int, default=30)
+    parser.add_argument('--population', type=int, default=20)
+    parser.add_argument('--elite-frac', type=float, default=0.2)
+    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'])
+    args = parser.parse_args()
+
+    logger.setLevel(args.log_level)
+
+    train(
+        args.symbol,
+        episodes=args.episodes,
+        population=args.population,
+        elite_frac=args.elite_frac,
+    )

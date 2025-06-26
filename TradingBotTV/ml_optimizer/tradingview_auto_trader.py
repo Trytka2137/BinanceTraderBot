@@ -59,8 +59,18 @@ def auto_trade_from_tv(symbol: str) -> None:
 
 
 if __name__ == "__main__":  # pragma: no cover - manual run helper
-    import sys
-    if len(sys.argv) < 2:
-        logger.error("Usage: python tradingview_auto_trader.py <symbol>")
-        raise SystemExit(1)
-    auto_trade_from_tv(sys.argv[1])
+    import argparse
+
+    parser = argparse.ArgumentParser(description="TradingView auto trader")
+    parser.add_argument("symbol", help="Trading symbol")
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        help="Logging verbosity",
+    )
+    args = parser.parse_args()
+
+    logger.setLevel(args.log_level)
+
+    auto_trade_from_tv(args.symbol)

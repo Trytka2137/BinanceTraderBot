@@ -21,7 +21,13 @@ def run(symbol: str) -> None:
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        logger.error('Uzycie: python compare_strategies.py SYMBOL')
-        sys.exit(1)
-    run(sys.argv[1])
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Compare strategies')
+    parser.add_argument('symbol', help='Trading symbol')
+    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'])
+    args = parser.parse_args()
+
+    logger.setLevel(args.log_level)
+
+    run(args.symbol)
