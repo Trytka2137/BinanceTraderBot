@@ -13,7 +13,7 @@ if str(ROOT_DIR) not in sys.path:
 from TradingBotTV.ml_optimizer import github_strategy_simulator  # noqa: E402
 
 
-def test_simulate_strategy_local_repo(tmp_path, monkeypatch):
+def test_simulate_strategy_local_repo(tmp_path, monkeypatch, caplog):
     repo = tmp_path / "repo"
     subprocess.run(["git", "init", repo], check=True)
     strategy = {"rsi_buy_threshold": 25, "rsi_sell_threshold": 75}
@@ -44,19 +44,13 @@ def test_simulate_strategy_local_repo(tmp_path, monkeypatch):
         "fetch_klines",
         lambda *a, **k: df,
     )
-    results = []
     monkeypatch.setattr(
         github_strategy_simulator,
         "backtest_strategy",
         lambda data, rsi_buy_threshold, rsi_sell_threshold: 42,
     )
-    import builtins
-    monkeypatch.setattr(
-        builtins,
-        "print",
-        lambda *args, **kwargs: results.append(" ".join(map(str, args))),
-    )
 
-    github_strategy_simulator.simulate_strategy(str(repo), "BTCUSDT")
+    with caplog.at_level(10):
+        github_strategy_simulator.simulate_strategy(str(repo), "BTCUSDT")
 
-    assert any("PnL" in r for r in results)
+    assert any("PnL" in r.message for r in caplog.records)
