@@ -11,21 +11,8 @@ pod uwagę wzrost aktywności wolumenowej. Dodano obsługę trailing stop oraz
 dynamiczne dostosowanie wielkości pozycji w zależności od zmienności rynku.
 Bot samoczynnie wyłącza handel, gdy łączna strata przekroczy ustawiony próg `maxDrawdownPercent`.
 
-Strategia łączy sygnały z interwałów 1m, 30m i 1h oraz filtruje trend na
-podstawie przebiegu średnich EMA (domyślnie 50 i 200 okresów). Logi zapisywane
-są do pliku `logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do
-trenowania rozwiniętego modelu RL (`rl_optimizer.py`) oraz testu kilku
-strategii (`compare_strategies.py`).
-Strategia łączy sygnały z interwału 1m i 1h oraz filtruje trend na podstawie
-przebiegu średnich EMA (domyślnie 50 i 200 okresów). Logi zapisywane są do
-pliku `logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do
-trenowania prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
+Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
-Strategia łączy sygnały z interwału 1m i 1h, a logi zapisywane są do pliku
-`logs/bot.log`. W katalogu `ml_optimizer` znajdują się skrypty do trenowania
-prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
-
-(`compare_strategies.py`).
 
 
 
@@ -53,6 +40,8 @@ prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
 2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   # lub zainstaluj cały moduł
+   pip install .
    ```
 3. Zbuduj projekt C#:
    ```bash
@@ -60,7 +49,8 @@ prostego modelu RL (`rl_optimizer.py`) oraz testu kilku strategii
    ```
 
 ## Uruchomienie
-1. Uzupełnij klucze API w pliku `TradingBotTV/config/settings.json`.
+1. Uzupełnij klucze API w pliku `TradingBotTV/config/settings.json` lub ustaw
+   zmienne środowiskowe `BINANCE_API_KEY` i `BINANCE_API_SECRET`.
 2. W katalogu `TradingBotTV/bot` uruchom aplikację:
    ```bash
    dotnet run --project BinanceTraderBot.csproj
