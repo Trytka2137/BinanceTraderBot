@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tradingbottv"
+version = "0.1.0"
+description = "Optimization utilities for BinanceTraderBot"
+requires-python = ">=3.8"
+authors = [
+    {name = "TradingBotTV"}
+]
+dependencies = [
+    "requests",
+    "aiohttp",
+    "pandas",
+    "numpy",
+    "tradingview_ta",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "flake8"]
+
+[tool.setuptools.package-dir]
+"" = "TradingBotTV"
