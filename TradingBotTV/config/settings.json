@@ -15,8 +15,6 @@
     "maxDrawdownPercent": 20,
     "emaShortPeriod": 50,
     "emaLongPeriod": 200
-
-
   },
   "websocket": {
     "binanceUrl": "wss://stream.binance.com:9443/ws",

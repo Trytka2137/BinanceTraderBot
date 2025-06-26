@@ -8,15 +8,61 @@ namespace Bot
     {
         private static readonly string _filePath =
             Path.Combine(AppContext.BaseDirectory, "config", "settings.json");
+        private static readonly string _envPath =
+            Path.Combine(AppContext.BaseDirectory, ".env");
         private static JObject _config;
 
         public static void Load()
         {
+            LoadEnvFile();
             if (!File.Exists(_filePath))
                 throw new FileNotFoundException($"Config file not found: {_filePath}");
 
             var text = File.ReadAllText(_filePath);
             _config = JObject.Parse(text);
+            Validate();
+        }
+
+        private static void LoadEnvFile()
+        {
+            if (!File.Exists(_envPath))
+                return;
+
+            foreach (var line in File.ReadAllLines(_envPath))
+            {
+                var trimmed = line.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith("#"))
+                    continue;
+
+                var parts = trimmed.Split('=', 2);
+                if (parts.Length == 2)
+                    Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
+            }
+        }
+
+        private static void Validate()
+        {
+            var trading = _config["trading"] as JObject;
+            if (trading == null)
+                return;
+
+            void CheckPercent(string name)
+            {
+                if (trading[name] != null)
+                {
+                    decimal value = (decimal)trading[name];
+                    if (value < 0 || value > 100)
+                        throw new ArgumentOutOfRangeException(name, $"{name} must be between 0 and 100");
+                }
+            }
+
+            CheckPercent("stopLossPercent");
+            CheckPercent("takeProfitPercent");
+            CheckPercent("trailingStopPercent");
+            CheckPercent("maxDrawdownPercent");
+
+            if (trading["amount"] != null && (decimal)trading["amount"] <= 0)
+                throw new ArgumentOutOfRangeException("amount", "amount must be positive");
         }
 
         public static string ApiKey =>

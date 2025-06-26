@@ -45,14 +45,20 @@ Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podsta
 
 ## Uruchomienie
 1. Uzupełnij klucze API w pliku `TradingBotTV/config/settings.json` lub ustaw
-   zmienne środowiskowe `BINANCE_API_KEY` i `BINANCE_API_SECRET`.
+   zmienne środowiskowe `BINANCE_API_KEY` i `BINANCE_API_SECRET`. Możesz też
+   utworzyć plik `.env` z tymi wartościami, a bot wczyta je automatycznie.
 2. W katalogu `TradingBotTV/bot` uruchom aplikację:
    ```bash
    dotnet run --project BinanceTraderBot.csproj
    ```
 
 
+
 W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercent` i `takeProfitPercent`, a także `maxDrawdownPercent`, który określa poziom straty (w % od kapitału początkowego) po przekroczeniu którego handel zostanie automatycznie wyłączony. Można też zmienić okresy `emaShortPeriod` i `emaLongPeriod` wykorzystywane w filtrze trendu.
+
+### Parametry konfiguracyjne
+
+Szczegółowy opis wszystkich pól znajduje się w [docs/README_pl.md](docs/README_pl.md).
 
 Bot nasłuchuje na `http://localhost:5000/webhook` i uruchamia proces samouczenia strategii co 15, 30 oraz 60 minut. Moduł `auto_optimizer.py` losuje nowe progi RSI na podstawie dotychczasowych wyników i zapisuje najlepsze parametry w pliku `model_state.json`. Zaktualizowane wartości są automatycznie wczytywane do konfiguracji.
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
