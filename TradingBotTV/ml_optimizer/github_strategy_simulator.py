@@ -25,6 +25,10 @@ from tempfile import TemporaryDirectory
 
 from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
+from .logger import get_logger
+
+
+logger = get_logger(__name__)
 
 
 def clone_repo(src: str, dst: str) -> None:
@@ -34,7 +38,7 @@ def clone_repo(src: str, dst: str) -> None:
     Errors are printed and propagated as
     :class:`subprocess.CalledProcessError`.
     """
-    print(f"Cloning repository {src}...")
+    logger.info("Cloning repository %s...", src)
     subprocess.run(["git", "clone", "--depth", "1", src, dst], check=True)
 
 
@@ -51,12 +55,12 @@ def simulate_strategy(repo: str, symbol: str) -> None:
         try:
             clone_repo(repo, tmp)
         except subprocess.CalledProcessError as exc:
-            print(f"Error cloning repo: {exc}")
+            logger.error("Error cloning repo: %s", exc)
             return
         try:
             cfg = load_strategy(tmp)
         except FileNotFoundError:
-            print("strategy.json not found in repository")
+            logger.error("strategy.json not found in repository")
             return
 
         buy = int(cfg.get("rsi_buy_threshold", 30))
@@ -64,18 +68,20 @@ def simulate_strategy(repo: str, symbol: str) -> None:
 
         df = fetch_klines(symbol, interval="1h", limit=500)
         if df.empty:
-            print("No data fetched for backtest")
+            logger.warning("No data fetched for backtest")
             return
         pnl = backtest_strategy(
             df,
             rsi_buy_threshold=buy,
             rsi_sell_threshold=sell,
         )
-        print(f"Backtest result for {symbol}: PnL={pnl}")
+        logger.info("Backtest result for %s: PnL=%s", symbol, pnl)
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Usage: python github_strategy_simulator.py <repo_url> <symbol>")
+        logger.error(
+            "Usage: python github_strategy_simulator.py <repo_url> <symbol>"
+        )
         sys.exit(1)
     simulate_strategy(sys.argv[1], sys.argv[2])
