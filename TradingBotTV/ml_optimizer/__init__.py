@@ -9,9 +9,10 @@ from .backtest import (
     compute_ema,
     compute_rsi,
 )
-from .data_fetcher import fetch_klines
+from .data_fetcher import fetch_klines, async_fetch_klines
 from .github_strategy_simulator import simulate_strategy
 from .tradingview_auto_trader import auto_trade_from_tv
+from .logger import get_logger
 
 
 __all__ = [
@@ -23,6 +24,8 @@ __all__ = [
     "backtest_macd_strategy",
     "compare_strategies",
     "fetch_klines",
+    "async_fetch_klines",
+    "get_logger",
     "simulate_strategy",
     "auto_trade_from_tv",
 ]

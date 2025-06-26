@@ -1,14 +1,21 @@
 """Simple reinforcement learning optimizer for RSI thresholds."""
 
-import json
 import random
+from dataclasses import dataclass
 from dataclasses import asdict, dataclass
 from pathlib import Path
-
 import numpy as np
 
 from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
+from .logger import get_logger
+from .state_utils import (
+    load_state as load_json_state,
+    save_state as save_json_state,
+)
+
+
+logger = get_logger(__name__)
 
 STATE_PATH = Path(__file__).with_name("rl_state.json")
 
@@ -31,6 +38,9 @@ class RLState:
 
 def load_state() -> RLState:
     """Load persisted :class:`RLState` from :data:`STATE_PATH`."""
+
+    return load_json_state(STATE_PATH, RLState)
+
     try:
         data = json.loads(STATE_PATH.read_text())
     except FileNotFoundError:
@@ -45,9 +55,13 @@ def load_state() -> RLState:
     )
 
 
+
 def save_state(state: RLState) -> None:
     """Persist ``state`` to :data:`STATE_PATH`."""
+
+    save_json_state(STATE_PATH, state)
     STATE_PATH.write_text(json.dumps(asdict(state)))
+
 
 
 def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
@@ -83,9 +97,9 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
     mean_sell = state.mean_sell
     std_sell = state.std_sell
 
-    df = fetch_klines(symbol, interval='1h', limit=500)
+    df = fetch_klines(symbol, interval="1h", limit=500)
     if df.empty:
-        print('No data fetched – aborting training')
+        logger.warning('No data fetched – aborting training')
         return int(round(mean_buy)), int(round(mean_sell))
 
     for _ in range(episodes):
@@ -120,13 +134,17 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
             best_sell=best_sell,
         )
     )
+
+    logger.info('Best params: %s %s', best_buy, best_sell)
+
     print(f'Best params: {best_buy} {best_sell}')
+
     return best_buy, best_sell
 
 
 if __name__ == '__main__':
     import sys
     if len(sys.argv) < 2:
-        print('Usage: python rl_optimizer.py SYMBOL')
+        logger.error('Usage: python rl_optimizer.py SYMBOL')
         sys.exit(1)
     train(sys.argv[1])
