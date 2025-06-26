@@ -2,22 +2,26 @@ import sys
 
 from .data_fetcher import fetch_klines
 from .backtest import compare_strategies
+from .logger import get_logger
 
 
-def run(symbol):
+logger = get_logger(__name__)
+
+
+def run(symbol: str) -> None:
     df = fetch_klines(symbol, interval='1h', limit=500)
     if df.empty:
-        print('Brak danych do porownania')
+        logger.warning('Brak danych do porownania')
         return
     results = compare_strategies(df)
     for name, pnl in results.items():
-        print(f'{name} PnL: {pnl}')
+        logger.info('%s PnL: %s', name, pnl)
     best = max(results, key=results.get)
-    print(f'Najlepsza strategia: {best}')
+    logger.info('Najlepsza strategia: %s', best)
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('Uzycie: python compare_strategies.py SYMBOL')
+        logger.error('Uzycie: python compare_strategies.py SYMBOL')
         sys.exit(1)
     run(sys.argv[1])
