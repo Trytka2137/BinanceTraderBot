@@ -19,8 +19,13 @@ namespace Bot
             _config = JObject.Parse(text);
         }
 
-        public static string ApiKey => _config["binance"]["apiKey"].ToString();
-        public static string ApiSecret => _config["binance"]["apiSecret"].ToString();
+        public static string ApiKey =>
+            Environment.GetEnvironmentVariable("BINANCE_API_KEY")
+            ?? _config["binance"]["apiKey"].ToString();
+
+        public static string ApiSecret =>
+            Environment.GetEnvironmentVariable("BINANCE_API_SECRET")
+            ?? _config["binance"]["apiSecret"].ToString();
         public static string Symbol => _config["trading"]["symbol"].ToString();
         public static decimal Amount => (decimal)_config["trading"]["amount"];
         public static decimal InitialCapital =>
