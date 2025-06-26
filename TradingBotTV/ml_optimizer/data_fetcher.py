@@ -6,6 +6,17 @@ import requests
 from .logger import get_logger
 
 logger = get_logger(__name__)
+
+DATA_DIR = Path(__file__).with_name('data')
+
+
+import aiohttp
+import pandas as pd
+import requests
+
+from .logger import get_logger
+
+logger = get_logger(__name__)
 import aiohttp
 import pandas as pd
 import requests
@@ -25,6 +36,7 @@ DATA_DIR = Path(__file__).with_name('data')
 
 DATA_DIR = Path(__file__).with_name('data')
 
+
 def fetch_klines(symbol, interval="1h", limit=1000):
     url = (
         "https://api.binance.com/api/v3/klines"
@@ -36,6 +48,10 @@ def fetch_klines(symbol, interval="1h", limit=1000):
         response.raise_for_status()
         data = response.json()
     except requests.RequestException as e:
+        logger.error("Error fetching klines: %s", e)
+        if csv_path.exists():
+            logger.info("Loading cached data from %s", csv_path)
+
 
         logger.error("Error fetching klines: %s", e)
         if csv_path.exists():
