@@ -1,4 +1,3 @@
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -82,7 +81,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Optimize RSI thresholds')
     parser.add_argument('symbol', help='Trading symbol')
-    parser.add_argument('--iterations', type=int, default=20, help='Number of tests')
+    parser.add_argument(
+        '--iterations',
+        type=int,
+        default=20,
+        help='Number of tests',
+    )
     parser.add_argument(
         '--log-level',
         default='INFO',

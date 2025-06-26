@@ -11,7 +11,12 @@ logger = get_logger(__name__)
 DATA_DIR = Path(__file__).with_name('data')
 
 
-def fetch_klines(symbol: str, interval: str = "1h", limit: int = 1000, retries: int = 3):
+def fetch_klines(
+    symbol: str,
+    interval: str = "1h",
+    limit: int = 1000,
+    retries: int = 3,
+):
     """Return OHLC data for ``symbol``.
 
     When network calls fail ``retries`` times, cached CSV data is used if
@@ -30,7 +35,12 @@ def fetch_klines(symbol: str, interval: str = "1h", limit: int = 1000, retries: 
             data = response.json()
             break
         except requests.RequestException as e:
-            logger.error("Error fetching klines (attempt %s/%s): %s", attempt + 1, retries, e)
+            logger.error(
+                "Error fetching klines (attempt %s/%s): %s",
+                attempt + 1,
+                retries,
+                e,
+            )
             if attempt == retries - 1:
                 if csv_path.exists():
                     logger.info("Loading cached data from %s", csv_path)
@@ -86,7 +96,10 @@ async def async_fetch_klines(
             break
         except Exception as e:  # pragma: no cover - network failure
             logger.error(
-                "Error fetching klines (attempt %s/%s): %s", attempt + 1, retries, e
+                "Error fetching klines (attempt %s/%s): %s",
+                attempt + 1,
+                retries,
+                e,
             )
             if attempt == retries - 1:
                 if csv_path.exists():

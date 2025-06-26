@@ -93,6 +93,11 @@ W katalogu projektu uruchom testy poleceniem:
 ```bash
 pytest
 ```
+Przed wysłaniem zmian uruchom również `flake8`, aby upewnić się, że kod spełnia
+standard PEP8:
+```bash
+flake8
+```
 
 
 ### Sygnały z TradingView
