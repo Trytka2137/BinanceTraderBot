@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Bot
 {
     public static class DashboardServer
     {
-        public static void Start()
+        public static void Start(CancellationToken token)
         {
             var builder = WebApplication.CreateBuilder();
             var app = builder.Build();
@@ -61,7 +62,7 @@ pre{{white-space:pre-wrap;}}
                 return Task.CompletedTask;
             });
 
-            app.Run("http://localhost:5001");
+            app.RunAsync("http://localhost:5001", token).GetAwaiter().GetResult();
         }
     }
 }

@@ -1,5 +1,8 @@
 using System;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -75,7 +78,7 @@ namespace Bot
                     BotLogger.Log($"📈 Aktualny wynik: {pnl:F2}");
                     BotController.CheckDrawdown();
                     await TradeLogger.CompareWithStrategiesAsync(symbol).ConfigureAwait(false);
-                    _ = MonitorTrailingStop(symbol, side, price, trailing);
+                    _ = MonitorTrailingStop(symbol, side, price, trailing, AppLifetime.Source.Token);
                 }
             }
             catch (Exception ex)
@@ -106,7 +109,15 @@ namespace Bot
             var endpoint = "https://api.binance.com/api/v3/order/test"; // test order for safety
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var query = $"symbol={symbol}&side={side}&type=MARKET&quantity={quantity}&timestamp={timestamp}";
-            return $"{endpoint}?{query}";
+            var signature = Sign(query);
+            return $"{endpoint}?{query}&signature={signature}";
+        }
+
+        private string Sign(string query)
+        {
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(apiSecret));
+            var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(query));
+            return BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
         }
 
         private string GetOrderUrl(string symbol, string signal)
@@ -114,13 +125,13 @@ namespace Bot
             return GetOrderUrl(symbol, signal.ToUpper(), ConfigManager.Amount);
         }
 
-        private async Task MonitorTrailingStop(string symbol, string side, decimal entryPrice, decimal trailing)
+        private async Task MonitorTrailingStop(string symbol, string side, decimal entryPrice, decimal trailing, CancellationToken token)
         {
             if (trailing <= 0) return;
             var stop = side == "BUY" ? entryPrice - trailing : entryPrice + trailing;
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                await Task.Delay(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromSeconds(10), token).ConfigureAwait(false);
                 var price = await GetCurrentPrice(symbol).ConfigureAwait(false);
                 if (price == 0) continue;
                 if (side == "BUY")

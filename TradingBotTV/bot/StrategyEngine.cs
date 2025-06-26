@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -24,9 +25,9 @@ namespace Bot
             return Math.Round((decimal)Math.Sqrt((double)variance), 4);
         }
 
-        public static async Task StartAsync()
+        public static async Task StartAsync(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 try
                 {
@@ -81,7 +82,7 @@ namespace Bot
                     BotLogger.Log($"❌ Błąd strategii: {ex.Message}");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1)).ConfigureAwait(false);
+                await Task.Delay(TimeSpan.FromMinutes(1), token).ConfigureAwait(false);
             }
         }
 
