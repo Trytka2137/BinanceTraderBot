@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
 namespace Bot
@@ -33,18 +34,16 @@ namespace Bot
                     Console.WriteLine("⚠️ Błędy optymalizacji: " + error);
 
                 // Parsujemy output, żeby uaktualnić config:
-                // Załóżmy, że output zawiera linię: BestParams: buy=30 sell=70
-                var lines = output.Split('\n');
-                foreach (var line in lines)
+                // Szukamy linii w formacie "Najlepsze parametry: Buy=30 Sell=70 PnL=..."
+                foreach (var line in output.Split('\n'))
                 {
                     if (line.StartsWith("Najlepsze parametry:"))
                     {
-                        var parts = line.Split(new string[] { "Buy=", "Sell=", "," }, StringSplitOptions.RemoveEmptyEntries);
-                        if(parts.Length >= 3)
+                        var match = Regex.Match(line, @"Buy=(\d+).*Sell=(\d+)");
+                        if (match.Success)
                         {
-                            int buyTh = int.Parse(parts[1].Trim());
-                            int sellTh = int.Parse(parts[2].Trim());
-
+                            int buyTh = int.Parse(match.Groups[1].Value);
+                            int sellTh = int.Parse(match.Groups[2].Value);
                             UpdateConfig(buyTh, sellTh);
                             Console.WriteLine($"♻️ Zaktualizowano ustawienia RSI: Buy={buyTh}, Sell={sellTh}");
                         }

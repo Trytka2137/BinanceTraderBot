@@ -50,15 +50,11 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
     "rsiBuyThreshold": 30,
     "rsiSellThreshold": 70,
     "stopLossPercent": 1.5,
-  "takeProfitPercent": 3.0,
-
-  "trailingStopPercent": 0.5,
-  "maxDrawdownPercent": 20,
-  "emaShortPeriod": 50,
-  "emaLongPeriod": 200
-
-  "trailingStopPercent": 0.5
-
+    "takeProfitPercent": 3.0,
+    "trailingStopPercent": 0.5,
+    "maxDrawdownPercent": 20,
+    "emaShortPeriod": 50,
+    "emaLongPeriod": 200
   },
   "websocket": {
     "binanceUrl": "wss://stream.binance.com:9443/ws",
@@ -73,10 +69,6 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
 - `stopLossPercent` i `takeProfitPercent` – ustawienia SL/TP w procentach.
 - `trailingStopPercent` – wielkość trailing stopu aktualizowana po każdej zmianie ceny.
-- `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
-- `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.
-
-
 - `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
 - `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.
 
