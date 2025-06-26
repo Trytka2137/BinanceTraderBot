@@ -2,8 +2,13 @@
 
 import random
 from dataclasses import dataclass
+<<<<<<< 5m564b-codex/szukaj-błędów-i-optymalizuj-kod
 from pathlib import Path
 
+=======
+from dataclasses import asdict, dataclass
+from pathlib import Path
+>>>>>>> BOT
 import numpy as np
 
 from .data_fetcher import fetch_klines
@@ -13,6 +18,10 @@ from .state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
 )
+<<<<<<< 5m564b-codex/szukaj-błędów-i-optymalizuj-kod
+=======
+
+>>>>>>> BOT
 
 logger = get_logger(__name__)
 
@@ -37,12 +46,40 @@ class RLState:
 
 def load_state() -> RLState:
     """Load persisted :class:`RLState` from :data:`STATE_PATH`."""
+<<<<<<< 5m564b-codex/szukaj-błędów-i-optymalizuj-kod
+    return load_json_state(STATE_PATH, RLState)
+=======
+
     return load_json_state(STATE_PATH, RLState)
 
+    try:
+        data = json.loads(STATE_PATH.read_text())
+    except FileNotFoundError:
+        return RLState()
+    return RLState(
+        mean_buy=data.get("mean_buy", 30.0),
+        std_buy=data.get("std_buy", 5.0),
+        mean_sell=data.get("mean_sell", 70.0),
+        std_sell=data.get("std_sell", 5.0),
+        best_buy=int(data.get("best_buy", 30)),
+        best_sell=int(data.get("best_sell", 70)),
+    )
+
+
+>>>>>>> BOT
 
 def save_state(state: RLState) -> None:
     """Persist ``state`` to :data:`STATE_PATH`."""
+
     save_json_state(STATE_PATH, state)
+    STATE_PATH.write_text(json.dumps(asdict(state)))
+
+<<<<<<< 5m564b-codex/szukaj-błędów-i-optymalizuj-kod
+def save_state(state: RLState) -> None:
+    """Persist ``state`` to :data:`STATE_PATH`."""
+    save_json_state(STATE_PATH, state)
+=======
+>>>>>>> BOT
 
 
 def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
@@ -115,7 +152,15 @@ def train(symbol, episodes=30, population=20, elite_frac=0.2, seed=None):
             best_sell=best_sell,
         )
     )
+<<<<<<< 5m564b-codex/szukaj-błędów-i-optymalizuj-kod
     logger.info('Best params: %s %s', best_buy, best_sell)
+=======
+
+    logger.info('Best params: %s %s', best_buy, best_sell)
+
+    print(f'Best params: {best_buy} {best_sell}')
+
+>>>>>>> BOT
     return best_buy, best_sell
 
 
