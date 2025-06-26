@@ -136,7 +136,11 @@ if __name__ == '__main__':
     parser.add_argument('--episodes', type=int, default=30)
     parser.add_argument('--population', type=int, default=20)
     parser.add_argument('--elite-frac', type=float, default=0.2)
-    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'])
+    parser.add_argument(
+        '--log-level',
+        default='INFO',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
+    )
     args = parser.parse_args()
 
     logger.setLevel(args.log_level)

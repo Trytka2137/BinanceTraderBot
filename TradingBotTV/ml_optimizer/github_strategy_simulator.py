@@ -20,7 +20,6 @@ instead of a URL.
 import json
 import os
 import subprocess
-import sys
 from tempfile import TemporaryDirectory
 
 from .data_fetcher import fetch_klines
@@ -49,7 +48,11 @@ def load_strategy(repo_path: str) -> dict:
         return json.load(f)
 
 
-def simulate_strategy(repo: str, symbol: str, fallback_local: str | None = None) -> None:
+def simulate_strategy(
+    repo: str,
+    symbol: str,
+    fallback_local: str | None = None,
+) -> None:
     """Backtest strategy from *repo* for the given *symbol* and print PnL.
 
     If cloning fails and ``fallback_local`` is provided, the strategy is loaded
@@ -62,7 +65,10 @@ def simulate_strategy(repo: str, symbol: str, fallback_local: str | None = None)
         except subprocess.CalledProcessError as exc:
             logger.error("Error cloning repo: %s", exc)
             if fallback_local and os.path.isdir(fallback_local):
-                logger.info("Using local fallback repository %s", fallback_local)
+                logger.info(
+                    "Using local fallback repository %s",
+                    fallback_local,
+                )
                 path = fallback_local
             else:
                 return
