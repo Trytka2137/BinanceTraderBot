@@ -49,16 +49,25 @@ def load_strategy(repo_path: str) -> dict:
         return json.load(f)
 
 
-def simulate_strategy(repo: str, symbol: str) -> None:
-    """Backtest strategy from *repo* for the given *symbol* and print PnL."""
-    with TemporaryDirectory() as tmp:
+def simulate_strategy(repo: str, symbol: str, fallback_local: str | None = None) -> None:
+    """Backtest strategy from *repo* for the given *symbol* and print PnL.
+
+    If cloning fails and ``fallback_local`` is provided, the strategy is loaded
+    from that local directory instead.
+    """
+    with TemporaryDirectory() as tmpdir:
+        path = tmpdir
         try:
-            clone_repo(repo, tmp)
+            clone_repo(repo, path)
         except subprocess.CalledProcessError as exc:
             logger.error("Error cloning repo: %s", exc)
-            return
+            if fallback_local and os.path.isdir(fallback_local):
+                logger.info("Using local fallback repository %s", fallback_local)
+                path = fallback_local
+            else:
+                return
         try:
-            cfg = load_strategy(tmp)
+            cfg = load_strategy(path)
         except FileNotFoundError:
             logger.error("strategy.json not found in repository")
             return
@@ -79,9 +88,20 @@ def simulate_strategy(repo: str, symbol: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        logger.error(
-            "Usage: python github_strategy_simulator.py <repo_url> <symbol>"
-        )
-        sys.exit(1)
-    simulate_strategy(sys.argv[1], sys.argv[2])
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Backtest strategy from repo")
+    parser.add_argument("repo", help="URL or local path to repository")
+    parser.add_argument("symbol", help="Trading symbol")
+    parser.add_argument("--fallback", help="Local fallback repo path")
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR"],
+        help="Logging verbosity",
+    )
+    args = parser.parse_args()
+
+    logger.setLevel(args.log_level)
+
+    simulate_strategy(args.repo, args.symbol, args.fallback)

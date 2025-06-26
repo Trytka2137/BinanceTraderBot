@@ -14,7 +14,8 @@ from .state_utils import (
 
 logger = get_logger(__name__)
 
-STATE_PATH = Path(__file__).with_name("model_state.json")
+STATE_DIR = Path(__file__).resolve().parent / "state"
+STATE_PATH = STATE_DIR / "model_state.json"
 
 DEFAULT_BUY = 30
 DEFAULT_SELL = 70
@@ -31,15 +32,19 @@ class OptimizerState:
 
 def load_state() -> OptimizerState:
     """Return stored optimization parameters."""
+    STATE_DIR.mkdir(exist_ok=True)
     return load_json_state(STATE_PATH, OptimizerState)
 
 
 def save_state(state: OptimizerState) -> None:
     """Persist ``state`` to :data:`STATE_PATH`."""
+    STATE_DIR.mkdir(exist_ok=True)
     save_json_state(STATE_PATH, state)
 
 
-def optimize(symbol, iterations=20):
+def optimize(symbol: str, iterations: int = 20) -> tuple[int, int, float]:
+    """Optimize RSI thresholds for ``symbol`` over ``iterations`` runs."""
+
     df = fetch_klines(symbol, interval="1h", limit=500)
     if df.empty:
         logger.warning("Brak danych do optymalizacji")
@@ -73,8 +78,19 @@ def optimize(symbol, iterations=20):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        logger.error('Użycie: python auto_optimizer.py SYMBOL')
-        sys.exit(1)
-    symbol = sys.argv[1]
-    optimize(symbol)
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Optimize RSI thresholds')
+    parser.add_argument('symbol', help='Trading symbol')
+    parser.add_argument('--iterations', type=int, default=20, help='Number of tests')
+    parser.add_argument(
+        '--log-level',
+        default='INFO',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
+        help='Logging verbosity',
+    )
+    args = parser.parse_args()
+
+    logger.setLevel(args.log_level)
+
+    optimize(args.symbol, iterations=args.iterations)
