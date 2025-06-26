@@ -1,33 +1,43 @@
 import json
-import os
 import sys
+from dataclasses import asdict, dataclass
+from pathlib import Path
 
 import numpy as np
 
 from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
 
-STATE_PATH = os.path.join(os.path.dirname(__file__), 'model_state.json')
+STATE_PATH = Path(__file__).with_name("model_state.json")
 
 DEFAULT_BUY = 30
 DEFAULT_SELL = 70
 
 
-def load_state():
-    if os.path.exists(STATE_PATH):
-        with open(STATE_PATH, 'r') as f:
-            data = json.load(f)
-            return (
-                data.get('buy', DEFAULT_BUY),
-                data.get('sell', DEFAULT_SELL),
-                data.get('pnl', -np.inf),
-            )
-    return DEFAULT_BUY, DEFAULT_SELL, -np.inf
+@dataclass
+class OptimizerState:
+    """Stored optimizer parameters."""
+
+    buy: int = DEFAULT_BUY
+    sell: int = DEFAULT_SELL
+    pnl: float = -np.inf
 
 
-def save_state(buy, sell, pnl):
-    with open(STATE_PATH, 'w') as f:
-        json.dump({'buy': buy, 'sell': sell, 'pnl': pnl}, f)
+def load_state() -> OptimizerState:
+    """Return stored optimization parameters."""
+    if STATE_PATH.exists():
+        data = json.loads(STATE_PATH.read_text())
+        return OptimizerState(
+            buy=int(data.get("buy", DEFAULT_BUY)),
+            sell=int(data.get("sell", DEFAULT_SELL)),
+            pnl=float(data.get("pnl", -np.inf)),
+        )
+    return OptimizerState()
+
+
+def save_state(state: OptimizerState) -> None:
+    """Persist ``state`` to :data:`STATE_PATH`."""
+    STATE_PATH.write_text(json.dumps(asdict(state)))
 
 
 def optimize(symbol, iterations=20):
@@ -36,7 +46,8 @@ def optimize(symbol, iterations=20):
         print('Brak danych do optymalizacji')
         return DEFAULT_BUY, DEFAULT_SELL, -np.inf
 
-    best_buy, best_sell, best_pnl = load_state()
+    state = load_state()
+    best_buy, best_sell, best_pnl = state.buy, state.sell, state.pnl
 
     for _ in range(iterations):
         buy_th = int(np.clip(np.random.normal(best_buy, 5), 10, 50))
@@ -52,7 +63,7 @@ def optimize(symbol, iterations=20):
             best_buy = buy_th
             best_sell = sell_th
 
-    save_state(best_buy, best_sell, best_pnl)
+    save_state(OptimizerState(best_buy, best_sell, best_pnl))
     print(
         f'Najlepsze parametry: Buy={best_buy} '
         f'Sell={best_sell} PnL={best_pnl}'
