@@ -17,17 +17,17 @@ TradingBotTV/ml_optimizer/auto_optimizer.py  -- simple optimizer storing model_s
 TradingBotTV/ml_optimizer/rl_optimizer.py    -- reinforcement-learning example
 ```
 
-No AGENTS.md file or special repository instructions were found.
+An `AGENTS.md` file defines basic contribution guidelines (tests must pass and `flake8` should report no errors).
 
 ### Testing
 The Python requirements install successfully, and the provided tests run without errors:
 
 ```
 pip install -r TradingBotTV/ml_optimizer/requirements.txt
-pytest -q TradingBotTV/ml_optimizer/tests/test_backtest.py
+pytest
 ```
 
-Result: **4 tests pass**
+Result: **10 tests pass**
 
 *(Compilation of the C# project wasn’t attempted because .NET tooling is absent in this environment.)*
 

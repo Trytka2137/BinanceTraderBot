@@ -32,11 +32,6 @@ Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podsta
      ```powershell
      winget install Microsoft.DotNet.SDK.8
      ```
-1. Zainstaluj pakiet `.NET 8 SDK` (np. w systemie Ubuntu):
-   ```bash
-   sudo apt-get update
-   sudo apt-get install -y dotnet-sdk-8.0
-   ```
 2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
