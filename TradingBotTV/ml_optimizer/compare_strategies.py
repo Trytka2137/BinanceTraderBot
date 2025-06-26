@@ -1,5 +1,3 @@
-import sys
-
 from .data_fetcher import fetch_klines
 from .backtest import compare_strategies
 from .logger import get_logger
@@ -25,7 +23,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Compare strategies')
     parser.add_argument('symbol', help='Trading symbol')
-    parser.add_argument('--log-level', default='INFO', choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'])
+    parser.add_argument(
+        '--log-level',
+        default='INFO',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR'],
+    )
     args = parser.parse_args()
 
     logger.setLevel(args.log_level)
