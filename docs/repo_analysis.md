@@ -17,6 +17,7 @@ TradingBotTV/ml_optimizer/auto_optimizer.py  -- simple optimizer storing model_s
 TradingBotTV/ml_optimizer/rl_optimizer.py    -- reinforcement-learning example
 TradingBotTV/ml_optimizer/logger.py          -- logging utilities with rotating file handler
 TradingBotTV/ml_optimizer/monitor.py         -- records metrics in state/metrics.csv
+TradingBotTV/ml_optimizer/network_utils.py   -- connectivity checks to external APIs
 ```
 
 An `AGENTS.md` file defines basic contribution guidelines (tests must pass and `flake8` should report no errors).

@@ -1,6 +1,5 @@
 # BinanceTraderBot
 
-
 Zaawansowany bot handlujący na giełdzie Binance napisany w C# i Pythonie.
 C# obsługuje sygnały z TradingView, automatycznie generuje zlecenia z wbudowanej
 strategii RSI oraz zarządza stop-lossem i take-profitem. Moduł Python służy do
@@ -78,6 +77,16 @@ czemu optymalizacja może przebiegać również offline.
 
 ### Monitoring i logi
 Logi modułów Pythona zapisywane są w `TradingBotTV/ml_optimizer/state/ml_optimizer.log`. W pliku `TradingBotTV/ml_optimizer/state/metrics.csv` gromadzone są podstawowe metryki, takie jak najlepsze uzyskane PnL. Zaimplementowano ponawianie zapytań sieciowych, dlatego pobieranie danych i wysyłanie sygnałów jest odporniejsze na przejściowe problemy z siecią.
+
+### Sprawdzanie dostępu do API
+Skrypt `network_utils.py` umożliwia szybkie zweryfikowanie, czy Twoje środowisko
+ma połączenie z oficjalnymi adresami (np. `https://api.binance.com`).
+Przykład użycia:
+
+```bash
+python -m TradingBotTV.ml_optimizer.network_utils https://api.binance.com
+```
+Funkcja `check_connectivity` zwróci `True`, jeśli serwis odpowie, inaczej `False`.
 
 ### Narzędzia ML
 * `auto_optimizer.py` – losowe poszukiwanie progów RSI

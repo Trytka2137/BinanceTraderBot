@@ -33,6 +33,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
   i wysyłanie sygnałów do lokalnego webhooka.
 - `logger.py` – wspólne funkcje logujące zapisujące zdarzenia w `state/ml_optimizer.log`.
 - `monitor.py` – prosty rejestrator metryk tworzący plik `state/metrics.csv`.
+- `network_utils.py` – sprawdzanie dostępu do wybranych adresów URL.
 - `tests/test_backtest.py` – testy jednostkowe dla modułu `backtest.py`.
 
 ## Edycja ustawień
