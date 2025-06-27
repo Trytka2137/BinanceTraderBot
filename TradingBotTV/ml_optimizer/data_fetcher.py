@@ -3,6 +3,9 @@ from pathlib import Path
 import aiohttp
 import pandas as pd
 import requests
+from requests.adapters import HTTPAdapter, Retry
+import time
+import asyncio
 
 from .logger import get_logger
 
@@ -28,9 +31,21 @@ def fetch_klines(
         f"?symbol={symbol}&interval={interval}&limit={limit}"
     )
     csv_path = DATA_DIR / f"{symbol}_{interval}.csv"
+    session = requests.Session()
+    session.mount(
+        "https://",
+        HTTPAdapter(
+            max_retries=Retry(
+                total=retries,
+                backoff_factor=1,
+                status_forcelist=[500, 502, 503, 504],
+                allowed_methods=["GET"],
+            )
+        ),
+    )
     for attempt in range(retries):
         try:
-            response = requests.get(url, timeout=10)
+            response = session.get(url, timeout=10)
             response.raise_for_status()
             data = response.json()
             break
@@ -48,6 +63,7 @@ def fetch_klines(
                     df["open_time"] = pd.to_datetime(df["open_time"])
                     return df[["open_time", "close"]]
                 return pd.DataFrame(columns=["open_time", "close"])
+            time.sleep(2 ** attempt)
 
     df = pd.DataFrame(
         data,
@@ -108,6 +124,7 @@ async def async_fetch_klines(
                     df["open_time"] = pd.to_datetime(df["open_time"])
                     return df[["open_time", "close"]]
                 return pd.DataFrame(columns=["open_time", "close"])
+            await asyncio.sleep(2 ** attempt)
 
     df = pd.DataFrame(
         data,
