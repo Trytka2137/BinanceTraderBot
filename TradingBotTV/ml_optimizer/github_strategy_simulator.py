@@ -20,6 +20,7 @@ instead of a URL.
 import json
 import os
 import subprocess
+import time
 from tempfile import TemporaryDirectory
 
 from .data_fetcher import fetch_klines
@@ -30,15 +31,26 @@ from .logger import get_logger
 logger = get_logger(__name__)
 
 
-def clone_repo(src: str, dst: str) -> None:
-    """Clone *src* into directory *dst*.
+def clone_repo(src: str, dst: str, retries: int = 3) -> None:
+    """Clone *src* into directory *dst* with optional ``retries``."""
 
-    If *src* is a local path, it is copied using ``git clone`` as well.
-    Errors are printed and propagated as
-    :class:`subprocess.CalledProcessError`.
-    """
     logger.info("Cloning repository %s...", src)
-    subprocess.run(["git", "clone", "--depth", "1", src, dst], check=True)
+    for attempt in range(retries):
+        try:
+            subprocess.run(
+                ["git", "clone", "--depth", "1", src, dst], check=True
+            )
+            break
+        except subprocess.CalledProcessError as exc:
+            logger.error(
+                "Error cloning repo (attempt %s/%s): %s",
+                attempt + 1,
+                retries,
+                exc,
+            )
+            if attempt == retries - 1:
+                raise
+            time.sleep(2 ** attempt)
 
 
 def load_strategy(repo_path: str) -> dict:

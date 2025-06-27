@@ -13,6 +13,7 @@ from .data_fetcher import fetch_klines, async_fetch_klines
 from .github_strategy_simulator import simulate_strategy
 from .tradingview_auto_trader import auto_trade_from_tv
 from .logger import get_logger
+from .monitor import record_metric
 
 
 __all__ = [
@@ -26,6 +27,7 @@ __all__ = [
     "fetch_klines",
     "async_fetch_klines",
     "get_logger",
+    "record_metric",
     "simulate_strategy",
     "auto_trade_from_tv",
 ]
