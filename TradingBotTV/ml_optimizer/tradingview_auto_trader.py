@@ -4,6 +4,9 @@ webhook."""
 from __future__ import annotations
 
 import requests
+from requests.adapters import HTTPAdapter, Retry
+import time
+import asyncio
 from tradingview_ta import TA_Handler, Interval
 
 from .logger import get_logger
@@ -34,17 +37,37 @@ def send_webhook(
     symbol: str,
     url: str = "http://localhost:5000/webhook",
 ) -> None:
-    """Send trading ``signal`` for ``symbol`` to webhook ``url``."""
+    """Send trading ``signal`` for ``symbol`` to webhook ``url`` with
+    retries."""
+
     data = {
         "ticker": symbol,
         "strategy": {"order_action": signal.lower()},
     }
-    try:
-        resp = requests.post(url, json=data, timeout=5)
-        logger.info("Webhook status: %s", resp.status_code)
-    # pragma: no cover - network failure
-    except requests.RequestException as exc:
-        logger.error("Error sending webhook: %s", exc)
+    session = requests.Session()
+    session.mount(
+        "http://",
+        HTTPAdapter(
+            max_retries=Retry(
+                total=3,
+                backoff_factor=1,
+                status_forcelist=[500, 502, 503, 504],
+                allowed_methods=["POST"],
+            )
+        ),
+    )
+    for attempt in range(3):
+        try:
+            resp = session.post(url, json=data, timeout=5)
+            logger.info("Webhook status: %s", resp.status_code)
+            break
+        except requests.RequestException as exc:  # pragma: no cover - network
+            logger.error(
+                "Error sending webhook (attempt %s/3): %s", attempt + 1, exc
+            )
+            if attempt == 2:
+                break
+            time.sleep(2 ** attempt)
 
 
 def auto_trade_from_tv(symbol: str) -> None:
@@ -58,11 +81,21 @@ def auto_trade_from_tv(symbol: str) -> None:
         send_webhook("sell", symbol)
 
 
+async def async_auto_trade_from_tv(symbols: list[str]) -> None:
+    """Run :func:`auto_trade_from_tv` concurrently for ``symbols``."""
+
+    tasks = [asyncio.to_thread(auto_trade_from_tv, s) for s in symbols]
+    await asyncio.gather(*tasks)
+
+
 if __name__ == "__main__":  # pragma: no cover - manual run helper
     import argparse
 
     parser = argparse.ArgumentParser(description="TradingView auto trader")
-    parser.add_argument("symbol", help="Trading symbol")
+    parser.add_argument(
+        "symbols",
+        help="Single symbol or comma-separated list for concurrent mode",
+    )
     parser.add_argument(
         "--log-level",
         default="INFO",
@@ -73,4 +106,8 @@ if __name__ == "__main__":  # pragma: no cover - manual run helper
 
     logger.setLevel(args.log_level)
 
-    auto_trade_from_tv(args.symbol)
+    if "," in args.symbols:
+        symbols = [s.strip() for s in args.symbols.split(",") if s.strip()]
+        asyncio.run(async_auto_trade_from_tv(symbols))
+    else:
+        auto_trade_from_tv(args.symbols)

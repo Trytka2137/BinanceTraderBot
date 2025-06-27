@@ -6,6 +6,7 @@ import numpy as np
 from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
 from .logger import get_logger
+from .monitor import record_metric
 from .state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
@@ -73,6 +74,7 @@ def optimize(symbol: str, iterations: int = 20) -> tuple[int, int, float]:
         best_sell,
         best_pnl,
     )
+    record_metric("optimizer_pnl", best_pnl)
     return best_buy, best_sell, best_pnl
 
 
