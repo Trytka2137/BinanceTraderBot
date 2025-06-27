@@ -16,8 +16,10 @@ def backtest_strategy(
     df: pd.DataFrame,
     rsi_buy_threshold: int = 30,
     rsi_sell_threshold: int = 70,
+    stop_loss_pct: float | None = None,
+    take_profit_pct: float | None = None,
 ) -> float:
-    """Simple RSI strategy backtest."""
+    """Simple RSI strategy backtest with optional SL/TP."""
     df = df.copy()
     df["rsi"] = compute_rsi(df["close"])
     position = 0
@@ -25,18 +27,39 @@ def backtest_strategy(
     entry_price = 0.0
 
     for i in range(1, len(df)):
+        price = df["close"].iloc[i]
+
+        if position == 1:
+            if stop_loss_pct and price <= entry_price * (1 - stop_loss_pct / 100):
+                pnl += price - entry_price
+                position = 0
+                continue
+            if take_profit_pct and price >= entry_price * (1 + take_profit_pct / 100):
+                pnl += price - entry_price
+                position = 0
+                continue
+        elif position == -1:
+            if stop_loss_pct and price >= entry_price * (1 + stop_loss_pct / 100):
+                pnl += entry_price - price
+                position = 0
+                continue
+            if take_profit_pct and price <= entry_price * (1 - take_profit_pct / 100):
+                pnl += entry_price - price
+                position = 0
+                continue
+
         if position == 0:
             if df["rsi"].iloc[i] < rsi_buy_threshold:
                 position = 1
-                entry_price = df["close"].iloc[i]
+                entry_price = price
             elif df["rsi"].iloc[i] > rsi_sell_threshold:
                 position = -1
-                entry_price = df["close"].iloc[i]
+                entry_price = price
         elif position == 1 and df["rsi"].iloc[i] > rsi_sell_threshold:
-            pnl += df["close"].iloc[i] - entry_price
+            pnl += price - entry_price
             position = 0
         elif position == -1 and df["rsi"].iloc[i] < rsi_buy_threshold:
-            pnl += entry_price - df["close"].iloc[i]
+            pnl += entry_price - price
             position = 0
 
     return pnl
@@ -59,6 +82,11 @@ def compute_macd(
 def compute_ema(series: pd.Series, period: int = 20) -> pd.Series:
     """Return exponential moving average for ``series``."""
     return series.ewm(span=period, adjust=False).mean()
+
+
+def compute_sma(series: pd.Series, period: int = 20) -> pd.Series:
+    """Return simple moving average for ``series``."""
+    return series.rolling(window=period).mean()
 
 
 def compute_atr(

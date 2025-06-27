@@ -7,6 +7,7 @@ from .backtest import (
     compute_macd,
     compute_atr,
     compute_ema,
+    compute_sma,
     compute_rsi,
 )
 from .data_fetcher import fetch_klines, async_fetch_klines
@@ -23,6 +24,7 @@ __all__ = [
     "compute_rsi",
     "compute_macd",
     "compute_ema",
+    "compute_sma",
     "compute_atr",
     "backtest_strategy",
     "backtest_macd_strategy",
