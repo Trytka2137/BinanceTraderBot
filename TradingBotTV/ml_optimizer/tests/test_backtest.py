@@ -13,6 +13,7 @@ from TradingBotTV.ml_optimizer import (  # noqa: E402
     compute_macd,
     compute_atr,
     compute_ema,
+    compute_sma,
     backtest_strategy,
 )
 
@@ -65,3 +66,22 @@ def test_compute_ema_simple():
     ema = compute_ema(series, period=2)
     expected = series.ewm(span=2, adjust=False).mean()
     pd.testing.assert_series_equal(ema.round(6), expected.round(6))
+
+
+def test_compute_sma_simple():
+    series = pd.Series([1, 2, 3, 4])
+    sma = compute_sma(series, period=2)
+    expected = series.rolling(window=2).mean()
+    pd.testing.assert_series_equal(sma, expected)
+
+
+def test_backtest_strategy_stop_loss(monkeypatch):
+    df = pd.DataFrame({"close": [10, 9, 8, 7]})
+
+    def dummy_rsi(series):
+        return pd.Series([50, 20, 20, 20])
+
+    monkeypatch.setattr("TradingBotTV.ml_optimizer.backtest.compute_rsi", dummy_rsi)
+
+    pnl = backtest_strategy(df, stop_loss_pct=5)
+    assert pnl == -1
