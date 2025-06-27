@@ -21,6 +21,7 @@ from .network_utils import (
     check_connectivity,
     async_check_connectivity,
 )
+from .network_utils import check_connectivity
 
 __all__ = [
     "compute_rsi",
