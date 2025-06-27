@@ -65,6 +65,7 @@ def check_connectivity(url: str, retries: int = 3, timeout: int = 5) -> bool:
             time.sleep(2 ** attempt)
     return False
 
+
 async def async_check_connectivity(
     url: str,
     retries: int = 3,

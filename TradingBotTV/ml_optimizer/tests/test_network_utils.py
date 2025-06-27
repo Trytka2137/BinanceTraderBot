@@ -82,4 +82,3 @@ def test_async_check_connectivity_failure(monkeypatch):
     assert not asyncio.run(
         async_check_connectivity('http://example.com', retries=2)
     )
-    )
