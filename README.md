@@ -39,6 +39,13 @@ Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml
    # lub zainstaluj cały moduł
    pip install .
    ```
+   Jeśli instalacja zakończy się błędem z powodu zablokowanego dostępu do
+   `pypi.org` lub `files.pythonhosted.org`, ustaw zmienne środowiskowe proxy albo
+   zainstaluj pakiety z wcześniej pobranych plików `.whl`. Możesz sprawdzić
+   łączność poleceniem:
+   ```bash
+   python -m TradingBotTV.ml_optimizer.network_utils https://pypi.org
+   ```
 3. Zbuduj projekt C#:
    ```bash
    dotnet build TradingBotTV/bot/BinanceTraderBot.csproj
