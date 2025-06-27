@@ -138,4 +138,22 @@ Komunikaty o błędach połączeń z API są wypisywane w konsoli, dzięki czemu
 
 Projekt jest dostępny na licencji MIT. Szczegóły znajdziesz w pliku [LICENSE](LICENSE).
 
+## Wkład w rozwój
+
+Przed wysłaniem zmian:
+
+1. Zainstaluj zależności Pythona:
+   ```bash
+   pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   ```
+2. Upewnij się, że wszystkie testy przechodzą:
+   ```bash
+   pytest
+   ```
+3. Sprawdź styl kodu:
+   ```bash
+   flake8
+   ```
+4. W opisie PR napisz skrótowy opis zmian i dodaj informację, czy testy zakończyły się sukcesem.
+
 Więcej informacji znajdziesz w pliku [docs/README_pl.md](docs/README_pl.md).
