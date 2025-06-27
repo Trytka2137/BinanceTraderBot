@@ -36,7 +36,6 @@ def test_check_connectivity_failure(monkeypatch):
     monkeypatch.setattr('requests.Session', lambda: session)
     assert not check_connectivity('http://example.com', retries=2)
 
-
 def test_async_check_connectivity_success(monkeypatch):
     class Session:
         async def __aenter__(self):
@@ -82,4 +81,5 @@ def test_async_check_connectivity_failure(monkeypatch):
     monkeypatch.setattr('aiohttp.ClientSession', lambda: Session())
     assert not asyncio.run(
         async_check_connectivity('http://example.com', retries=2)
+    )
     )

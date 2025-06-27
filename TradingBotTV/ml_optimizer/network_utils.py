@@ -65,7 +65,6 @@ def check_connectivity(url: str, retries: int = 3, timeout: int = 5) -> bool:
             time.sleep(2 ** attempt)
     return False
 
-
 async def async_check_connectivity(
     url: str,
     retries: int = 3,
@@ -95,7 +94,6 @@ async def async_check_connectivity(
                 return False
             await asyncio.sleep(2 ** attempt)
     return False
-
 
 if __name__ == "__main__":  # pragma: no cover - manual usage
     import argparse
