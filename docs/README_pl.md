@@ -98,8 +98,16 @@ włączania i wyłączania handlu. Możesz również podejrzeć ostatni log tran
 ## Jak uruchomić testy
 
 1. Zainstaluj zależności Pythona: `pip install -r TradingBotTV/ml_optimizer/requirements.txt`
+   Jeśli pojawi się błąd związany z brakiem dostępu do `pypi.org`, skonfiguruj
+   proxy lub użyj lokalnych plików `.whl`. Łączność sprawdzisz poleceniem:
+   `python -m TradingBotTV.ml_optimizer.network_utils https://pypi.org`
 2. Uruchom testy: `pytest`
 3. Sprawdź styl kodu: `flake8`
 
 Pliki w C# wymagają .NET 8. Informacje o budowaniu i uruchamianiu znajdują się w głównym pliku `README.md`.
+
+## Licencja
+
+Projekt jest dostępny na licencji MIT. Treść licencji znajduje się w pliku
+[`LICENSE`](../LICENSE).
 
