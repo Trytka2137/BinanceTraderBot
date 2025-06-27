@@ -17,6 +17,7 @@ from .tradingview_auto_trader import (
 )
 from .logger import get_logger
 from .monitor import record_metric
+from .network_utils import check_connectivity, async_check_connectivity
 from .network_utils import (
     check_connectivity,
     async_check_connectivity,
