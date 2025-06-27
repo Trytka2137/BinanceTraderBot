@@ -30,6 +30,12 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
+  i wysyłanie sygnałów do lokalnego webhooka. Funkcja `async_auto_trade_from_tv`
+  umożliwia obsługę wielu symboli równolegle.
+- `logger.py` – wspólne funkcje logujące zapisujące zdarzenia w `state/ml_optimizer.log`.
+- `monitor.py` – prosty rejestrator metryk tworzący plik `state/metrics.csv`.
+- `network_utils.py` – sprawdzanie dostępu do wybranych adresów URL (funkcje
+  `check_connectivity` i `async_check_connectivity`).
   i wysyłanie sygnałów do lokalnego webhooka.
 - `logger.py` – wspólne funkcje logujące zapisujące zdarzenia w `state/ml_optimizer.log`.
 - `monitor.py` – prosty rejestrator metryk tworzący plik `state/metrics.csv`.

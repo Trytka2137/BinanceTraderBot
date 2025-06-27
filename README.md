@@ -87,6 +87,8 @@ Przykład użycia:
 python -m TradingBotTV.ml_optimizer.network_utils https://api.binance.com
 ```
 Funkcja `check_connectivity` zwróci `True`, jeśli serwis odpowie, inaczej `False`.
+Możesz skorzystać także z `async_check_connectivity`, by wykonywać test
+w środowiskach asynchronicznych.
 
 ### Narzędzia ML
 * `auto_optimizer.py` – losowe poszukiwanie progów RSI
@@ -95,7 +97,8 @@ Funkcja `check_connectivity` zwróci `True`, jeśli serwis odpowie, inaczej `Fal
 * `github_strategy_simulator.py` – klonuje repozytoria z GitHub i symuluje
   zdefiniowane w nich strategie offline
 * `tradingview_auto_trader.py` – pobiera rekomendacje z TradingView i wysyła
-  sygnały do lokalnego webhooka
+  sygnały do lokalnego webhooka. Funkcja `async_auto_trade_from_tv` pozwala
+  obsłużyć wiele symboli równolegle.
 
 Aby uruchomić test porównawczy strategii:
 ```bash

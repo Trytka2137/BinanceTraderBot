@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import time
+import asyncio
+import aiohttp
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
@@ -63,6 +65,35 @@ def check_connectivity(url: str, retries: int = 3, timeout: int = 5) -> bool:
             time.sleep(2 ** attempt)
     return False
 
+async def async_check_connectivity(
+    url: str,
+    retries: int = 3,
+    timeout: int = 5,
+) -> bool:
+    """Asynchronous version of :func:`check_connectivity`."""
+
+    for attempt in range(retries):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.head(url, timeout=timeout) as resp:
+                    logger.debug(
+                        "Connectivity check to %s status %s",
+                        url,
+                        resp.status,
+                    )
+                    return True
+        except Exception as exc:  # pragma: no cover - network
+            logger.error(
+                "Async connectivity check failed (attempt %s/%s) for %s: %s",
+                attempt + 1,
+                retries,
+                url,
+                exc,
+            )
+            if attempt == retries - 1:
+                return False
+            await asyncio.sleep(2 ** attempt)
+    return False
 
 if __name__ == "__main__":  # pragma: no cover - manual usage
     import argparse

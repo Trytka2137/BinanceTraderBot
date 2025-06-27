@@ -17,6 +17,8 @@ TradingBotTV/ml_optimizer/auto_optimizer.py  -- simple optimizer storing model_s
 TradingBotTV/ml_optimizer/rl_optimizer.py    -- reinforcement-learning example
 TradingBotTV/ml_optimizer/logger.py          -- logging utilities with rotating file handler
 TradingBotTV/ml_optimizer/monitor.py         -- records metrics in state/metrics.csv
+TradingBotTV/ml_optimizer/network_utils.py   -- connectivity checks to external APIs (sync and async)
+TradingBotTV/ml_optimizer/tradingview_auto_trader.py -- fetches TradingView signals (sync and async)
 TradingBotTV/ml_optimizer/network_utils.py   -- connectivity checks to external APIs
 ```
 

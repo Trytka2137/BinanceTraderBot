@@ -1,4 +1,5 @@
 import sys
+import asyncio
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
@@ -34,3 +35,12 @@ def test_auto_trade_from_tv_triggers_webhook(monkeypatch):
     tv.auto_trade_from_tv("TEST")
 
     assert called == {'sig': 'buy', 'symbol': 'TEST'}
+
+
+def test_async_auto_trade_from_tv(monkeypatch):
+    calls = []
+    monkeypatch.setattr(tv, "auto_trade_from_tv", lambda s: calls.append(s))
+
+    asyncio.run(tv.async_auto_trade_from_tv(["A", "B"]))
+
+    assert set(calls) == {"A", "B"}
