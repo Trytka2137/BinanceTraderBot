@@ -15,6 +15,9 @@ TradingBotTV/bot/OptimizerRunner.cs    -- runs Python optimizers and updates con
 TradingBotTV/ml_optimizer/backtest.py  -- RSI/MACD backtests
 TradingBotTV/ml_optimizer/auto_optimizer.py  -- simple optimizer storing model_state.json
 TradingBotTV/ml_optimizer/rl_optimizer.py    -- reinforcement-learning example
+TradingBotTV/ml_optimizer/logger.py          -- logging utilities with rotating file handler
+TradingBotTV/ml_optimizer/monitor.py         -- records metrics in state/metrics.csv
+TradingBotTV/ml_optimizer/network_utils.py   -- connectivity checks to external APIs
 ```
 
 An `AGENTS.md` file defines basic contribution guidelines (tests must pass and `flake8` should report no errors).
@@ -32,7 +35,7 @@ Result: **10 tests pass**
 *(Compilation of the C# project wasn’t attempted because .NET tooling is absent in this environment.)*
 
 ### Analysis
-After checking each source file, no obviously missing code pieces were found. All essential methods are implemented for trading, strategy evaluation, webhook handling, and optimization. Python tests cover the main calculations. Some minor issues were observed:
+After checking each source file, no obviously missing code pieces were found. All essential methods are implemented for trading, strategy evaluation, webhook handling, and optimization. Python tests cover the main calculations. Sieć danych i webhooki wykorzystują obecnie ponawianie z narastającym opóźnieniem, a logi i metryki są zapisywane w `state/`. Some minor issues were observed:
 
 * Style warnings from `flake8` (unused imports, long lines, etc.)
 * Optimizer scripts expect `model_state.json` and `rl_state.json`, which are not included in the repo but likely generated at runtime.
