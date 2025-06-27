@@ -103,3 +103,8 @@ włączania i wyłączania handlu. Możesz również podejrzeć ostatni log tran
 
 Pliki w C# wymagają .NET 8. Informacje o budowaniu i uruchamianiu znajdują się w głównym pliku `README.md`.
 
+## Licencja
+
+Projekt jest dostępny na licencji MIT. Treść licencji znajduje się w pliku
+[`LICENSE`](../LICENSE).
+
