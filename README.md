@@ -13,6 +13,8 @@ Bot samoczynnie wyłącza handel, gdy łączna strata przekroczy ustawiony próg
 
 Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
+Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml_optimizer/state/ml_optimizer.log` (rotacja plików) oraz prosty moduł monitoringu zapisujący statystyki w `TradingBotTV/ml_optimizer/state/metrics.csv`. Operacje sieciowe (pobieranie danych, wysyłanie webhooków, klonowanie repozytoriów) są teraz powtarzane kilkukrotnie z rosnącym opóźnieniem, co zwiększa odporność na chwilowe problemy z siecią.
+
 
 
 
@@ -73,6 +75,9 @@ Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się a
 dane świecowe z API giełdy i zapisuje je w katalogu `ml_optimizer/data`. Przy
 braku połączenia z siecią wykorzystywana jest ostatnia zapisana kopia, dzięki
 czemu optymalizacja może przebiegać również offline.
+
+### Monitoring i logi
+Logi modułów Pythona zapisywane są w `TradingBotTV/ml_optimizer/state/ml_optimizer.log`. W pliku `TradingBotTV/ml_optimizer/state/metrics.csv` gromadzone są podstawowe metryki, takie jak najlepsze uzyskane PnL. Zaimplementowano ponawianie zapytań sieciowych, dlatego pobieranie danych i wysyłanie sygnałów jest odporniejsze na przejściowe problemy z siecią.
 
 ### Narzędzia ML
 * `auto_optimizer.py` – losowe poszukiwanie progów RSI
