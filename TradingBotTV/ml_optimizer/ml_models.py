@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.neural_network import MLPClassifier
 
 
 def _create_features(series: pd.Series) -> pd.DataFrame:
@@ -61,3 +62,19 @@ def backtest_tick_strategy(
         exit_price = df["price"].iloc[-1] * (1 - slippage)
         pnl += exit_price - entry - exit_price * fee
     return pnl
+
+
+def train_deep_learning_model(
+    df: pd.DataFrame, hidden_layers=(64, 64), epochs: int = 200
+) -> MLPClassifier:
+    """Train a simple deep neural network to predict next price direction."""
+    X = _create_features(df["close"])
+    y = (df["close"].shift(-1) > df["close"]).astype(int)[:-1]
+    X = X[:-1]
+    model = MLPClassifier(
+        hidden_layer_sizes=hidden_layers,
+        max_iter=epochs,
+        random_state=42,
+    )
+    model.fit(X, y)
+    return model

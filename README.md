@@ -24,6 +24,10 @@ ułatwiają zarządzanie wieloma symbolami, analizę księgi zleceń w czasie
 rzeczywistym oraz zabezpieczanie pozycji kontraktami futures lub wyszukiwanie
 okazji arbitrażowych.
 
+Repozytorium zawiera także moduły `execution` (TWAP, VWAP), `hft` z prostymi
+sygnałami z orderbooka oraz `options` wykorzystujący model Black-Scholes i
+strategię straddle. W `ml_models` dostępna jest funkcja `train_deep_learning_model`.
+
 Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
 Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml_optimizer/state/ml_optimizer.log` (rotacja plików) oraz prosty moduł monitoringu zapisujący statystyki w `TradingBotTV/ml_optimizer/state/metrics.csv`. Operacje sieciowe (pobieranie danych, wysyłanie webhooków, klonowanie repozytoriów) są teraz powtarzane kilkukrotnie z rosnącym opóźnieniem, co zwiększa odporność na chwilowe problemy z siecią.
@@ -65,18 +69,22 @@ Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml
    dotnet build TradingBotTV/bot/BinanceTraderBot.csproj
    ```
 
-## Uruchomienie
+## Konfiguracja
 1. Uzupełnij klucze API w pliku `TradingBotTV/config/settings.json` lub ustaw
    zmienne środowiskowe `BINANCE_API_KEY` i `BINANCE_API_SECRET`. Możesz też
-   utworzyć plik `.env` z tymi wartościami, a bot wczyta je automatycznie.
-2. W katalogu `TradingBotTV/bot` uruchom aplikację:
+   utworzyć plik `.env` z tymi wartościami.
+2. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
+   `takeProfitPercent`, `trailingStopPercent`, `maxDrawdownPercent` oraz okresy
+   EMA.
+
+## Uruchomienie
+1. W katalogu `TradingBotTV/bot` uruchom aplikację:
    ```bash
    dotnet run --project BinanceTraderBot.csproj
    ```
 
 
 
-W pliku `config/settings.json` możesz ustawić dodatkowo poziom `stopLossPercent` i `takeProfitPercent`, a także `maxDrawdownPercent`, który określa poziom straty (w % od kapitału początkowego) po przekroczeniu którego handel zostanie automatycznie wyłączony. Można też zmienić okresy `emaShortPeriod` i `emaLongPeriod` wykorzystywane w filtrze trendu.
 
 ### Parametry konfiguracyjne
 
@@ -91,10 +99,10 @@ wynik PnL i w razie potrzeby włączyć lub zatrzymać handel.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
 
-Źródłem danych do uczenia jest Binance. Moduł `data_fetcher.py` pobiera historyczne
-dane świecowe z API giełdy i zapisuje je w katalogu `ml_optimizer/data`. Przy
-braku połączenia z siecią wykorzystywana jest ostatnia zapisana kopia, dzięki
-czemu optymalizacja może przebiegać również offline.
+Źródłem danych do uczenia jest Binance. Moduł `data_fetcher.py` pobiera świeże
+dane OHLCV przez Binance API, a starsze notowania pobiera z CoinGecko.
+Dane są zapisywane w katalogu `ml_optimizer/data`, dzięki czemu optymalizacja
+może przebiegać również offline przy braku połączenia z siecią.
 
 ### Monitoring i logi
 Logi modułów Pythona zapisywane są w `TradingBotTV/ml_optimizer/state/ml_optimizer.log`. W pliku `TradingBotTV/ml_optimizer/state/metrics.csv` gromadzone są podstawowe metryki, takie jak najlepsze uzyskane PnL. Zaimplementowano ponawianie zapytań sieciowych, dlatego pobieranie danych i wysyłanie sygnałów jest odporniejsze na przejściowe problemy z siecią.
@@ -117,9 +125,6 @@ w środowiskach asynchronicznych.
 * `compare_strategies.py` – backtest RSI vs. MACD
 * `github_strategy_simulator.py` – klonuje repozytoria z GitHub i symuluje
   zdefiniowane w nich strategie offline
-* `tradingview_auto_trader.py` – pobiera rekomendacje z TradingView i wysyła
-  sygnały do lokalnego webhooka. Funkcja `async_auto_trade_from_tv` pozwala
-  obsłużyć wiele symboli równolegle.
 * `ml_models.py` – proste modele predykcyjne (RandomForest) i optymalizacja
   hiperparametrów
 * `backtest_tick_strategy` – testy na danych 1‑sekundowych z uwzględnieniem
@@ -128,6 +133,9 @@ w środowiskach asynchronicznych.
 * `orderbook.py` – obliczanie best bid/ask i wskaźnika przepływu zleceń
 * `hedging.py` – szacowanie wielkości pozycji zabezpieczającej
 * `arbitrage.py` – sprawdzanie różnic cen między giełdami
+* `execution.py` – algorytmy TWAP i VWAP
+* `hft.py` – proste sygnały z mikrostruktury rynku
+* `options.py` – wycena opcji Black-Scholes i strategia straddle
 
 Aby uruchomić test porównawczy strategii:
 ```bash

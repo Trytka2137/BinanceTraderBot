@@ -39,8 +39,7 @@ namespace Bot
             {
                 RunOptimizerLoop(TimeSpan.FromMinutes(15), token),
                 RunOptimizerLoop(TimeSpan.FromMinutes(30), token),
-                RunOptimizerLoop(TimeSpan.FromHours(1), token),
-                RunTradingViewLoop(TimeSpan.FromMinutes(10), token)
+                RunOptimizerLoop(TimeSpan.FromHours(1), token)
             };
 
             await Task.WhenAll(optTasks);
@@ -58,13 +57,5 @@ namespace Bot
             }
         }
 
-        private static async Task RunTradingViewLoop(TimeSpan interval, CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                await OptimizerRunner.RunTradingViewAutoTradeAsync(ConfigManager.Symbol).ConfigureAwait(false);
-                await Task.Delay(interval, token).ConfigureAwait(false);
-            }
-        }
     }
 }
