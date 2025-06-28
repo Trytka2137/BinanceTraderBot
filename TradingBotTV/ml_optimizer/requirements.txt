@@ -3,3 +3,4 @@ pandas
 numpy
 tradingview_ta
 aiohttp
+scikit-learn

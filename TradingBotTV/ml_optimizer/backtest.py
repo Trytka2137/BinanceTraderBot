@@ -30,20 +30,28 @@ def backtest_strategy(
         price = df["close"].iloc[i]
 
         if position == 1:
-            if stop_loss_pct and price <= entry_price * (1 - stop_loss_pct / 100):
+            if stop_loss_pct and price <= entry_price * (
+                1 - stop_loss_pct / 100
+            ):
                 pnl += price - entry_price
                 position = 0
                 continue
-            if take_profit_pct and price >= entry_price * (1 + take_profit_pct / 100):
+            if take_profit_pct and price >= entry_price * (
+                1 + take_profit_pct / 100
+            ):
                 pnl += price - entry_price
                 position = 0
                 continue
         elif position == -1:
-            if stop_loss_pct and price >= entry_price * (1 + stop_loss_pct / 100):
+            if stop_loss_pct and price >= entry_price * (
+                1 + stop_loss_pct / 100
+            ):
                 pnl += entry_price - price
                 position = 0
                 continue
-            if take_profit_pct and price <= entry_price * (1 - take_profit_pct / 100):
+            if take_profit_pct and price <= entry_price * (
+                1 - take_profit_pct / 100
+            ):
                 pnl += entry_price - price
                 position = 0
                 continue
