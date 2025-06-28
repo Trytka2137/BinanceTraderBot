@@ -10,6 +10,7 @@ from TradingBotTV.ml_optimizer import (  # noqa: E402
     train_predictive_model,
     optimize_predictive_model,
     backtest_tick_strategy,
+    train_deep_learning_model,
 )
 
 
@@ -34,3 +35,9 @@ def test_backtest_tick_strategy_basic():
     df = pd.DataFrame({"price": [1, 1.1, 1.2, 1.3]})
     pnl = backtest_tick_strategy(df, DummyModel())
     assert pnl > 0
+
+
+def test_train_deep_learning_model_returns_estimator():
+    df = pd.DataFrame({"close": [1, 2, 3, 2, 3, 4, 5, 4, 5, 6]})
+    model = train_deep_learning_model(df, hidden_layers=(4, 4), epochs=50)
+    assert hasattr(model, "predict")

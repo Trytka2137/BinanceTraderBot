@@ -10,12 +10,12 @@ from .backtest import (
     compute_sma,
     compute_rsi,
 )
-from .data_fetcher import fetch_klines, async_fetch_klines
-from .github_strategy_simulator import simulate_strategy
-from .tradingview_auto_trader import (
-    auto_trade_from_tv,
-    async_auto_trade_from_tv,
+from .data_fetcher import (
+    fetch_klines,
+    async_fetch_klines,
+    fetch_coingecko_market_chart,
 )
+from .github_strategy_simulator import simulate_strategy
 from .risk import kelly_fraction, value_at_risk
 from .fundamental import (
     fetch_coinmarketcap_data,
@@ -32,6 +32,7 @@ from .ml_models import (
     train_predictive_model,
     optimize_predictive_model,
     backtest_tick_strategy,
+    train_deep_learning_model,
 )
 from .portfolio import allocate_equal_weight, calculate_position_sizes
 from .orderbook import best_bid_ask, compute_order_flow_imbalance
@@ -40,6 +41,9 @@ from .arbitrage import price_spread
 from .logger import get_logger
 from .monitor import record_metric
 from .network_utils import check_connectivity, async_check_connectivity
+from .execution import twap_order, vwap_order
+from .hft import midprice, generate_hft_signal
+from .options import black_scholes_price, straddle_strategy
 
 __all__ = [
     "compute_rsi",
@@ -57,8 +61,7 @@ __all__ = [
     "check_connectivity",
     "async_check_connectivity",
     "simulate_strategy",
-    "auto_trade_from_tv",
-    "async_auto_trade_from_tv",
+    "fetch_coingecko_market_chart",
     "kelly_fraction",
     "value_at_risk",
     "fetch_coinmarketcap_data",
@@ -71,10 +74,17 @@ __all__ = [
     "train_predictive_model",
     "optimize_predictive_model",
     "backtest_tick_strategy",
+    "train_deep_learning_model",
     "allocate_equal_weight",
     "calculate_position_sizes",
     "best_bid_ask",
     "compute_order_flow_imbalance",
     "hedge_ratio",
     "price_spread",
+    "twap_order",
+    "vwap_order",
+    "midprice",
+    "generate_hft_signal",
+    "black_scholes_price",
+    "straddle_strategy",
 ]

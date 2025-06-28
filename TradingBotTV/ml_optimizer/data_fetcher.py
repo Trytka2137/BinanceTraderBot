@@ -148,3 +148,51 @@ async def async_fetch_klines(
     DATA_DIR.mkdir(exist_ok=True)
     df.to_csv(csv_path, index=False)
     return df[["open_time", "close"]]
+
+
+def fetch_coingecko_market_chart(
+    coin_id: str,
+    vs_currency: str = "usd",
+    days: int = 1,
+    interval: str = "hourly",
+    retries: int = 3,
+) -> pd.DataFrame:
+    """Return price data from CoinGecko market chart endpoint."""
+    url = (
+        "https://api.coingecko.com/api/v3/coins/"
+        f"{coin_id}/market_chart"
+        f"?vs_currency={vs_currency}&days={days}&interval={interval}"
+    )
+    session = requests.Session()
+    session.mount(
+        "https://",
+        HTTPAdapter(
+            max_retries=Retry(
+                total=retries,
+                backoff_factor=1,
+                status_forcelist=[500, 502, 503, 504],
+                allowed_methods=["GET"],
+            )
+        ),
+    )
+    data = None
+    for attempt in range(retries):
+        try:
+            resp = session.get(url, timeout=10)
+            resp.raise_for_status()
+            data = resp.json()
+            break
+        except requests.RequestException as exc:
+            logger.error(
+                "Error fetching CoinGecko data (attempt %s/%s): %s",
+                attempt + 1,
+                retries,
+                exc,
+            )
+            if attempt == retries - 1:
+                return pd.DataFrame(columns=["open_time", "close"])
+            time.sleep(2 ** attempt)
+    prices = data.get("prices", []) if data else []
+    df = pd.DataFrame(prices, columns=["timestamp", "close"])
+    df["open_time"] = pd.to_datetime(df["timestamp"], unit="ms")
+    return df[["open_time", "close"]]
