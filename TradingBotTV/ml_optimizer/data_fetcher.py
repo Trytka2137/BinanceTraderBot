@@ -163,7 +163,6 @@ def fetch_coingecko_market_chart(
     network is unavailable.
     """
     """Return price data from CoinGecko market chart endpoint."""
-
     url = (
         "https://api.coingecko.com/api/v3/coins/"
         f"{coin_id}/market_chart"

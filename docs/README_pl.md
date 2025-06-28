@@ -117,7 +117,11 @@ włączania i wyłączania handlu. Możesz również podejrzeć ostatni log tran
 
 ## Jak uruchomić testy
 
-1. Zainstaluj zależności Pythona: `pip install -r TradingBotTV/ml_optimizer/requirements.txt`
+1. Zainstaluj zależności Pythona i `flake8`:
+   ```bash
+   pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   pip install flake8
+   ```
    Jeśli pojawi się błąd związany z brakiem dostępu do `pypi.org`, skonfiguruj
    proxy lub użyj lokalnych plików `.whl`. Łączność sprawdzisz poleceniem:
    `python -m TradingBotTV.ml_optimizer.network_utils https://pypi.org`

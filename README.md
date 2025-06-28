@@ -107,6 +107,7 @@ braku połączenia z siecią.
 Dane są zapisywane w katalogu `ml_optimizer/data`, dzięki czemu optymalizacja
 może przebiegać również offline przy braku połączenia z siecią.
 
+
 ### Monitoring i logi
 Logi modułów Pythona zapisywane są w `TradingBotTV/ml_optimizer/state/ml_optimizer.log`. W pliku `TradingBotTV/ml_optimizer/state/metrics.csv` gromadzone są podstawowe metryki, takie jak najlepsze uzyskane PnL. Zaimplementowano ponawianie zapytań sieciowych, dlatego pobieranie danych i wysyłanie sygnałów jest odporniejsze na przejściowe problemy z siecią.
 
@@ -182,9 +183,10 @@ Projekt jest dostępny na licencji MIT. Szczegóły znajdziesz w pliku [LICENSE]
 
 Przed wysłaniem zmian:
 
-1. Zainstaluj zależności Pythona:
+1. Zainstaluj zależności Pythona i `flake8`:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   pip install flake8
    ```
 2. Upewnij się, że wszystkie testy przechodzą:
    ```bash
