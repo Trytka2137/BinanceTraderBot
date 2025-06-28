@@ -10,6 +10,20 @@ pod uwagę wzrost aktywności wolumenowej. Dodano obsługę trailing stop oraz
 dynamiczne dostosowanie wielkości pozycji w zależności od zmienności rynku.
 Bot samoczynnie wyłącza handel, gdy łączna strata przekroczy ustawiony próg `maxDrawdownPercent`.
 
+W folderze `ml_optimizer` pojawiły się moduły `risk`, `analytics` i `sentiment`,
+które umożliwiają obliczanie Kelly Criterion, Value at Risk, Bollinger Bands,
+oscylatora stochastycznego oraz prostą ocenę nastrojów inwestorów. Dodano
+również moduł `fundamental` z funkcjami pobierającymi dane z CoinMarketCap,
+CoinGecko, Messari i GitHuba. Moduł `sentiment` potrafi teraz pobrać wartość
+Crypto Fear & Greed Index i wskaźnik nastrojów z LunarCrush.
+Dodano też moduł `ml_models` z prostymi modelami predykcyjnymi oraz funkcję
+`backtest_tick_strategy` pozwalającą testować strategie na danych sekundowych
+z uwzględnieniem poślizgu i prowizji.
+Pojawiły się moduły `portfolio`, `orderbook`, `hedging` i `arbitrage`, które
+ułatwiają zarządzanie wieloma symbolami, analizę księgi zleceń w czasie
+rzeczywistym oraz zabezpieczanie pozycji kontraktami futures lub wyszukiwanie
+okazji arbitrażowych.
+
 Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
 Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml_optimizer/state/ml_optimizer.log` (rotacja plików) oraz prosty moduł monitoringu zapisujący statystyki w `TradingBotTV/ml_optimizer/state/metrics.csv`. Operacje sieciowe (pobieranie danych, wysyłanie webhooków, klonowanie repozytoriów) są teraz powtarzane kilkukrotnie z rosnącym opóźnieniem, co zwiększa odporność na chwilowe problemy z siecią.
@@ -106,6 +120,14 @@ w środowiskach asynchronicznych.
 * `tradingview_auto_trader.py` – pobiera rekomendacje z TradingView i wysyła
   sygnały do lokalnego webhooka. Funkcja `async_auto_trade_from_tv` pozwala
   obsłużyć wiele symboli równolegle.
+* `ml_models.py` – proste modele predykcyjne (RandomForest) i optymalizacja
+  hiperparametrów
+* `backtest_tick_strategy` – testy na danych 1‑sekundowych z uwzględnieniem
+  opóźnień i kosztów transakcyjnych
+* `portfolio.py` – zarządzanie wieloma instrumentami jednocześnie
+* `orderbook.py` – obliczanie best bid/ask i wskaźnika przepływu zleceń
+* `hedging.py` – szacowanie wielkości pozycji zabezpieczającej
+* `arbitrage.py` – sprawdzanie różnic cen między giełdami
 
 Aby uruchomić test porównawczy strategii:
 ```bash
@@ -162,5 +184,15 @@ Przed wysłaniem zmian:
    flake8
    ```
 4. W opisie PR napisz skrótowy opis zmian i dodaj informację, czy testy zakończyły się sukcesem.
+
+### Źródła analizy fundamentalnej i sentymentu
+
+- CoinMarketCap, CoinGecko – ogólne dane rynkowe
+- Messari, Token Terminal – raporty i przychody projektów
+- GitHub – statystyki aktywności deweloperów
+- Certik, Quantstamp – status audytów smart kontraktów
+- Glassnode, CryptoQuant, Santiment – wskaźniki on‑chain i sentyment
+- Etherscan, Solscan – eksploratory blockchaina
+- Crypto Fear & Greed Index, LunarCrush – gotowe wskaźniki nastroju
 
 Więcej informacji znajdziesz w pliku [docs/README_pl.md](docs/README_pl.md).

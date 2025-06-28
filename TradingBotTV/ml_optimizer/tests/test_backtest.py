@@ -81,7 +81,10 @@ def test_backtest_strategy_stop_loss(monkeypatch):
     def dummy_rsi(series):
         return pd.Series([50, 20, 20, 20])
 
-    monkeypatch.setattr("TradingBotTV.ml_optimizer.backtest.compute_rsi", dummy_rsi)
+    monkeypatch.setattr(
+        "TradingBotTV.ml_optimizer.backtest.compute_rsi",
+        dummy_rsi,
+    )
 
     pnl = backtest_strategy(df, stop_loss_pct=5)
     assert pnl == -1

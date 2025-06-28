@@ -32,6 +32,10 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
   i wysyłanie sygnałów do lokalnego webhooka. Funkcja `async_auto_trade_from_tv`
   umożliwia obsługę wielu symboli równolegle.
+- `portfolio.py` – alokacja kapitału na wiele par jednocześnie
+- `orderbook.py` – analiza order book i obliczanie best bid/ask
+- `hedging.py` – obliczanie wielkości pozycji zabezpieczającej
+- `arbitrage.py` – prosty kalkulator różnic cen
 - `logger.py` – wspólne funkcje logujące zapisujące zdarzenia w `state/ml_optimizer.log`.
 - `monitor.py` – prosty rejestrator metryk tworzący plik `state/metrics.csv`.
 - `network_utils.py` – sprawdzanie dostępu do wybranych adresów URL (funkcje
