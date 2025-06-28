@@ -101,6 +101,9 @@ Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się a
 
 Źródłem danych do uczenia jest Binance. Moduł `data_fetcher.py` pobiera świeże
 dane OHLCV przez Binance API, a starsze notowania pobiera z CoinGecko.
+Zarówno klines z Binance, jak i wyniki zapytań do CoinGecko są buforowane w
+`ml_optimizer/data`, dzięki czemu optymalizacja może przebiegać offline przy
+braku połączenia z siecią.
 Dane są zapisywane w katalogu `ml_optimizer/data`, dzięki czemu optymalizacja
 może przebiegać również offline przy braku połączenia z siecią.
 
@@ -192,6 +195,8 @@ Przed wysłaniem zmian:
    flake8
    ```
 4. W opisie PR napisz skrótowy opis zmian i dodaj informację, czy testy zakończyły się sukcesem.
+
+Zobacz także plik [TODO.md](TODO.md) zawierający listę planowanych usprawnień.
 
 ### Źródła analizy fundamentalnej i sentymentu
 

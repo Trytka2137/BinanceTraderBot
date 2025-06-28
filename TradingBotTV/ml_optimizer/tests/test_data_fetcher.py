@@ -34,3 +34,9 @@ def test_fetch_coingecko_market_chart(monkeypatch):
     )
     df = data_fetcher.fetch_coingecko_market_chart("bitcoin")
     assert list(df["close"]) == [10, 11]
+    csv_path = (
+        Path(data_fetcher.DATA_DIR)
+        / "coingecko_bitcoin_usd_1_hourly.csv"
+    )
+    if csv_path.exists():
+        csv_path.unlink()
