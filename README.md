@@ -104,6 +104,9 @@ dane OHLCV przez Binance API, a starsze notowania pobiera z CoinGecko.
 Zarówno klines z Binance, jak i wyniki zapytań do CoinGecko są buforowane w
 `ml_optimizer/data`, dzięki czemu optymalizacja może przebiegać offline przy
 braku połączenia z siecią.
+Dane są zapisywane w katalogu `ml_optimizer/data`, dzięki czemu optymalizacja
+może przebiegać również offline przy braku połączenia z siecią.
+
 
 ### Monitoring i logi
 Logi modułów Pythona zapisywane są w `TradingBotTV/ml_optimizer/state/ml_optimizer.log`. W pliku `TradingBotTV/ml_optimizer/state/metrics.csv` gromadzone są podstawowe metryki, takie jak najlepsze uzyskane PnL. Zaimplementowano ponawianie zapytań sieciowych, dlatego pobieranie danych i wysyłanie sygnałów jest odporniejsze na przejściowe problemy z siecią.

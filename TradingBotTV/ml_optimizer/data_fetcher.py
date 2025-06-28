@@ -162,6 +162,7 @@ def fetch_coingecko_market_chart(
     The data is cached to ``data/`` so repeated calls work offline if the
     network is unavailable.
     """
+    """Return price data from CoinGecko market chart endpoint."""
     url = (
         "https://api.coingecko.com/api/v3/coins/"
         f"{coin_id}/market_chart"
@@ -170,6 +171,7 @@ def fetch_coingecko_market_chart(
     csv_path = DATA_DIR / (
         f"coingecko_{coin_id}_{vs_currency}_{days}_{interval}.csv"
     )
+
     session = requests.Session()
     session.mount(
         "https://",
@@ -184,6 +186,7 @@ def fetch_coingecko_market_chart(
     )
     data = None
     # Try network request with retries and fall back to cached CSV
+
     for attempt in range(retries):
         try:
             resp = session.get(url, timeout=10)
@@ -203,6 +206,7 @@ def fetch_coingecko_market_chart(
                     df = pd.read_csv(csv_path)
                     df["open_time"] = pd.to_datetime(df["open_time"])
                     return df[["open_time", "close"]]
+
                 return pd.DataFrame(columns=["open_time", "close"])
             time.sleep(2 ** attempt)
     prices = data.get("prices", []) if data else []
@@ -210,4 +214,5 @@ def fetch_coingecko_market_chart(
     df["open_time"] = pd.to_datetime(df["timestamp"], unit="ms")
     DATA_DIR.mkdir(exist_ok=True)
     df[["open_time", "close"]].to_csv(csv_path, index=False)
+
     return df[["open_time", "close"]]
