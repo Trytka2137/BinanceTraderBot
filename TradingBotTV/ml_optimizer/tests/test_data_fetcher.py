@@ -40,4 +40,3 @@ def test_fetch_coingecko_market_chart(monkeypatch):
     )
     if csv_path.exists():
         csv_path.unlink()
-        csv_path.unlink()
