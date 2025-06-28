@@ -1,9 +1,10 @@
-# Python artifacts
-__pycache__/
-*.pyc
-TradingBotTV/ml_optimizer/state/
 
 # .NET build artifacts
+# Python artifacts
+*.dll
+*.pyc
+TradingBotTV/ml_optimizer/data/
+TradingBotTV/ml_optimizer/state/
+__pycache__/
 bin/
 obj/
-*.dll

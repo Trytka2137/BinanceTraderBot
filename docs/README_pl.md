@@ -21,7 +21,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `SymbolScanner.cs` – wyszukiwanie najpopularniejszych par handlowych.
 
 ### Python (`ml_optimizer`)
-- `data_fetcher.py` – pobieranie świec z Binance i zapisywanie ich w `ml_optimizer/data` (cache dla pracy offline).
+- `data_fetcher.py` – pobieranie świec z Binance i CoinGecko oraz zapisywanie ich w `ml_optimizer/data` (cache dla pracy offline).
 - `backtest.py` – funkcje do obliczania RSI/MACD oraz prosty backtest strategii.
 - `auto_optimizer.py` – losowe poszukiwanie najlepszych progów RSI; wyniki zapisywane są w `model_state.json`.
 - `optimizer.py` – przykład prostej optymalizacji parametrów w pętli.
@@ -29,9 +29,6 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `rl_optimizer.py` – rozbudowany przykład uczenia ze wzmocnieniem.
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
-- `tradingview_auto_trader.py` – pobieranie rekomendacji z TradingView
-  i wysyłanie sygnałów do lokalnego webhooka. Funkcja `async_auto_trade_from_tv`
-  umożliwia obsługę wielu symboli równolegle.
 - `portfolio.py` – alokacja kapitału na wiele par jednocześnie
 - `orderbook.py` – analiza order book i obliczanie best bid/ask
 - `hedging.py` – obliczanie wielkości pozycji zabezpieczającej
@@ -45,6 +42,25 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `monitor.py` – prosty rejestrator metryk tworzący plik `state/metrics.csv`.
 - `network_utils.py` – sprawdzanie dostępu do wybranych adresów URL.
 - `tests/test_backtest.py` – testy jednostkowe dla modułu `backtest.py`.
+
+## Instalacja i konfiguracja
+
+1. Zainstaluj Python 3.8+ oraz .NET 8 SDK.
+2. Zainstaluj zależności:
+   ```bash
+   pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   ```
+3. Zbuduj projekt C#:
+   ```bash
+   dotnet build TradingBotTV/bot/BinanceTraderBot.csproj
+   ```
+4. W pliku `TradingBotTV/config/settings.json` wpisz klucze API i parametry
+   strategii. Możesz też ustawić zmienne `BINANCE_API_KEY` i
+   `BINANCE_API_SECRET` w `.env`.
+5. Uruchom bota poleceniem:
+   ```bash
+   dotnet run --project TradingBotTV/bot/BinanceTraderBot.csproj
+   ```
 
 ## Edycja ustawień
 
@@ -101,7 +117,11 @@ włączania i wyłączania handlu. Możesz również podejrzeć ostatni log tran
 
 ## Jak uruchomić testy
 
-1. Zainstaluj zależności Pythona: `pip install -r TradingBotTV/ml_optimizer/requirements.txt`
+1. Zainstaluj zależności Pythona i `flake8`:
+   ```bash
+   pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   pip install flake8
+   ```
    Jeśli pojawi się błąd związany z brakiem dostępu do `pypi.org`, skonfiguruj
    proxy lub użyj lokalnych plików `.whl`. Łączność sprawdzisz poleceniem:
    `python -m TradingBotTV.ml_optimizer.network_utils https://pypi.org`
