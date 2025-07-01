@@ -16,10 +16,21 @@ namespace Bot
             var builder = WebApplication.CreateBuilder();
             var app = builder.Build();
 
+            var tokenValue = Environment.GetEnvironmentVariable("WEBHOOK_TOKEN");
+
             app.MapPost("/webhook", async (HttpContext context) =>
             {
                 try
                 {
+                    if (!string.IsNullOrEmpty(tokenValue))
+                    {
+                        if (!context.Request.Headers.TryGetValue("X-BOT-TOKEN", out var hdr) || hdr != tokenValue)
+                        {
+                            context.Response.StatusCode = 401;
+                            await context.Response.WriteAsync("Unauthorized");
+                            return;
+                        }
+                    }
                     using var reader = new StreamReader(context.Request.Body);
                     var body = await reader.ReadToEndAsync();
                     var json = JObject.Parse(body);

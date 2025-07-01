@@ -58,7 +58,8 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
    strategii. Możesz też ustawić zmienne `BINANCE_API_KEY` i
    `BINANCE_API_SECRET` w `.env`. Ścieżkę do pliku konfiguracyjnego można
    nadpisać zmienną `BOT_CONFIG_FILE` (oraz `BOT_ENV_FILE` dla alternatywnego
-   `.env`).
+   `.env`). Dodatkowo panel oraz webhook zabezpieczysz zmiennymi
+   `DASHBOARD_USERNAME`, `DASHBOARD_PASSWORD` i `WEBHOOK_TOKEN`.
 5. Uruchom bota poleceniem:
    ```bash
    dotnet run --project TradingBotTV/bot/BinanceTraderBot.csproj
@@ -114,8 +115,10 @@ Dodatkowo, moduły Pythona zapisują logi w pliku `TradingBotTV/ml_optimizer/sta
 ## Panel WWW
 
 Po uruchomieniu aplikacji dostępny jest prosty panel pod adresem `http://localhost:5001`.
-Znajdziesz tam kafelki z podsumowaniem PnL, wielkości pozycji oraz przycisk do
-włączania i wyłączania handlu. Możesz również podejrzeć ostatni log transakcji.
+Jeśli ustawisz zmienne `DASHBOARD_USERNAME` i `DASHBOARD_PASSWORD`, panel
+poprosi o podanie danych logowania. Znajdziesz tam kafelki z podsumowaniem PnL,
+wielkości pozycji oraz przycisk do włączania i wyłączania handlu. Możesz
+również podejrzeć ostatni log transakcji.
 
 ## Jak uruchomić testy
 

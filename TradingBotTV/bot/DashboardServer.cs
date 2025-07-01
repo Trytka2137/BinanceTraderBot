@@ -14,6 +14,35 @@ namespace Bot
             var builder = WebApplication.CreateBuilder();
             var app = builder.Build();
 
+            app.Use(async (context, next) =>
+            {
+                var user = Environment.GetEnvironmentVariable("DASHBOARD_USERNAME");
+                var pass = Environment.GetEnvironmentVariable("DASHBOARD_PASSWORD");
+                if (!string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pass))
+                {
+                    if (!context.Request.Headers.TryGetValue("Authorization", out var header) ||
+                        !header.ToString().StartsWith("Basic "))
+                    {
+                        context.Response.Headers["WWW-Authenticate"] = "Basic";
+                        context.Response.StatusCode = 401;
+                        await context.Response.WriteAsync("Authentication required");
+                        return;
+                    }
+
+                    var encoded = header.ToString()["Basic ".Length..].Trim();
+                    var bytes = Convert.FromBase64String(encoded);
+                    var credential = System.Text.Encoding.UTF8.GetString(bytes).Split(':', 2);
+                    if (credential.Length != 2 || credential[0] != user || credential[1] != pass)
+                    {
+                        context.Response.StatusCode = 401;
+                        await context.Response.WriteAsync("Invalid credentials");
+                        return;
+                    }
+                }
+
+                await next();
+            });
+
             app.MapGet("/", async context =>
             {
                 var pnl = TradeLogger.AnalyzePnL();

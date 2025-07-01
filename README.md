@@ -77,7 +77,9 @@ Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml
    utworzyć plik `.env` z tymi wartościami.
 2. Ścieżkę do pliku konfiguracyjnego można nadpisać zmienną
    `BOT_CONFIG_FILE` (oraz `BOT_ENV_FILE` dla alternatywnego `.env`).
-3. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
+3. Dostęp do panelu i webhooka można zabezpieczyć zmiennymi
+   `DASHBOARD_USERNAME`, `DASHBOARD_PASSWORD` oraz `WEBHOOK_TOKEN`.
+4. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
    `takeProfitPercent`, `trailingStopPercent`, `maxDrawdownPercent` oraz okresy
    EMA.
 
