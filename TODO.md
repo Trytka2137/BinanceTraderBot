@@ -1,19 +1,18 @@
 # TODO List
 
-This project is still under active development. Some improvements that could be implemented:
+This project is still under active development. The following tasks remain or could improve the bot:
 
-- Implement real-time order book feed via Binance WebSocket API for more precise HFT signals. **(done)**
-- Expand `hft.py` with latency monitoring and faster execution helpers. **(done)**
-- Extend the options module with Greeks calculations and advanced portfolio management. **(done)**
-- Add persistent database storage for trades and metrics. **(done)**
-- Build a Dash web panel with additional charts. **(done)**
-- Extend the web panel with API credential fields and start/stop controls. **(done)**
-- Implement adaptive stop-loss and take-profit using ATR. **(done)**
-- Support extended TradingView webhook fields and multi-strategy execution. **(done)**
-- Cache fundamental data regularly for transaction filters. **(done)**
-- Send Telegram alerts for executed trades and optimizer changes. **(done)**
-- Add deep reinforcement learning examples for adaptive strategies. **(done)**
-- Create visualizations of performance metrics and risk indicators. **(done)**
-- Write integration tests that cover the interaction between the C# bot and Python optimizer. **(done)**
+- Integrate real-time order book feed from Binance into the trading engine for more precise HFT signals.
+- Expand `hft.py` with latency monitoring and faster execution helpers.
+- Link the `database` module with the C# bot to store trades and metrics persistently.
+- Provide an optional Dash web panel with additional charts and API credential fields.
+- Implement adaptive stop-loss and take-profit using ATR.
+- Support extended TradingView webhook fields and multi-strategy execution.
+- Regularly cache fundamental data for transaction filters.
+- Send Telegram alerts for executed trades and optimizer changes.
+- Add deep reinforcement learning examples for adaptive strategies.
+- Create visualizations of performance metrics and risk indicators.
+- Write integration tests that cover the interaction between the C# bot and Python optimizer.
+- Add a paper-trading mode and multi-exchange support.
 
 Contributions are welcome!

@@ -98,10 +98,10 @@ Bot nasłuchuje na `http://localhost:5000/webhook` i uruchamia proces samouczeni
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
 Bot nawiązuje także stałe połączenie WebSocket z Binance, a opcjonalnie z TradingView, jeśli podasz adres w konfiguracji.
 
-Uruchomiono również panel na `http://localhost:5001`, który dzięki bibliotece Dash
-prezentuje wiele wykresów z modułu `ml_optimizer`. W panelu można podać klucze API,
-zdefiniować dodatkowe linki potrzebne botowi, obserwować aktualny status i jednym
-przyciskiem włączyć lub zatrzymać handel.
+Uruchomiony jest też prosty panel pod adresem `http://localhost:5001`.
+Wyświetla on PnL, łączną wielkość pozycji oraz przycisk start/stop.
+Panel nie korzysta z biblioteki Dash i nie pozwala na wpisanie kluczy API ani
+linków – służy jedynie do szybkiego podglądu i włączania bądź wyłączania handlu.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
 
@@ -170,9 +170,9 @@ standard PEP8:
 ```bash
 flake8
 ```
-Zestaw testów obejmuje także integrację pomiędzy modułem C# a skryptem
-`auto_optimizer.py`, dzięki czemu weryfikujemy poprawne wczytywanie
-zoptymalizowanych parametrów.
+Zestaw testów sprawdza m.in. czy wyniki `auto_optimizer.py` są poprawnie
+wczytywane do pliku konfiguracyjnego. Testy nie uruchamiają jednak bezpośrednio
+kodu w C# – weryfikacja odbywa się wyłącznie po stronie Pythona.
 
 
 ### Sygnały z TradingView
@@ -220,7 +220,7 @@ Zobacz także plik [TODO.md](TODO.md) zawierający listę planowanych usprawnie�
 ### Źródła analizy fundamentalnej i sentymentu
 
 - CoinMarketCap, CoinGecko – ogólne dane rynkowe
-- Messari, Token Terminal – raporty i przychody projektów
+- Messari – raporty i przychody projektów
 - GitHub – statystyki aktywności deweloperów
 - Certik, Quantstamp – status audytów smart kontraktów
 - Glassnode, CryptoQuant, Santiment – wskaźniki on‑chain i sentyment
