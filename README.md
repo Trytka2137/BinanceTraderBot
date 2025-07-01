@@ -94,8 +94,10 @@ Bot nasłuchuje na `http://localhost:5000/webhook` i uruchamia proces samouczeni
 `StrategyEngine` co minutę pobiera bieżące notowania i samodzielnie składa zlecenia. Wysoki wolumen zwiększa szansę na wygenerowanie sygnału.
 Bot nawiązuje także stałe połączenie WebSocket z Binance, a opcjonalnie z TradingView, jeśli podasz adres w konfiguracji.
 
-Uruchomiono również panel na `http://localhost:5001`, który pozwala podejrzeć logi,
-wynik PnL i w razie potrzeby włączyć lub zatrzymać handel.
+Uruchomiono również panel na `http://localhost:5001`, który dzięki bibliotece Dash
+prezentuje wiele wykresów z modułu `ml_optimizer`. W panelu można podać klucze API,
+zdefiniować dodatkowe linki potrzebne botowi, obserwować aktualny status i jednym
+przyciskiem włączyć lub zatrzymać handel.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
 
@@ -138,8 +140,14 @@ w środowiskach asynchronicznych.
 * `hedging.py` – szacowanie wielkości pozycji zabezpieczającej
 * `arbitrage.py` – sprawdzanie różnic cen między giełdami
 * `execution.py` – algorytmy TWAP i VWAP
-* `hft.py` – proste sygnały z mikrostruktury rynku
-* `options.py` – wycena opcji Black-Scholes i strategia straddle
+* `hft.py` – proste sygnały z mikrostruktury rynku i pomiar opóźnień
+* `options.py` – wycena opcji Black-Scholes, strategia straddle i greki
+* `websocket_orderbook.py` – kanał WebSocket z pełnym orderbookiem
+* `visualizer.py` – wizualizacja statystyk z `monitor.py`
+* `database.py` – zapisywanie transakcji i metryk w bazie SQLite/PostgreSQL
+* `web_panel.py` – panel Dash z wykresami wyników i formularzem do wpisania kluczy API oraz przyciskiem start/stop
+* `signal_handler.py` – rozszerzona obsługa sygnałów TradingView
+* `alerts.py` – powiadomienia Telegram o zleceniach i błędach
 
 Aby uruchomić test porównawczy strategii:
 ```bash
@@ -156,6 +164,9 @@ standard PEP8:
 ```bash
 flake8
 ```
+Zestaw testów obejmuje także integrację pomiędzy modułem C# a skryptem
+`auto_optimizer.py`, dzięki czemu weryfikujemy poprawne wczytywanie
+zoptymalizowanych parametrów.
 
 
 ### Sygnały z TradingView

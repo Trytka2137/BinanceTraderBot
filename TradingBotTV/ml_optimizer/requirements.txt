@@ -4,3 +4,5 @@ numpy
 aiohttp
 scikit-learn
 scipy
+matplotlib
+dash
