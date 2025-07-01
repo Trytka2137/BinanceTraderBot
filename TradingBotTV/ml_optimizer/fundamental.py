@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 import os
 import requests
 
@@ -40,3 +42,13 @@ def fetch_github_activity(repo: str) -> dict:
         "forks": data.get("forks_count", 0),
         "open_issues": data.get("open_issues_count", 0),
     }
+
+
+def cache_fundamental_data(symbol: str, path: str | Path) -> dict:
+    """Fetch basic fundamental data and cache it to ``path``."""
+    data = {
+        "cmc": fetch_coinmarketcap_data(symbol),
+        "cg": fetch_coingecko_market_data(symbol.lower()),
+    }
+    Path(path).write_text(json.dumps(data))
+    return data

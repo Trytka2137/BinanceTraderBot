@@ -25,3 +25,17 @@ def generate_hft_signal(snapshot: Dict[str, List[List[float]]]) -> int:
     if imbalance < -0.1:
         return -1
     return 0
+
+
+async def measure_latency(
+    url: str = "https://api.binance.com/api/v3/time",
+) -> float:
+    """Return latency in milliseconds for a simple HTTP GET request."""
+    import time
+    import aiohttp
+
+    start = time.perf_counter()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            await resp.text()
+    return (time.perf_counter() - start) * 1000
