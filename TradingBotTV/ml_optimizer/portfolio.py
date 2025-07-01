@@ -19,3 +19,17 @@ def calculate_position_sizes(
         raise ValueError("invalid inputs")
     alloc = capital * risk_percent / len(prices)
     return {sym: alloc / price for sym, price in prices.items() if price > 0}
+
+
+def risk_parity_weights(returns) -> Dict[str, float]:
+    """Return risk parity weights based on asset return volatility."""
+    import pandas as pd
+
+    if isinstance(returns, dict):
+        returns = pd.DataFrame(returns)
+    if returns.empty:
+        raise ValueError("returns must not be empty")
+    vol = returns.std()
+    inv_vol = 1 / vol.replace(0, float("inf"))
+    weights = inv_vol / inv_vol.sum()
+    return weights.to_dict()

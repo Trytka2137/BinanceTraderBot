@@ -1,0 +1,23 @@
+import sys
+from pathlib import Path
+import pandas as pd
+
+ROOT_DIR = Path(__file__).resolve().parents[3]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from TradingBotTV.ml_optimizer.web_panel import run_dashboard  # noqa: E402
+
+
+def test_run_dashboard(tmp_path):
+    csv = tmp_path / "metrics.csv"
+    df = pd.DataFrame(
+        {"timestamp": ["2024-01-01T00:00:00"], "name": ["m"], "value": [1]}
+    )
+    df.to_csv(csv, index=False, header=False)
+    app = run_dashboard(csv)
+    assert app.layout is not None
+    controls = app.layout.children[0]
+    ids = [c.id for c in controls.children if hasattr(c, "id")]
+    expected = {"api-key", "api-secret", "links", "status", "toggle-btn"}
+    assert expected <= set(ids)
