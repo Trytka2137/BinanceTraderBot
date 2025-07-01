@@ -28,6 +28,7 @@ from .fundamental import (
     fetch_messari_asset_metrics,
     fetch_github_activity,
     cache_fundamental_data,
+    cache_fundamental_data_regularly,
 )
 from .analytics import (
     bollinger_bands,
@@ -52,12 +53,28 @@ from .logger import get_logger
 from .monitor import record_metric
 from .network_utils import check_connectivity, async_check_connectivity
 from .execution import twap_order, vwap_order
-from .hft import midprice, generate_hft_signal, measure_latency
+from .hft import (
+    midprice,
+    generate_hft_signal,
+    measure_latency,
+    monitor_latency,
+    fast_market_order,
+)
 from .options import black_scholes_price, straddle_strategy, option_greeks
-from .visualizer import plot_metrics, plot_performance_and_risk
-from .deep_rl_examples import deep_q_learning_example
+from .visualizer import (
+    plot_metrics,
+    plot_performance_and_risk,
+    plot_risk_indicators,
+)
+from .deep_rl_examples import deep_q_learning_example, policy_gradient_example
 from .websocket_orderbook import stream_order_book
-from .database import init_db, store_trade, store_metric
+from .database import (
+    init_db,
+    store_trade,
+    store_metric,
+    fetch_trades,
+    fetch_metrics,
+)
 from .web_panel import run_dashboard
 from .signal_handler import parse_tradingview_payload, execute_strategies
 from .alerts import send_telegram_message
@@ -103,22 +120,29 @@ __all__ = [
     "midprice",
     "generate_hft_signal",
     "measure_latency",
+    "monitor_latency",
+    "fast_market_order",
     "black_scholes_price",
     "straddle_strategy",
     "option_greeks",
     "risk_parity_weights",
     "plot_metrics",
     "plot_performance_and_risk",
+    "plot_risk_indicators",
     "stream_order_book",
     "init_db",
     "store_trade",
     "store_metric",
+    "fetch_trades",
+    "fetch_metrics",
     "run_dashboard",
     "parse_tradingview_payload",
     "execute_strategies",
     "send_telegram_message",
     "adaptive_stop_levels",
     "cache_fundamental_data",
+    "cache_fundamental_data_regularly",
     "max_drawdown",
     "deep_q_learning_example",
+    "policy_gradient_example",
 ]

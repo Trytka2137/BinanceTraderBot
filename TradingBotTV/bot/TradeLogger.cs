@@ -1,9 +1,9 @@
 using System;
 using System.Diagnostics;
-
 using System.Globalization;
-
 using System.IO;
+using System.Net.Http;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -15,6 +15,29 @@ namespace Bot
             Path.Combine(AppContext.BaseDirectory, "data", "trade_log.csv");
         public static string LogPath => _logPath;
         private static readonly object _lock = new object();
+        private static readonly HttpClient _http = new HttpClient();
+
+        private static async Task SendTelegramAlertAsync(string message)
+        {
+            var token = ConfigManager.TelegramToken;
+            var chat = ConfigManager.TelegramChatId;
+            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(chat))
+                return;
+            try
+            {
+                var url = $"https://api.telegram.org/bot{token}/sendMessage";
+                var data = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("chat_id", chat),
+                    new KeyValuePair<string, string>("text", message),
+                });
+                await _http.PostAsync(url, data).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"⚠️ Telegram alert failed: {ex.Message}");
+            }
+        }
 
 
         public static void LogTrade(string symbol, string side, decimal price, decimal amount)
@@ -34,6 +57,15 @@ namespace Bot
                     File.AppendAllText(LogPath, line + Environment.NewLine);
                 }
 
+                _ = PythonDatabaseBridge.StoreTradeAsync(
+                    DateTime.UtcNow.ToString("o"),
+                    symbol,
+                    side,
+                    amount,
+                    price
+                );
+
+                _ = SendTelegramAlertAsync($"Trade {side} {amount} {symbol} at {price:F2}");
 
             }
             catch (Exception ex)

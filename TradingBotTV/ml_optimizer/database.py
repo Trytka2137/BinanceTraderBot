@@ -60,3 +60,21 @@ def store_metric(
             (timestamp, name, value),
         )
         conn.commit()
+
+
+def fetch_trades(db_path: str | Path = DB_FILE) -> list[tuple]:
+    """Return all stored trades as a list of tuples."""
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            "SELECT timestamp, symbol, side, quantity, price FROM trades"
+        )
+        return cur.fetchall()
+
+
+def fetch_metrics(db_path: str | Path = DB_FILE) -> list[tuple]:
+    """Return all stored metrics as a list of tuples."""
+    with sqlite3.connect(db_path) as conn:
+        cur = conn.execute(
+            "SELECT timestamp, name, value FROM metrics"
+        )
+        return cur.fetchall()

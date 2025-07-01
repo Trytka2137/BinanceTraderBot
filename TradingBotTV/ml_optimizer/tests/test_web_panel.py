@@ -15,9 +15,17 @@ def test_run_dashboard(tmp_path):
         {"timestamp": ["2024-01-01T00:00:00"], "name": ["m"], "value": [1]}
     )
     df.to_csv(csv, index=False, header=False)
-    app = run_dashboard(csv)
+    app = run_dashboard(csv, extra_charts=True, include_credentials=True)
     assert app.layout is not None
     controls = app.layout.children[0]
     ids = [c.id for c in controls.children if hasattr(c, "id")]
-    expected = {"api-key", "api-secret", "links", "status", "toggle-btn"}
+    expected = {
+        "api-key",
+        "api-secret",
+        "api-pass",
+        "links",
+        "status",
+        "toggle-btn",
+    }
     assert expected <= set(ids)
+    assert len(app.layout.children) >= 2

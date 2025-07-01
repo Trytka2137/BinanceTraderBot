@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import os
+import threading
 import requests
 
 
@@ -52,3 +53,34 @@ def cache_fundamental_data(symbol: str, path: str | Path) -> dict:
     }
     Path(path).write_text(json.dumps(data))
     return data
+
+
+def cache_fundamental_data_regularly(
+    symbol: str,
+    path: str | Path,
+    interval: int = 3600,
+    stop_event: threading.Event | None = None,
+) -> threading.Thread:
+    """Periodically cache fundamentals every ``interval`` seconds.
+
+    Parameters
+    ----------
+    symbol:
+        Asset symbol to fetch.
+    path:
+        File path for cached JSON.
+    interval:
+        Time between updates in seconds. Default ``3600``.
+    stop_event:
+        Optional :class:`threading.Event` used to stop the loop.
+    """
+
+    def _loop() -> None:
+        while True:
+            cache_fundamental_data(symbol, path)
+            if stop_event and stop_event.wait(interval):
+                break
+
+    thread = threading.Thread(target=_loop, daemon=True)
+    thread.start()
+    return thread

@@ -45,3 +45,38 @@ def deep_q_learning_example(
         epsilon *= epsilon_decay
         rewards_history.append(total_reward)
     return rewards_history
+
+
+def policy_gradient_example(
+    prices: pd.Series,
+    episodes: int = 10,
+    lr: float = 0.01,
+    gamma: float = 0.99,
+) -> list[float]:
+    """Train a toy policy gradient agent and return rewards."""
+    if prices.empty or len(prices) < 2:
+        raise ValueError("price series must contain at least 2 points")
+
+    weights = np.random.randn(2) * 0.1
+    history: list[float] = []
+    for _ in range(episodes):
+        grads: list[np.ndarray] = []
+        rewards: list[float] = []
+        pos = 0
+        total = 0.0
+        for i in range(len(prices) - 1):
+            state = np.array([prices.iloc[i], pos])
+            prob = 1 / (1 + np.exp(-state @ weights))
+            action = 1 if np.random.rand() < prob else 0
+            next_pos = action
+            reward = prices.iloc[i + 1] - prices.iloc[i] if next_pos else 0.0
+            grads.append(state * (action - prob))
+            rewards.append(reward)
+            pos = next_pos
+            total += reward
+        G = 0.0
+        for g, r in zip(reversed(grads), reversed(rewards)):
+            G = r + gamma * G
+            weights += lr * G * g
+        history.append(total)
+    return history

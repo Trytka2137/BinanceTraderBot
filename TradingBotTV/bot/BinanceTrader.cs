@@ -44,8 +44,9 @@ namespace Bot
                 return;
             }
 
-            var sl = price * (1 - ConfigManager.StopLossPercent / 100m);
-            var tp = price * (1 + ConfigManager.TakeProfitPercent / 100m);
+            var atr = await GetAtr(symbol).ConfigureAwait(false);
+            var sl = price - atr * ConfigManager.StopLossPercent;
+            var tp = price + atr * ConfigManager.TakeProfitPercent;
             var trailing = ConfigManager.TrailingStopPercent > 0
                 ? price * (ConfigManager.TrailingStopPercent / 100m)
                 : 0m;
@@ -100,6 +101,36 @@ namespace Bot
             catch (Exception ex)
             {
                 BotLogger.Log($"❌ Błąd pobierania ceny: {ex.Message}");
+                return 0m;
+            }
+        }
+
+        private static async Task<decimal> GetAtr(string symbol, string interval = "1h", int period = 14)
+        {
+            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={period + 1}";
+            try
+            {
+                var json = await httpClient.GetStringAsync(url).ConfigureAwait(false);
+                var arr = Newtonsoft.Json.Linq.JArray.Parse(json);
+                if (arr.Count < period + 1) return 0m;
+                decimal sum = 0m;
+                decimal prevClose = decimal.Parse(arr[0][4].ToString());
+                for (int i = 1; i < arr.Count; i++)
+                {
+                    var high = decimal.Parse(arr[i][2].ToString());
+                    var low = decimal.Parse(arr[i][3].ToString());
+                    var close = decimal.Parse(arr[i][4].ToString());
+                    var hl = high - low;
+                    var hc = Math.Abs(high - prevClose);
+                    var lc = Math.Abs(low - prevClose);
+                    var tr = Math.Max((double)hl, Math.Max((double)hc, (double)lc));
+                    sum += (decimal)tr;
+                    prevClose = close;
+                }
+                return sum / period;
+            }
+            catch
+            {
                 return 0m;
             }
         }

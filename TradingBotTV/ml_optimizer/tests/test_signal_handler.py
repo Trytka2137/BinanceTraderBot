@@ -13,18 +13,31 @@ def test_parse_payload():
         "ticker": "BTCUSDT",
         "volume": "1.5",
         "vars": {"foo": 1},
-        "strategy": {"order_action": "buy"},
+        "price": 123,
+        "exchange": "BINANCE",
+        "strategies": ["s1"],
+        "strategy": {"order_action": "buy", "order_contracts": 2},
     }
     data = signal_handler.parse_tradingview_payload(payload)
     assert data["volume"] == 1.5
     assert data["vars"]["foo"] == 1
+    assert data["price"] == 123
+    assert data["exchange"] == "BINANCE"
+    assert data["size"] == 2
+    assert data["strategies"] == ["s1"]
 
 
 def test_execute_strategies():
     called = []
 
-    def strat(p):
-        called.append(p)
+    def s1(p):
+        called.append("s1")
 
-    signal_handler.execute_strategies([strat], {"a": 1})
-    assert called and called[0]["a"] == 1
+    def s2(p):
+        called.append("s2")
+
+    signal_handler.execute_strategies(
+        {"s1": s1, "s2": s2},
+        {"strategies": ["s1"], "a": 1},
+    )
+    assert called == ["s1"]

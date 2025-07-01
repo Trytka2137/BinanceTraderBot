@@ -39,3 +39,30 @@ async def measure_latency(
         async with session.get(url) as resp:
             await resp.text()
     return (time.perf_counter() - start) * 1000
+
+
+async def monitor_latency(urls: List[str]) -> Dict[str, float]:
+    """Return latency measurements for multiple ``urls``."""
+    import asyncio
+
+    results = await asyncio.gather(*(measure_latency(u) for u in urls))
+    return dict(zip(urls, results))
+
+
+async def fast_market_order(
+    session,
+    symbol: str,
+    side: str,
+    quantity: float,
+) -> Dict:
+    """Send a quick market order via ``session`` and return JSON response."""
+
+    url = "https://api.binance.com/api/v3/order/test"
+    params = {
+        "symbol": symbol,
+        "side": side,
+        "type": "MARKET",
+        "quantity": quantity,
+    }
+    async with session.post(url, params=params) as resp:
+        return await resp.json()

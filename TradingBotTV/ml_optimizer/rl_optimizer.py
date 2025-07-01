@@ -10,6 +10,7 @@ from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
 from .logger import get_logger
 from .monitor import record_metric
+from .alerts import send_telegram_message
 from .state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
@@ -128,6 +129,12 @@ def train(
     logger.info('Best params: %s %s', best_buy, best_sell)
     record_metric('rl_optimizer_buy', best_buy)
     record_metric('rl_optimizer_sell', best_sell)
+    try:
+        send_telegram_message(
+            f"RL optimizer params: Buy={best_buy} Sell={best_sell}"
+        )
+    except Exception:
+        pass
     return best_buy, best_sell
 
 
