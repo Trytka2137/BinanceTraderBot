@@ -7,6 +7,7 @@ from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
 from .logger import get_logger
 from .monitor import record_metric
+from .alerts import send_telegram_message
 from .state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
@@ -75,6 +76,14 @@ def optimize(symbol: str, iterations: int = 20) -> tuple[int, int, float]:
         best_pnl,
     )
     record_metric("optimizer_pnl", best_pnl)
+    try:
+        msg = (
+            f"Optimizer updated: Buy={best_buy} "
+            f"Sell={best_sell} PnL={best_pnl:.2f}"
+        )
+        send_telegram_message(msg)
+    except Exception:
+        pass
     return best_buy, best_sell, best_pnl
 
 

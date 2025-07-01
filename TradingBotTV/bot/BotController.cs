@@ -18,6 +18,11 @@ namespace Bot
         {
             var pnl = TradeLogger.AnalyzePnL();
             var limit = -(ConfigManager.InitialCapital * ConfigManager.MaxDrawdownPercent / 100m);
+            _ = PythonDatabaseBridge.StoreMetricAsync(
+                DateTime.UtcNow.ToString("o"),
+                "pnl",
+                pnl
+            );
             if (pnl <= limit && _tradingEnabled)
             {
                 _tradingEnabled = false;

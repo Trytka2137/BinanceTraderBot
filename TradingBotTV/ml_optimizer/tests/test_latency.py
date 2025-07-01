@@ -6,7 +6,7 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from TradingBotTV.ml_optimizer.hft import measure_latency  # noqa: E402
+from TradingBotTV.ml_optimizer import hft  # noqa: E402
 
 
 class _Resp:
@@ -33,5 +33,12 @@ class _Session:
 
 def test_measure_latency(monkeypatch):
     monkeypatch.setattr("aiohttp.ClientSession", lambda: _Session())
-    latency = asyncio.run(measure_latency("http://example.com"))
+    latency = asyncio.run(hft.measure_latency("http://example.com"))
     assert latency >= 0
+
+
+def test_monitor_latency(monkeypatch):
+    monkeypatch.setattr("aiohttp.ClientSession", lambda: _Session())
+    result = asyncio.run(hft.monitor_latency(["http://a", "http://b"]))
+    assert set(result.keys()) == {"http://a", "http://b"}
+    assert all(v >= 0 for v in result.values())

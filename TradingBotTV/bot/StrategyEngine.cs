@@ -17,6 +17,13 @@ namespace Bot
 
         private record Kline(decimal Close, decimal Volume);
 
+        private static int _hftSignal;
+
+        public static void UpdateHftSignal(int signal)
+        {
+            _hftSignal = signal;
+        }
+
         private static decimal ComputeVolatility(List<decimal> closes)
         {
             if (closes.Count < 2) return 0m;
@@ -62,7 +69,7 @@ namespace Bot
                         if (rsi1m < ConfigManager.RsiBuyThreshold &&
                             rsi30m < ConfigManager.RsiBuyThreshold &&
                             rsi1h < ConfigManager.RsiBuyThreshold &&
-                            volFactor > 1.2m && uptrend)
+                            volFactor > 1.2m && uptrend && _hftSignal > 0)
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("BUY", null, volatility).ConfigureAwait(false);
@@ -70,7 +77,7 @@ namespace Bot
                         else if (rsi1m > ConfigManager.RsiSellThreshold &&
                                  rsi30m > ConfigManager.RsiSellThreshold &&
                                  rsi1h > ConfigManager.RsiSellThreshold &&
-                                 volFactor > 1.2m && downtrend)
+                                 volFactor > 1.2m && downtrend && _hftSignal < 0)
                         {
                             var trader = new BinanceTrader();
                             await trader.ExecuteTrade("SELL", null, volatility).ConfigureAwait(false);

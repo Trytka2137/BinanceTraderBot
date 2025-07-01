@@ -91,6 +91,14 @@ namespace Bot
         public static string TradingViewWsUrl =>
             _config["websocket"]?["tradingViewUrl"]?.ToString() ?? string.Empty;
 
+        public static string TelegramToken =>
+            Environment.GetEnvironmentVariable("TELEGRAM_TOKEN")
+            ?? _config["telegram"]?["token"]?.ToString() ?? string.Empty;
+
+        public static string TelegramChatId =>
+            Environment.GetEnvironmentVariable("TELEGRAM_CHAT_ID")
+            ?? _config["telegram"]?["chatId"]?.ToString() ?? string.Empty;
+
         public static void Reload() => Load();
 
         public static void OverrideSymbol(string symbol)

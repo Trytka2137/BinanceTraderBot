@@ -17,6 +17,7 @@ namespace Bot
             BotLogger.Log("🚀 Bot uruchomiony. Oczekuję na sygnały z TradingView...");
 
             ConfigManager.Load();
+            await PythonDatabaseBridge.InitDbAsync().ConfigureAwait(false);
 
             var pairs = await SymbolScanner.GetTradingPairsAsync().ConfigureAwait(false);
             var best = await SymbolScanner.GetHighestVolumePairAsync(pairs).ConfigureAwait(false);
@@ -31,6 +32,7 @@ namespace Bot
             Task.Run(() => WebhookServer.Start(token));
             Task.Run(() => StrategyEngine.StartAsync(token));
             Task.Run(() => BinanceWebSocket.StartAsync(token));
+            Task.Run(() => OrderBookFeed.StartAsync(token));
             Task.Run(() => TradingViewWebSocket.StartAsync(token));
             Task.Run(() => DashboardServer.Start(token));
 

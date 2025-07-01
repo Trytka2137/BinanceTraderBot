@@ -14,7 +14,11 @@ from .monitor import MONITOR_FILE
 BOT_STATUS = "Stopped"
 
 
-def run_dashboard(path: str | Path = MONITOR_FILE) -> Dash:
+def run_dashboard(
+    path: str | Path = MONITOR_FILE,
+    extra_charts: bool = True,
+    include_credentials: bool = True,
+) -> Dash:
     """Return a Dash app with metrics from ``path`` and simple controls."""
     df = pd.read_csv(path, names=["timestamp", "name", "value"])
     if df.empty:
@@ -25,20 +29,35 @@ def run_dashboard(path: str | Path = MONITOR_FILE) -> Dash:
 
     app = Dash(__name__)
     fig = px.line(pivot, x="timestamp", y=pivot.columns[1:])
-    app.layout = html.Div([
-        html.Div(
+    charts = [dcc.Graph(figure=fig)]
+    if extra_charts and "pnl" in pivot.columns:
+        fig2 = px.bar(pivot, x="timestamp", y="pnl", title="PnL")
+        charts.append(dcc.Graph(figure=fig2))
+
+    controls = []
+    if include_credentials:
+        controls.extend(
             [
                 html.Label("API Key"),
                 dcc.Input(id="api-key", type="text"),
                 html.Label("API Secret"),
                 dcc.Input(id="api-secret", type="password"),
-                html.Label("Links"),
-                dcc.Textarea(id="links"),
-                html.Div(id="status", children=f"Status: {BOT_STATUS}"),
-                html.Button("Toggle", id="toggle-btn"),
+                html.Label("API Passphrase"),
+                dcc.Input(id="api-pass", type="password"),
             ]
-        ),
-        dcc.Graph(figure=fig),
+        )
+    controls.extend(
+        [
+            html.Label("Links"),
+            dcc.Textarea(id="links"),
+            html.Div(id="status", children=f"Status: {BOT_STATUS}"),
+            html.Button("Toggle", id="toggle-btn"),
+        ]
+    )
+
+    app.layout = html.Div([
+        html.Div(controls),
+        *charts,
     ])
 
     @app.callback(
