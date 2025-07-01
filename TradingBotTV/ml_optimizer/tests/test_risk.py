@@ -14,6 +14,12 @@ def test_kelly_fraction_valid():
     assert 0 < frac < 1
 
 
+def test_kelly_fraction_formula():
+    """Ensure kelly_fraction matches theoretical value."""
+    frac = risk.kelly_fraction(0.6, 2)
+    assert abs(frac - 0.4) < 1e-9
+
+
 def test_value_at_risk_basic():
     series = pd.Series([1, -2, 3, -4, 5])
     var = risk.value_at_risk(series, level=0.2)

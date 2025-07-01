@@ -75,7 +75,9 @@ Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml
 1. Uzupełnij klucze API w pliku `TradingBotTV/config/settings.json` lub ustaw
    zmienne środowiskowe `BINANCE_API_KEY` i `BINANCE_API_SECRET`. Możesz też
    utworzyć plik `.env` z tymi wartościami.
-2. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
+2. Ścieżkę do pliku konfiguracyjnego można nadpisać zmienną
+   `BOT_CONFIG_FILE` (oraz `BOT_ENV_FILE` dla alternatywnego `.env`).
+3. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
    `takeProfitPercent`, `trailingStopPercent`, `maxDrawdownPercent` oraz okresy
    EMA.
 
