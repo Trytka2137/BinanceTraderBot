@@ -2,13 +2,21 @@ import pandas as pd
 
 
 def kelly_fraction(win_prob: float, win_loss_ratio: float) -> float:
-    """Return Kelly optimal fraction of capital to risk."""
+    """Return Kelly optimal fraction of capital to risk.
+
+    The formula used follows ``p - (1 - p) / b`` where ``p`` is the probability
+    of winning and ``b`` is the win/loss ratio. Previous versions incorrectly
+    divided both terms by ``b`` which underestimated the fraction when
+    ``b`` was not ``1``.
+    """
+
     if not 0 < win_prob < 1:
         raise ValueError("win_prob must be in (0, 1)")
     if win_loss_ratio <= 0:
         raise ValueError("win_loss_ratio must be positive")
+
     q = 1 - win_prob
-    return (win_prob / win_loss_ratio) - (q / win_loss_ratio)
+    return win_prob - q / win_loss_ratio
 
 
 def value_at_risk(returns: pd.Series, level: float = 0.05) -> float:

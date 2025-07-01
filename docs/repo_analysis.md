@@ -3,12 +3,12 @@ The repository contains a Binance trading bot implemented in both C# and Python.
 Main components:
 
 * **Python** modules for backtesting and optimization (`TradingBotTV/ml_optimizer`). Tests verify key functions such as RSI/MACD calculations and basic backtest behavior, and they all pass.
-* **C#** project (`TradingBotTV/bot`) implementing the bot logic (trading execution, signal processing, strategy engine, webhook server, etc.) configured via `config/settings.json`.
+* **C#** project (`TradingBotTV/bot`) implementing the bot logic (trading execution, signal processing, strategy engine, webhook server, etc.) configured via `config/settings.json` (the path can be overridden with `BOT_CONFIG_FILE`).
 
 Important files include:
 
 ```
-TradingBotTV/config/settings.json      -- bot configuration
+TradingBotTV/config/settings.json      -- bot configuration (override path with `BOT_CONFIG_FILE`)
 TradingBotTV/bot/BinanceTrader.cs      -- handles order execution
 TradingBotTV/bot/StrategyEngine.cs     -- computes RSI/volume factors and trades
 TradingBotTV/bot/OptimizerRunner.cs    -- runs Python optimizers and updates config

@@ -7,9 +7,11 @@ namespace Bot
     public static class ConfigManager
     {
         private static readonly string _filePath =
-            Path.Combine(AppContext.BaseDirectory, "config", "settings.json");
+            Environment.GetEnvironmentVariable("BOT_CONFIG_FILE")
+            ?? Path.Combine(AppContext.BaseDirectory, "config", "settings.json");
         private static readonly string _envPath =
-            Path.Combine(AppContext.BaseDirectory, ".env");
+            Environment.GetEnvironmentVariable("BOT_ENV_FILE")
+            ?? Path.Combine(AppContext.BaseDirectory, ".env");
         private static JObject _config;
 
         public static void Load()

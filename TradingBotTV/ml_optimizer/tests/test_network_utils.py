@@ -18,26 +18,49 @@ def test_check_connectivity_success(monkeypatch):
         class Resp:
             status_code = 200
         return Resp()
-    session = type('S', (), {
-        'head': staticmethod(head),
-        'mount': lambda *a, **k: None,
-    })
-    monkeypatch.setattr('requests.Session', lambda: session)
+
+    class Session:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def head(self, url, timeout):
+            return head(url, timeout)
+
+        @staticmethod
+        def mount(*_a, **_k):
+            pass
+
+    monkeypatch.setattr('requests.Session', lambda: Session())
     assert check_connectivity('http://example.com')
 
 
 def test_check_connectivity_failure(monkeypatch):
     def head(url, timeout):
         raise RequestException('fail')
-    session = type('S', (), {
-        'head': staticmethod(head),
-        'mount': lambda *a, **k: None,
-    })
-    monkeypatch.setattr('requests.Session', lambda: session)
+
+    class Session:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            pass
+
+        def head(self, url, timeout):
+            return head(url, timeout)
+
+        @staticmethod
+        def mount(*_a, **_k):
+            pass
+
+    monkeypatch.setattr('requests.Session', lambda: Session())
     assert not check_connectivity('http://example.com', retries=2)
 
 
 def test_async_check_connectivity_success(monkeypatch):
+
     class Session:
         async def __aenter__(self):
             return self
@@ -62,6 +85,7 @@ def test_async_check_connectivity_success(monkeypatch):
 
 
 def test_async_check_connectivity_failure(monkeypatch):
+
     class Session:
         async def __aenter__(self):
             return self

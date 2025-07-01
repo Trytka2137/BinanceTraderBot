@@ -56,7 +56,9 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
    ```
 4. W pliku `TradingBotTV/config/settings.json` wpisz klucze API i parametry
    strategii. Możesz też ustawić zmienne `BINANCE_API_KEY` i
-   `BINANCE_API_SECRET` w `.env`.
+   `BINANCE_API_SECRET` w `.env`. Ścieżkę do pliku konfiguracyjnego można
+   nadpisać zmienną `BOT_CONFIG_FILE` (oraz `BOT_ENV_FILE` dla alternatywnego
+   `.env`).
 5. Uruchom bota poleceniem:
    ```bash
    dotnet run --project TradingBotTV/bot/BinanceTraderBot.csproj
