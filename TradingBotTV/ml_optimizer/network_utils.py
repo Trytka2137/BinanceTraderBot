@@ -19,29 +19,17 @@ def check_connectivity(url: str, retries: int = 3, timeout: int = 5) -> bool:
     The request is retried ``retries`` times on failures. Only a HEAD
     request is sent to keep traffic minimal.
     """
+    adapter = HTTPAdapter(
+        max_retries=Retry(
+            total=retries,
+            backoff_factor=1,
+            status_forcelist=[500, 502, 503, 504],
+            allowed_methods=["HEAD", "GET"],
+        )
+    )
     with requests.Session() as session:
-        session.mount(
-            "http://",
-            HTTPAdapter(
-                max_retries=Retry(
-                    total=retries,
-                    backoff_factor=1,
-                    status_forcelist=[500, 502, 503, 504],
-                    allowed_methods=["HEAD", "GET"],
-                )
-            ),
-        )
-        session.mount(
-            "https://",
-            HTTPAdapter(
-                max_retries=Retry(
-                    total=retries,
-                    backoff_factor=1,
-                    status_forcelist=[500, 502, 503, 504],
-                    allowed_methods=["HEAD", "GET"],
-                )
-            ),
-        )
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
 
         for attempt in range(retries):
             try:
