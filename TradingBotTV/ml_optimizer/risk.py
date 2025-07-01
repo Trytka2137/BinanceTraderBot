@@ -18,3 +18,23 @@ def value_at_risk(returns: pd.Series, level: float = 0.05) -> float:
     if returns.empty:
         raise ValueError("returns series is empty")
     return -returns.quantile(level)
+
+
+def adaptive_stop_levels(
+    prices: pd.Series,
+    atr_period: int = 14,
+    stop_factor: float = 2.0,
+    take_factor: float = 3.0,
+) -> dict:
+    """Return adaptive stop-loss and take-profit based on ATR."""
+    if prices.empty or len(prices) < atr_period + 1:
+        raise ValueError("not enough price data")
+    from .backtest import compute_atr
+
+    high = prices.shift().fillna(prices)
+    low = prices.shift().fillna(prices)
+    atr = compute_atr(high, low, prices, period=atr_period).iloc[-1]
+    last_price = prices.iloc[-1]
+    stop_loss = last_price - stop_factor * atr
+    take_profit = last_price + take_factor * atr
+    return {"stop_loss": stop_loss, "take_profit": take_profit}
