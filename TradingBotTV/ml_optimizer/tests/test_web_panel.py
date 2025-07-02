@@ -29,3 +29,17 @@ def test_run_dashboard(tmp_path):
     }
     assert expected <= set(ids)
     assert len(app.layout.children) >= 2
+
+
+def test_run_dashboard_with_risk(tmp_path):
+    csv = tmp_path / "metrics.csv"
+    df = pd.DataFrame(
+        {
+            "timestamp": ["2024-01-01T00:00:00"],
+            "name": ["pnl"],
+            "value": [1],
+        }
+    )
+    df.to_csv(csv, index=False, header=False)
+    app = run_dashboard(csv, risk_charts=True)
+    assert len(app.layout.children) >= 2
