@@ -43,3 +43,12 @@ def test_fetch_social_media_sentiment(monkeypatch):
     monkeypatch.setattr("requests.get", dummy_get)
     score = sentiment.fetch_social_media_sentiment("BTC")
     assert score == 0.0
+
+
+def test_fetch_political_crypto_hashtags(monkeypatch):
+    def dummy_get(url, timeout=10):
+        return DummyResponse({"hashtags": ["#A", "#B", "#C"]})
+
+    monkeypatch.setattr("requests.get", dummy_get)
+    tags = sentiment.fetch_political_crypto_hashtags(2)
+    assert tags == ["#A", "#B"]

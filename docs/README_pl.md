@@ -39,6 +39,8 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `portfolio.py` – alokacja kapitału na wiele par jednocześnie
+- `decide_investment_budget` w `risk.py` – wyznacza bezpieczny budżet na podstawie Kelly i VaR
+- `fetch_political_crypto_hashtags` w `sentiment.py` – popularne polityczne hasztagi wpływające na krypto
 - `orderbook.py` – analiza order book i obliczanie best bid/ask
 - `hedging.py` – obliczanie wielkości pozycji zabezpieczającej
 - `arbitrage.py` – prosty kalkulator różnic cen

@@ -26,6 +26,7 @@ from .risk import (
     adaptive_stop_levels,
     max_drawdown,
     position_size_from_var,
+    decide_investment_budget,
 )
 from .fundamental import (
     fetch_coinmarketcap_data,
@@ -59,6 +60,7 @@ from .order_manager import limit_price_from_spread, adjust_order_price
 from .orderbook import best_bid_ask, compute_order_flow_imbalance
 from .hedging import hedge_ratio
 from .arbitrage import price_spread
+from .sentiment import fetch_political_crypto_hashtags
 from .strategies import (
     grid_levels,
     dca_schedule,
@@ -169,6 +171,7 @@ __all__ = [
     "policy_gradient_example",
     "online_q_learning",
     "position_size_from_var",
+    "decide_investment_budget",
     "limit_price_from_spread",
     "adjust_order_price",
     "grid_levels",
@@ -176,5 +179,8 @@ __all__ = [
     "scalp_signal",
     "choose_strategy",
     "choose_strategy",
+    "fetch_political_crypto_hashtags",
     "generate_expert_report",
+  
+  
 ]

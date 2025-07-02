@@ -77,3 +77,24 @@ def position_size_from_var(
         raise ValueError("returns must yield positive VaR")
     fraction = min(var_limit / var, 1.0)
     return capital * fraction
+
+
+def decide_investment_budget(
+    returns: pd.Series,
+    capital: float,
+    win_prob: float,
+    win_loss_ratio: float,
+    var_limit: float = 0.02,
+    level: float = 0.05,
+) -> float:
+    """Return safe budget size using Kelly and VaR limits.
+
+    The amount invested is the minimum of the Kelly optimal fraction
+    and the position size permitted by Value at Risk.
+    """
+    kelly_frac = kelly_fraction(win_prob, win_loss_ratio)
+    kelly_budget = capital * max(min(kelly_frac, 1.0), 0.0)
+    var_budget = position_size_from_var(
+        returns, capital, var_limit=var_limit, level=level
+    )
+    return min(kelly_budget, var_budget)

@@ -30,3 +30,12 @@ def test_position_size_from_var():
     returns = pd.Series([0.01, -0.02, 0.015, -0.01])
     size = risk.position_size_from_var(returns, capital=1000, var_limit=0.02)
     assert 0 < size <= 1000
+
+
+def test_decide_investment_budget():
+    returns = pd.Series([0.02, -0.01, 0.015, -0.005])
+    budget = risk.decide_investment_budget(
+        returns, capital=5000, win_prob=0.55, win_loss_ratio=1.5
+    )
+    max_size = risk.position_size_from_var(returns, 5000)
+    assert 0 < budget <= max_size
