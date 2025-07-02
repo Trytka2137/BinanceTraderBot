@@ -161,4 +161,4 @@ __all__ = [
     "scalp_signal",
     "choose_strategy",
     "choose_strategy",
-]
+] 
