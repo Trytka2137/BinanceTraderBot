@@ -35,6 +35,7 @@ from .fundamental import (
     cache_fundamental_data,
     cache_fundamental_data_regularly,
 )
+from .expert_ai import generate_expert_report
 from .analytics import (
     bollinger_bands,
     stochastic_oscillator,
@@ -175,4 +176,5 @@ __all__ = [
     "scalp_signal",
     "choose_strategy",
     "choose_strategy",
+    "generate_expert_report",
 ]
