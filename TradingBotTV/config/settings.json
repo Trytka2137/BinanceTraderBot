@@ -1,7 +1,7 @@
 {
   "binance": {
-    "apiKey": "MCowBQYDK2VwAyEAAejlQA5P31oGKJNb3E4H7lKbtusODqVWxufGAt2sJcM=",
-    "apiSecret": "MC4CAQAwBQYDK2VwBCIEIJFJp7Cud5KHpZ7u5/sb5ffntBuTOomR7zYnv64827a6"
+    "apiKey": "",
+    "apiSecret": ""
   },
   "trading": {
     "symbol": "BTCUSDT",
