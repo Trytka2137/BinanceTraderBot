@@ -40,3 +40,15 @@ def fetch_lunarcrush_score(symbol: str, api_key: str | None = None) -> float:
     response.raise_for_status()
     data = response.json()
     return float(data["data"][0]["galaxy_score"])
+
+
+def fetch_social_media_sentiment(
+    symbol: str, endpoint: str = "https://api.socialsentiment.io/search"
+) -> float:
+    """Return sentiment score from social posts about ``symbol``."""
+    params = {"q": symbol}
+    response = requests.get(endpoint, params=params, timeout=10)
+    response.raise_for_status()
+    data = response.json()
+    texts = [post["text"] for post in data.get("posts", [])]
+    return text_sentiment(texts)
