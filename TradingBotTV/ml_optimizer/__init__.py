@@ -51,6 +51,12 @@ from .order_manager import limit_price_from_spread, adjust_order_price
 from .orderbook import best_bid_ask, compute_order_flow_imbalance
 from .hedging import hedge_ratio
 from .arbitrage import price_spread
+from .strategies import (
+    grid_levels,
+    dca_schedule,
+    scalp_signal,
+    choose_strategy,
+)
 from .logger import get_logger
 from .monitor import record_metric
 from .network_utils import check_connectivity, async_check_connectivity
@@ -150,4 +156,7 @@ __all__ = [
     "position_size_from_var",
     "limit_price_from_spread",
     "adjust_order_price",
-]
+    "grid_levels",
+    "dca_schedule",
+    "scalp_signal",
+    "choose_strategy",
