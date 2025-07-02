@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 from pathlib import Path
@@ -15,6 +16,7 @@ from .ml_optimizer.monitor import MONITOR_FILE
 from .ml_optimizer.logger import LOG_FILE as OPT_LOG_FILE
 
 BOT_LOG_FILE = Path(__file__).resolve().parent / "logs" / "bot.log"
+CONFIG_FILE = Path(__file__).resolve().parent / "config" / "settings.json"
 
 
 def create_app(
@@ -26,6 +28,15 @@ def create_app(
     root = tk.Tk()
     root.title("BinanceTraderBot")
 
+    try:
+        cfg = json.loads(CONFIG_FILE.read_text())
+    except Exception:
+        cfg = {"binance": {}, "trading": {}}
+
+    api_key_var = tk.StringVar(value=cfg.get("binance", {}).get("apiKey", ""))
+    api_secret_var = tk.StringVar(value=cfg.get("binance", {}).get("apiSecret", ""))
+    symbol_var = tk.StringVar(value=cfg.get("trading", {}).get("symbol", ""))
+    amount_var = tk.StringVar(value=str(cfg.get("trading", {}).get("amount", "")))
     trading_var = tk.BooleanVar(value=True)
     training_var = tk.BooleanVar(value=False)
 
@@ -49,6 +60,35 @@ def create_app(
         frame, text="Training", variable=training_var, command=toggle_training
     ).pack(side=tk.LEFT, padx=5)
 
+    cfg_frame = tk.LabelFrame(root, text="Configuration")
+    cfg_frame.pack(padx=5, pady=5, fill=tk.X)
+
+    tk.Label(cfg_frame, text="API Key").grid(row=0, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=api_key_var, width=40).grid(row=0, column=1, padx=5)
+    tk.Label(cfg_frame, text="API Secret").grid(row=1, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=api_secret_var, width=40, show="*").grid(row=1, column=1, padx=5)
+    tk.Label(cfg_frame, text="Symbol").grid(row=2, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=symbol_var, width=20).grid(row=2, column=1, sticky="w", padx=5)
+    tk.Label(cfg_frame, text="Amount").grid(row=3, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=amount_var, width=10).grid(row=3, column=1, sticky="w", padx=5)
+
+    def save_config() -> None:
+        data = {"binance": {}, "trading": {}}
+        if CONFIG_FILE.exists():
+            try:
+                data = json.loads(CONFIG_FILE.read_text())
+            except Exception:
+                pass
+        data.setdefault("binance", {})["apiKey"] = api_key_var.get().strip()
+        data["binance"]["apiSecret"] = api_secret_var.get().strip()
+        data.setdefault("trading", {})["symbol"] = symbol_var.get().strip()
+        try:
+            data["trading"]["amount"] = float(amount_var.get())
+        except ValueError:
+            pass
+        CONFIG_FILE.write_text(json.dumps(data, indent=2))
+
+    tk.Button(cfg_frame, text="Save", command=save_config).grid(row=4, column=0, columnspan=2, pady=5)
     log_text = ScrolledText(root, height=10, width=80)
     log_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
 

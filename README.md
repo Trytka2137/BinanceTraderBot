@@ -85,6 +85,8 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
    python scripts/build_installer.py
    ```
    Gotowe pliki znajdziesz w katalogu `dist/`.
+5. Desktopowy panel z wykresami i logami uruchomisz poleceniem
+   (pozwala on także zapisać klucze API i podstawowe parametry):
 5. Desktopowy panel z wykresami i logami uruchomisz poleceniem:
    ```bash
    python -m TradingBotTV.gui_panel
@@ -129,6 +131,8 @@ Wyświetla on PnL, łączną wielkość pozycji oraz przycisk start/stop.
 Panel nie korzysta z biblioteki Dash i nie pozwala na wpisanie kluczy API ani
 linków – służy jedynie do szybkiego podglądu i włączania bądź wyłączania handlu.
 Jeśli preferujesz aplikację okienkową, uruchom `python -m TradingBotTV.gui_panel`,
+aby zobaczyć te same informacje wraz z logami i wykresami oraz zapisać
+klucze API w pliku konfiguracyjnym.
 aby zobaczyć te same informacje wraz z logami i wykresami.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
