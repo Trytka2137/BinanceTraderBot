@@ -180,7 +180,5 @@ __all__ = [
     "choose_strategy",
     "choose_strategy",
     "fetch_political_crypto_hashtags",
-    "generate_expert_report",
-  
-  
+    "generate_expert_report", 
 ]
