@@ -55,3 +55,25 @@ def adaptive_stop_levels(
     stop_loss = last_price - stop_factor * atr
     take_profit = last_price + take_factor * atr
     return {"stop_loss": stop_loss, "take_profit": take_profit}
+
+
+def position_size_from_var(
+    returns: pd.Series,
+    capital: float,
+    var_limit: float = 0.02,
+    level: float = 0.05,
+) -> float:
+    """Return position size constrained by VaR.
+
+    ``var_limit`` expresses the fraction of ``capital`` that may be lost with
+    the given confidence level.
+    """
+    if capital <= 0:
+        raise ValueError("capital must be positive")
+    if not 0 < var_limit < 1:
+        raise ValueError("var_limit must be in (0, 1)")
+    var = value_at_risk(returns, level=level)
+    if var <= 0:
+        raise ValueError("returns must yield positive VaR")
+    fraction = min(var_limit / var, 1.0)
+    return capital * fraction
