@@ -65,6 +65,8 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
 2. Zainstaluj wymagane biblioteki Pythona:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   pip install flake8
+   pip show pandas numpy tensorflow flake8
    # lub zainstaluj cały moduł
    pip install .
    ```
@@ -90,6 +92,11 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
 5. Desktopowy panel z wykresami i logami uruchomisz poleceniem:
    ```bash
    python -m TradingBotTV.gui_panel
+   ```
+6. Sprawdź instalację uruchamiając testy i analizę stylu:
+   ```bash
+   pytest
+   flake8
    ```
 
 ## Konfiguracja
