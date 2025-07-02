@@ -21,6 +21,7 @@ from .risk import (
     value_at_risk,
     adaptive_stop_levels,
     max_drawdown,
+    position_size_from_var,
 )
 from .fundamental import (
     fetch_coinmarketcap_data,
@@ -46,6 +47,7 @@ from .portfolio import (
     calculate_position_sizes,
     risk_parity_weights,
 )
+from .order_manager import limit_price_from_spread, adjust_order_price
 from .orderbook import best_bid_ask, compute_order_flow_imbalance
 from .hedging import hedge_ratio
 from .arbitrage import price_spread
@@ -145,4 +147,7 @@ __all__ = [
     "max_drawdown",
     "deep_q_learning_example",
     "policy_gradient_example",
+    "position_size_from_var",
+    "limit_price_from_spread",
+    "adjust_order_price",
 ]
