@@ -18,6 +18,7 @@ def run_dashboard(
     path: str | Path = MONITOR_FILE,
     extra_charts: bool = True,
     include_credentials: bool = True,
+    risk_charts: bool = False,
 ) -> Dash:
     """Return a Dash app with metrics from ``path`` and simple controls."""
     df = pd.read_csv(path, names=["timestamp", "name", "value"])
@@ -33,6 +34,11 @@ def run_dashboard(
     if extra_charts and "pnl" in pivot.columns:
         fig2 = px.bar(pivot, x="timestamp", y="pnl", title="PnL")
         charts.append(dcc.Graph(figure=fig2))
+    if risk_charts and "pnl" in pivot.columns:
+        from .visualizer import plot_risk_indicators
+
+        risk_fig = plot_risk_indicators(path)
+        charts.append(dcc.Graph(figure=risk_fig))
 
     controls = []
     if include_credentials:
