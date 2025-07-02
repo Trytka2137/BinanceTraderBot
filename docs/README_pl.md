@@ -35,9 +35,12 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `fetch_social_media_sentiment` w `sentiment.py` – analiza mediów społecznościowych.
 - `autoencoder_anomaly_scores` w `analytics.py` – wykrywanie anomalii autoenkoderem.
 - `solana_ai.py` – analiza strategii SOL/USDC i rekomendacja LONG/SHORT
+- `expert_ai.py` – łączy prognozę LSTM, nastroje i aktywność GitHuba w jedną rekomendację
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `portfolio.py` – alokacja kapitału na wiele par jednocześnie
+- `decide_investment_budget` w `risk.py` – wyznacza bezpieczny budżet na podstawie Kelly i VaR
+- `fetch_political_crypto_hashtags` w `sentiment.py` – popularne polityczne hasztagi wpływające na krypto
 - `orderbook.py` – analiza order book i obliczanie best bid/ask
 - `hedging.py` – obliczanie wielkości pozycji zabezpieczającej
 - `arbitrage.py` – prosty kalkulator różnic cen
