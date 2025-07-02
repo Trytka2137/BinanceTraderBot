@@ -93,7 +93,7 @@ from .database import (
 )
 from .web_panel import run_dashboard
 from .signal_handler import parse_tradingview_payload, execute_strategies
-from .alerts import send_telegram_message
+from .alerts import send_discord_message
 
 __all__ = [
     "compute_rsi",
@@ -159,7 +159,7 @@ __all__ = [
     "run_dashboard",
     "parse_tradingview_payload",
     "execute_strategies",
-    "send_telegram_message",
+    "send_discord_message",
     "adaptive_stop_levels",
     "cache_fundamental_data",
     "cache_fundamental_data_regularly",
