@@ -160,5 +160,6 @@ __all__ = [
     "dca_schedule",
     "scalp_signal",
     "choose_strategy",
-]
-
+    "choose_strategy",
+    
+] 
