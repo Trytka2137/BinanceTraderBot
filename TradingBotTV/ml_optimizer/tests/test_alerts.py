@@ -8,14 +8,14 @@ if str(ROOT_DIR) not in sys.path:
 from TradingBotTV.ml_optimizer import alerts  # noqa: E402
 
 
-def test_send_telegram_message(monkeypatch):
+def test_send_discord_message(monkeypatch):
     called = {}
 
-    def fake_post(url, data, timeout):
+    def fake_post(url, json, timeout):
         called['url'] = url
-        called['data'] = data
+        called['data'] = json
         return type('Resp', (), {'status_code': 200})()
 
     monkeypatch.setattr("requests.post", fake_post)
-    alerts.send_telegram_message("hi", token="t", chat_id="c")
-    assert called['data']['text'] == "hi"
+    alerts.send_discord_message("hi", webhook_url="hook")
+    assert called['data']['content'] == "hi"

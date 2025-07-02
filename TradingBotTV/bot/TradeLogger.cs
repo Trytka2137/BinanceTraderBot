@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Bot
@@ -17,25 +16,19 @@ namespace Bot
         private static readonly object _lock = new object();
         private static readonly HttpClient _http = new HttpClient();
 
-        private static async Task SendTelegramAlertAsync(string message)
+        private static async Task SendDiscordAlertAsync(string message)
         {
-            var token = ConfigManager.TelegramToken;
-            var chat = ConfigManager.TelegramChatId;
-            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(chat))
+            var hook = ConfigManager.DiscordWebhookUrl;
+            if (string.IsNullOrWhiteSpace(hook))
                 return;
             try
             {
-                var url = $"https://api.telegram.org/bot{token}/sendMessage";
-                var data = new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("chat_id", chat),
-                    new KeyValuePair<string, string>("text", message),
-                });
-                await _http.PostAsync(url, data).ConfigureAwait(false);
+                var data = new StringContent($"{{\"content\":\"{message}\"}}");
+                await _http.PostAsync(hook, data).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Telegram alert failed: {ex.Message}");
+                Console.WriteLine($"⚠️ Discord alert failed: {ex.Message}");
             }
         }
 
@@ -65,7 +58,7 @@ namespace Bot
                     price
                 );
 
-                _ = SendTelegramAlertAsync($"Trade {side} {amount} {symbol} at {price:F2}");
+                _ = SendDiscordAlertAsync($"Trade {side} {amount} {symbol} at {price:F2}");
 
             }
             catch (Exception ex)

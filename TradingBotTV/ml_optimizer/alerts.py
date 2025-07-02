@@ -1,4 +1,4 @@
-"""Telegram alert utilities."""
+"""Discord alert utilities."""
 
 from __future__ import annotations
 
@@ -6,17 +6,14 @@ import os
 import requests
 
 
-def send_telegram_message(
+def send_discord_message(
     message: str,
     *,
-    token: str | None = None,
-    chat_id: str | None = None,
+    webhook_url: str | None = None,
 ) -> None:
-    """Send *message* using Telegram bot API."""
-    token = token or os.getenv("TELEGRAM_TOKEN")
-    chat_id = chat_id or os.getenv("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        raise ValueError("token and chat_id must be provided")
-    url = f"https://api.telegram.org/bot{token}/sendMessage"
-    data = {"chat_id": chat_id, "text": message}
-    requests.post(url, data=data, timeout=10)
+    """Send ``message`` to a Discord channel using a webhook."""
+    webhook_url = webhook_url or os.getenv("DISCORD_WEBHOOK_URL")
+    if not webhook_url:
+        raise ValueError("webhook_url must be provided")
+    data = {"content": message}
+    requests.post(webhook_url, json=data, timeout=10)

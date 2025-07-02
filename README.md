@@ -91,6 +91,9 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
 4. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
    `takeProfitPercent`, `trailingStopPercent`, `maxDrawdownPercent` oraz okresy
    EMA.
+5. Aby otrzymywać powiadomienia na Discordzie, ustaw zmienną
+   `DISCORD_WEBHOOK_URL` lub wpisz `webhookUrl` w sekcji `discord` pliku
+   `settings.json`. Szczegóły w [docs/discord.md](docs/discord.md).
 
 ## Uruchomienie
 1. W katalogu `TradingBotTV/bot` uruchom aplikację:
@@ -166,7 +169,7 @@ w środowiskach asynchronicznych.
   dodatkowymi wskaźnikami ryzyka oraz formularzem do wpisania kluczy API
   i przyciskiem start/stop
 * `signal_handler.py` – rozszerzona obsługa sygnałów TradingView
-* `alerts.py` – powiadomienia Telegram o zleceniach i błędach
+* `alerts.py` – powiadomienia Discord o zleceniach i błędach
 * `deep_rl_examples.py` – przykładowe algorytmy głębokiego RL do adaptacyjnych strategii
 * `advanced_rl.py` – sieci LSTM i prosty DQN z trybem online
 * `detect_price_anomalies` w `analytics.py` – wykrywanie nietypowych ruchów cen
