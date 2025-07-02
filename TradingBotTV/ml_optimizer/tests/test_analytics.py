@@ -28,3 +28,15 @@ def test_order_book_imbalance_balanced():
     bids = pd.Series([10, 20])
     asks = pd.Series([10, 20])
     assert analytics.order_book_imbalance(bids, asks) == 0
+
+
+def test_detect_price_anomalies_flags():
+    series = pd.Series([1.0]*5 + [10.0] + [1.0]*5)
+    flags = analytics.detect_price_anomalies(series, contamination=0.1)
+    assert flags.any()
+
+
+def test_autoencoder_anomaly_scores_length():
+    series = pd.Series([1.0] * 15)
+    scores = analytics.autoencoder_anomaly_scores(series, window=5, epochs=1)
+    assert len(scores) == len(series) - 5

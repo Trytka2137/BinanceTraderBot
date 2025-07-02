@@ -169,7 +169,14 @@ w środowiskach asynchronicznych.
 * `alerts.py` – powiadomienia Telegram o zleceniach i błędach
 * `deep_rl_examples.py` – przykładowe algorytmy głębokiego RL do adaptacyjnych strategii
 * `advanced_rl.py` – sieci LSTM i prosty DQN z trybem online
+* `detect_price_anomalies` w `analytics.py` – wykrywanie nietypowych ruchów cen
+* `auto_select_best_strategy` w `compare_strategies.py` – automatyczny wybór strategii (walidacja czasowa)
+* `should_switch_strategy` w `compare_strategies.py` – kiedy przełączyć się na nową technikę
+* `online_q_learning` w `deep_rl_examples.py` – uczenie Q-learning na bieżących danych
 * `strategies.py` – grid trading, DCA, scalping i wybór najlepszej techniki
+* `optuna_optimize` w `auto_ml.py` – tuning parametrów z wykorzystaniem Optuna
+* `fetch_social_media_sentiment` w `sentiment.py` – analiza mediów społecznościowych
+* `autoencoder_anomaly_scores` w `analytics.py` – wykrywanie anomalii autoenkoderem
 
 Aby uruchomić test porównawczy strategii:
 ```bash
