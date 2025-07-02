@@ -160,4 +160,5 @@ __all__ = [
     "dca_schedule",
     "scalp_signal",
     "choose_strategy",
-]  # Closing bracket added to complete __all__ definition
+    "choose_strategy",
+]
