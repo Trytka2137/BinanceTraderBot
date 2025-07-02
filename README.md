@@ -33,6 +33,9 @@ sieci LSTM i DQN w trybie online.
 Najnowsze funkcje obejmują wyliczanie wielkości pozycji na podstawie Value at
 Risk oraz inteligentne modyfikowanie zleceń limit dzięki modułowi
 `order_manager`.
+Pojawił się także moduł `strategies` z prostymi przykładami grid tradingu, DCA,
+scalpingu oraz arbitrażu. Funkcja `choose_strategy` potrafi automatycznie dobrać
+odpowiednią metodę w zależności od zmienności rynku i rozpiętości cen.
 
 Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
@@ -166,6 +169,7 @@ w środowiskach asynchronicznych.
 * `alerts.py` – powiadomienia Telegram o zleceniach i błędach
 * `deep_rl_examples.py` – przykładowe algorytmy głębokiego RL do adaptacyjnych strategii
 * `advanced_rl.py` – sieci LSTM i prosty DQN z trybem online
+* `strategies.py` – grid trading, DCA, scalping i wybór najlepszej techniki
 
 Aby uruchomić test porównawczy strategii:
 ```bash
