@@ -57,7 +57,7 @@ async def fast_market_order(
 ) -> Dict:
     """Send a quick market order via ``session`` and return JSON response."""
 
-    url = "https://api.binance.com/api/v3/order/test"
+    url = "https://api.binance.com/sapi/v1/margin/order/test"
     params = {
         "symbol": symbol,
         "side": side,
