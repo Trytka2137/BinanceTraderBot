@@ -37,7 +37,6 @@ def create_app(
     api_secret_var = tk.StringVar(value=cfg.get("binance", {}).get("apiSecret", ""))
     symbol_var = tk.StringVar(value=cfg.get("trading", {}).get("symbol", ""))
     amount_var = tk.StringVar(value=str(cfg.get("trading", {}).get("amount", "")))
-
     trading_var = tk.BooleanVar(value=True)
     training_var = tk.BooleanVar(value=False)
 
@@ -90,7 +89,6 @@ def create_app(
         CONFIG_FILE.write_text(json.dumps(data, indent=2))
 
     tk.Button(cfg_frame, text="Save", command=save_config).grid(row=4, column=0, columnspan=2, pady=5)
-
     log_text = ScrolledText(root, height=10, width=80)
     log_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
 
