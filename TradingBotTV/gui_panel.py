@@ -96,6 +96,17 @@ def create_app(
         textvariable=amount_var,
         width=10,
     ).grid(row=3, column=1, sticky="w", padx=5)
+    tk.Entry(cfg_frame, textvariable=api_key_var, width=40) \
+        .grid(row=0, column=1, padx=5)
+    tk.Label(cfg_frame, text="API Secret").grid(row=1, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=api_secret_var, width=40, show="*") \
+        .grid(row=1, column=1, padx=5)
+    tk.Label(cfg_frame, text="Symbol").grid(row=2, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=symbol_var, width=20) \
+        .grid(row=2, column=1, sticky="w", padx=5)
+    tk.Label(cfg_frame, text="Amount").grid(row=3, column=0, sticky="e")
+    tk.Entry(cfg_frame, textvariable=amount_var, width=10) \
+        .grid(row=3, column=1, sticky="w", padx=5)
 
     def save_config() -> None:
         data = {"binance": {}, "trading": {}}
@@ -118,6 +129,8 @@ def create_app(
         text="Save",
         command=save_config,
     ).grid(row=4, column=0, columnspan=2, pady=5)
+    tk.Button(cfg_frame, text="Save", command=save_config) \
+        .grid(row=4, column=0, columnspan=2, pady=5)
     log_text = ScrolledText(root, height=10, width=80)
     log_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
 
