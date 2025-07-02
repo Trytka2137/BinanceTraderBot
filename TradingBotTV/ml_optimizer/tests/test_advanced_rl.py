@@ -2,6 +2,10 @@ import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
+import pytest
+
+# Skip this module entirely when TensorFlow is unavailable or fails to load.
+pytest.importorskip("tensorflow")
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
 if str(ROOT_DIR) not in sys.path:
