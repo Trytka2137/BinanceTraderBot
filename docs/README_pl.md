@@ -34,6 +34,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `optuna_optimize` w `auto_ml.py` – tuning parametrów z wykorzystaniem Optuna.
 - `fetch_social_media_sentiment` w `sentiment.py` – analiza mediów społecznościowych.
 - `autoencoder_anomaly_scores` w `analytics.py` – wykrywanie anomalii autoenkoderem.
+- `solana_ai.py` – analiza strategii SOL/USDC i rekomendacja LONG/SHORT
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `portfolio.py` – alokacja kapitału na wiele par jednocześnie
@@ -83,7 +84,7 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
     "apiSecret": "TWOJ_SECRET_KEY"
   },
   "trading": {
-    "symbol": "BTCUSDT",
+    "symbol": "SOLUSDC",
     "amount": 0.001,
     "initialCapital": 1000,
     "rsiBuyThreshold": 30,
@@ -102,7 +103,7 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 }
 ```
 
-- `symbol` – domyślna para handlowa.
+- `symbol` – domyślna para handlowa. W tej konfiguracji używamy `SOLUSDC` ([wykres](https://www.tradingview.com/symbols/SOLUSDC/)).
 - `amount` – ilość kupowana/sprzedawana w pojedynczej transakcji.
 - `initialCapital` – początkowy kapitał używany do obliczania wielkości pozycji.
 - `rsiBuyThreshold` i `rsiSellThreshold` – progi RSI wykorzystywane w strategii.
@@ -110,6 +111,7 @@ Najważniejsze parametry znajdują się w pliku `TradingBotTV/config/settings.js
 - `trailingStopPercent` – wielkość trailing stopu aktualizowana po każdej zmianie ceny.
 - `maxDrawdownPercent` – maksymalny dopuszczalny spadek wartości portfela (w % od początkowego kapitału), po którego przekroczeniu handel zostaje automatycznie wstrzymany.
 - `emaShortPeriod` i `emaLongPeriod` – okresy obliczania krótkiej i długiej EMA używane w filtrze trendu.
+- Strategia obsługuje pozycje **long** i **short** w oparciu o sygnały RSI oraz wolumen.
 
 - `websocket.binanceUrl` – adres WebSocket Binance z którego pobierane są dane na żywo.
 - `websocket.tradingViewUrl` – opcjonalny adres WebSocket z alertami TradingView.

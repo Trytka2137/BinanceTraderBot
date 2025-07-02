@@ -4,7 +4,7 @@
     "apiSecret": ""
   },
   "trading": {
-    "symbol": "BTCUSDT",
+    "symbol": "SOLUSDC",
     "amount": 0.001,
     "initialCapital": 1000,
     "rsiBuyThreshold": 30,
