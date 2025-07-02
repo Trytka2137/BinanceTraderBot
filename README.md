@@ -28,11 +28,17 @@ Repozytorium zawiera także moduły `execution` (TWAP, VWAP), `hft` z prostymi
 sygnałami z orderbooka oraz `options` wykorzystujący model Black-Scholes i
 strategię straddle. W `ml_models` dostępna jest funkcja `train_deep_learning_model`.
 Dodano też skrypt `deep_rl_examples.py` prezentujący zastosowanie głębokiego RL
-do adaptacyjnych strategii handlu.
+do adaptacyjnych strategii handlu. Moduł `advanced_rl.py` pozwala trenować
+sieci LSTM i DQN w trybie online.
+Najnowsze funkcje obejmują wyliczanie wielkości pozycji na podstawie Value at
+Risk oraz inteligentne modyfikowanie zleceń limit dzięki modułowi
+`order_manager`.
 
 Strategia łączy sygnały z interwałów 1m, 30m i 1h, filtruje trend na podstawie średnich EMA (50 i 200) i zapisuje logi do pliku `logs/bot.log`. Moduł `ml_optimizer` zawiera skrypty do optymalizacji parametrów i trenowania modelu RL (`rl_optimizer.py`) oraz porównywania strategii (`compare_strategies.py`).
 
 Najświeższe skrypty Pythona wykorzystują własny plik logów `TradingBotTV/ml_optimizer/state/ml_optimizer.log` (rotacja plików) oraz prosty moduł monitoringu zapisujący statystyki w `TradingBotTV/ml_optimizer/state/metrics.csv`. Operacje sieciowe (pobieranie danych, wysyłanie webhooków, klonowanie repozytoriów) są teraz powtarzane kilkukrotnie z rosnącym opóźnieniem, co zwiększa odporność na chwilowe problemy z siecią.
+
+Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strategii na koncie wirtualnym bez ryzyka utraty kapitału. W zestawie testów pojawiły się scenariusze stresowe zapisujące kilkadziesiąt transakcji przy użyciu `db_cli`, co ułatwia weryfikację poprawności integracji Pythona z częścią C#.
 
 
 
@@ -144,6 +150,7 @@ w środowiskach asynchronicznych.
   opóźnień i kosztów transakcyjnych
 * `portfolio.py` – zarządzanie wieloma instrumentami jednocześnie
 * `orderbook.py` – obliczanie best bid/ask i wskaźnika przepływu zleceń
+* `order_manager.py` – automatyczne ustalanie i aktualizacja zleceń limit
 * `hedging.py` – szacowanie wielkości pozycji zabezpieczającej
 * `arbitrage.py` – sprawdzanie różnic cen między giełdami
 * `execution.py` – algorytmy TWAP i VWAP
@@ -152,10 +159,13 @@ w środowiskach asynchronicznych.
 * `websocket_orderbook.py` – kanał WebSocket z pełnym orderbookiem
 * `visualizer.py` – wizualizacja statystyk z `monitor.py` oraz ryzyka portfela
 * `database.py` – zapisywanie transakcji i metryk w bazie SQLite/PostgreSQL
-* `web_panel.py` – panel Dash z wykresami wyników i formularzem do wpisania kluczy API oraz przyciskiem start/stop
+* `web_panel.py` – panel Dash z wykresami wyników,
+  dodatkowymi wskaźnikami ryzyka oraz formularzem do wpisania kluczy API
+  i przyciskiem start/stop
 * `signal_handler.py` – rozszerzona obsługa sygnałów TradingView
 * `alerts.py` – powiadomienia Telegram o zleceniach i błędach
 * `deep_rl_examples.py` – przykładowe algorytmy głębokiego RL do adaptacyjnych strategii
+* `advanced_rl.py` – sieci LSTM i prosty DQN z trybem online
 
 Aby uruchomić test porównawczy strategii:
 ```bash
