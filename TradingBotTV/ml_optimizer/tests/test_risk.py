@@ -24,3 +24,9 @@ def test_value_at_risk_basic():
     series = pd.Series([1, -2, 3, -4, 5])
     var = risk.value_at_risk(series, level=0.2)
     assert var > 0
+
+
+def test_position_size_from_var():
+    returns = pd.Series([0.01, -0.02, 0.015, -0.01])
+    size = risk.position_size_from_var(returns, capital=1000, var_limit=0.02)
+    assert 0 < size <= 1000
