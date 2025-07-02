@@ -60,6 +60,8 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 2. Zainstaluj zależności:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt
+   pip install flake8
+   pip show pandas numpy tensorflow flake8
    ```
 3. Zbuduj projekt C#:
    ```bash
@@ -74,6 +76,11 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 5. Uruchom bota poleceniem:
    ```bash
    dotnet run --project TradingBotTV/bot/BinanceTraderBot.csproj
+   ```
+6. Przed wysłaniem zmian uruchom testy i sprawdź styl kodu:
+   ```bash
+   pytest
+   flake8
    ```
 
 ## Edycja ustawień
