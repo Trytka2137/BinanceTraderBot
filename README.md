@@ -33,7 +33,6 @@ sieci LSTM i DQN w trybie online.
 Najnowsze funkcje obejmują wyliczanie wielkości pozycji na podstawie Value at
 Risk oraz inteligentne modyfikowanie zleceń limit dzięki modułowi
 `order_manager`.
-
 Pojawił się także moduł `strategies` z prostymi przykładami grid tradingu, DCA,
 scalpingu oraz arbitrażu. Funkcja `choose_strategy` potrafi automatycznie dobrać
 odpowiednią metodę w zależności od zmienności rynku i rozpiętości cen.
