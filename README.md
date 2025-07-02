@@ -91,9 +91,11 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
 4. W tym samym pliku możesz zmienić takie parametry jak `stopLossPercent`,
    `takeProfitPercent`, `trailingStopPercent`, `maxDrawdownPercent` oraz okresy
    EMA.
-5. Aby otrzymywać powiadomienia na Discordzie, ustaw zmienną
-   `DISCORD_WEBHOOK_URL` lub wpisz `webhookUrl` w sekcji `discord` pliku
-   `settings.json`. Szczegóły w [docs/discord.md](docs/discord.md).
+5. Aby połączyć bota z Discordem, utwórz webhook na swoim serwerze i
+   wpisz jego adres w zmiennej `DISCORD_WEBHOOK_URL` albo w polu
+   `webhookUrl` sekcji `discord` w pliku `settings.json`.
+   Dokładny opis znajduje się w
+   [docs/discord.md](docs/discord.md).
 
 ## Uruchomienie
 1. W katalogu `TradingBotTV/bot` uruchom aplikację:
