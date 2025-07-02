@@ -137,7 +137,7 @@ namespace Bot
 
         private string GetOrderUrl(string symbol, string side, decimal quantity)
         {
-            var endpoint = "https://api.binance.com/api/v3/order/test"; // test order for safety
+            var endpoint = "https://api.binance.com/sapi/v1/margin/order/test"; // margin test order
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var query = $"symbol={symbol}&side={side}&type=MARKET&quantity={quantity}&timestamp={timestamp}";
             var signature = Sign(query);
