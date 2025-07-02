@@ -19,8 +19,13 @@ def run_dashboard(
     extra_charts: bool = True,
     include_credentials: bool = True,
     risk_charts: bool = False,
+    tradingview_url: str | None = None,
 ) -> Dash:
-    """Return a Dash app with metrics from ``path`` and simple controls."""
+    """Return a Dash app with metrics from ``path`` and simple controls.
+
+    If ``tradingview_url`` is provided, an iframe with the given address is
+    appended below the charts.
+    """
     df = pd.read_csv(path, names=["timestamp", "name", "value"])
     if df.empty:
         raise ValueError("metrics file is empty")
@@ -39,6 +44,13 @@ def run_dashboard(
 
         risk_fig = plot_risk_indicators(path)
         charts.append(dcc.Graph(figure=risk_fig))
+    if tradingview_url:
+        charts.append(
+            html.Iframe(
+                src=tradingview_url,
+                style={"border": "0", "width": "100%", "height": "600px"},
+            )
+        )
 
     controls = []
     if include_credentials:

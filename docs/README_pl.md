@@ -126,6 +126,8 @@ Jeśli ustawisz zmienne `DASHBOARD_USERNAME` i `DASHBOARD_PASSWORD`, panel
 poprosi o podanie danych logowania. Znajdziesz tam kafelki z podsumowaniem PnL,
 wielkości pozycji oraz przycisk do włączania i wyłączania handlu. Możesz
 również podejrzeć ostatni log transakcji.
+Jeżeli do funkcji `run_dashboard` przekażesz parametr `tradingview_url`,
+panel wyświetli dodatkowo wykres TradingView w ramce iframe.
 
 ## Jak uruchomić testy
 
