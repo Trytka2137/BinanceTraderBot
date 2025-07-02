@@ -34,3 +34,12 @@ def test_fetch_lunarcrush_score(monkeypatch):
     monkeypatch.setattr("requests.get", dummy_get)
     score = sentiment.fetch_lunarcrush_score("BTC")
     assert score == 67.0
+
+
+def test_fetch_social_media_sentiment(monkeypatch):
+    def dummy_get(url, params=None, timeout=10):
+        return DummyResponse({"posts": [{"text": "good"}, {"text": "bad"}]})
+
+    monkeypatch.setattr("requests.get", dummy_get)
+    score = sentiment.fetch_social_media_sentiment("BTC")
+    assert score == 0.0

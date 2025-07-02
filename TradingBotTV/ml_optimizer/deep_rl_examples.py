@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Iterable
+
 import numpy as np
 import pandas as pd
 
@@ -80,3 +82,30 @@ def policy_gradient_example(
             weights += lr * G * g
         history.append(total)
     return history
+
+
+def online_q_learning(
+    prices: Iterable[float], lr: float = 0.01, gamma: float = 0.95
+) -> list[float]:
+    """Train a Q-learning agent incrementally on a stream of prices."""
+    weights = np.zeros((2, 2))
+    pos = 0
+    prev = None
+    rewards: list[float] = []
+    for price in prices:
+        if prev is None:
+            prev = price
+            continue
+        state = np.array([[prev], [pos]])
+        q_vals = state.T @ weights
+        action = int(q_vals.argmax())
+        next_pos = 1 if action == 1 else 0
+        reward = price - prev if next_pos == 1 else 0.0
+        next_state = np.array([[price], [next_pos]])
+        td_target = reward + gamma * (next_state.T @ weights).max()
+        td_error = td_target - q_vals[0, action]
+        weights[:, action] += lr * td_error * state[:, 0]
+        rewards.append(reward)
+        pos = next_pos
+        prev = price
+    return rewards

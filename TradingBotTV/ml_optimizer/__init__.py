@@ -10,6 +10,10 @@ from .backtest import (
     compute_sma,
     compute_rsi,
 )
+from .compare_strategies import (
+    auto_select_best_strategy,
+    should_switch_strategy,
+)
 from .data_fetcher import (
     fetch_klines,
     async_fetch_klines,
@@ -35,7 +39,10 @@ from .analytics import (
     bollinger_bands,
     stochastic_oscillator,
     order_book_imbalance,
+    detect_price_anomalies,
+    autoencoder_anomaly_scores,
 )
+from .auto_ml import optuna_optimize
 from .ml_models import (
     train_predictive_model,
     optimize_predictive_model,
@@ -75,6 +82,7 @@ from .visualizer import (
     plot_risk_indicators,
 )
 from .deep_rl_examples import deep_q_learning_example, policy_gradient_example
+from .deep_rl_examples import online_q_learning
 from .websocket_orderbook import stream_order_book
 from .database import (
     init_db,
@@ -96,6 +104,9 @@ __all__ = [
     "backtest_strategy",
     "backtest_macd_strategy",
     "compare_strategies",
+    "auto_select_best_strategy",
+    "should_switch_strategy",
+    "optuna_optimize",
     "fetch_klines",
     "async_fetch_klines",
     "get_logger",
@@ -113,6 +124,8 @@ __all__ = [
     "bollinger_bands",
     "stochastic_oscillator",
     "order_book_imbalance",
+    "detect_price_anomalies",
+    "autoencoder_anomaly_scores",
     "train_predictive_model",
     "optimize_predictive_model",
     "backtest_tick_strategy",
@@ -153,6 +166,7 @@ __all__ = [
     "max_drawdown",
     "deep_q_learning_example",
     "policy_gradient_example",
+    "online_q_learning",
     "position_size_from_var",
     "limit_price_from_spread",
     "adjust_order_price",
