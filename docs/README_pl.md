@@ -26,7 +26,14 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 - `auto_optimizer.py` – losowe poszukiwanie najlepszych progów RSI; wyniki zapisywane są w `model_state.json`.
 - `optimizer.py` – przykład prostej optymalizacji parametrów w pętli.
 - `compare_strategies.py` – porównanie wyników strategii RSI i MACD.
+- `auto_select_best_strategy` w `compare_strategies.py` – automatyczny wybór najlepszej techniki (walidacja czasowa).
+- `should_switch_strategy` w `compare_strategies.py` – podejmuje decyzję o zmianie strategii.
+- `detect_price_anomalies` w `analytics.py` – wskazuje anomalie cenowe.
+- `online_q_learning` w `deep_rl_examples.py` – uczy model na strumieniu danych.
 - `rl_optimizer.py` – rozbudowany przykład uczenia ze wzmocnieniem.
+- `optuna_optimize` w `auto_ml.py` – tuning parametrów z wykorzystaniem Optuna.
+- `fetch_social_media_sentiment` w `sentiment.py` – analiza mediów społecznościowych.
+- `autoencoder_anomaly_scores` w `analytics.py` – wykrywanie anomalii autoenkoderem.
 - `github_strategy_simulator.py` – pobieranie strategii z publicznych repozytoriów
   i ich symulacja offline.
 - `portfolio.py` – alokacja kapitału na wiele par jednocześnie
