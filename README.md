@@ -166,8 +166,8 @@ w środowiskach asynchronicznych.
 * `visualizer.py` – wizualizacja statystyk z `monitor.py` oraz ryzyka portfela
 * `database.py` – zapisywanie transakcji i metryk w bazie SQLite/PostgreSQL
 * `web_panel.py` – panel Dash z wykresami wyników,
-  dodatkowymi wskaźnikami ryzyka oraz formularzem do wpisania kluczy API
-  i przyciskiem start/stop
+  dodatkowymi wskaźnikami ryzyka oraz formularzem do wpisania kluczy API,
+  przyciskiem start/stop i opcjonalnym wykresem TradingView
 * `signal_handler.py` – rozszerzona obsługa sygnałów TradingView
 * `alerts.py` – powiadomienia Discord o zleceniach i błędach
 * `deep_rl_examples.py` – przykładowe algorytmy głębokiego RL do adaptacyjnych strategii
