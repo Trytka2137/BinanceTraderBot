@@ -1,7 +1,11 @@
 {
   "binance": {
-    "apiKey": "TWOJ_API_KEY",
-    "apiSecret": "TWOJ_SECRET_KEY"
+    "apiKey": "-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAAejlQA5P31oGKJNb3E4H7lKbtusODqVWxufGAt2sJcM=
+-----END PUBLIC KEY-----",
+    "apiSecret": "-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIJFJp7Cud5KHpZ7u5/sb5ffntBuTOomR7zYnv64827a6
+-----END PRIVATE KEY-----"
   },
   "trading": {
     "symbol": "BTCUSDT",
