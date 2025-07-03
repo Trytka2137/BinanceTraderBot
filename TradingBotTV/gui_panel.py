@@ -26,7 +26,7 @@ def create_app(
 ) -> tk.Tk:
     """Return a :class:`tkinter.Tk` control panel."""
     root = tk.Tk()
-    root.title("BinanceTraderBot")
+    root.title("Trytonator2137")
 
     try:
         cfg = json.loads(CONFIG_FILE.read_text())

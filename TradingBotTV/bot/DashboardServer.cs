@@ -91,7 +91,8 @@ pre{{white-space:pre-wrap;}}
                 return Task.CompletedTask;
             });
 
-            app.RunAsync("http://localhost:5001", token).GetAwaiter().GetResult();
+            app.Urls.Add("http://localhost:5001");
+            app.RunAsync(token).GetAwaiter().GetResult();
         }
     }
 }

@@ -87,6 +87,8 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
    python scripts/build_installer.py
    ```
    Gotowe pliki znajdziesz w katalogu `dist/`.
+   W folderze `Trytonator2137` pojawi się plik `Trytonator2137.exe`, a
+   w `dist/python` odpowiedniki wygenerowane przez PyInstaller.
 5. Desktopowy panel z wykresami i logami uruchomisz poleceniem
    (pozwala on także zapisać klucze API i podstawowe parametry):
 5. Desktopowy panel z wykresami i logami uruchomisz poleceniem:
