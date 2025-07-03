@@ -58,7 +58,8 @@ namespace Bot
                 }
             });
 
-            app.RunAsync("http://localhost:5000", token).GetAwaiter().GetResult();
+            app.Urls.Add("http://localhost:5000");
+            app.RunAsync(token).GetAwaiter().GetResult();
         }
     }
 }
