@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Optional
 
 
 def compute_rsi(series: pd.Series, period: int = 14) -> pd.Series:
@@ -16,7 +17,7 @@ def backtest_strategy(
     df: pd.DataFrame,
     rsi_buy_threshold: int = 30,
     rsi_sell_threshold: int = 70,
-    stop_loss_pct: float | None = None,
+    stop_loss_pct: Optional[float] = None,
     take_profit_pct: float | None = None,
 ) -> float:
     """Simple RSI strategy backtest with optional SL/TP."""
