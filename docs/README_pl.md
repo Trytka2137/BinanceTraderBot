@@ -56,7 +56,7 @@ Poniżej znajduje się opis plików i katalogów w repozytorium. Wszystkie nazwy
 
 ## Instalacja i konfiguracja
 
-1. Zainstaluj Python 3.8+ oraz .NET 8 SDK.
+1. Zainstaluj Python 3.10+ oraz .NET 8 SDK.
 2. Zainstaluj zależności:
    ```bash
    pip install -r TradingBotTV/ml_optimizer/requirements.txt

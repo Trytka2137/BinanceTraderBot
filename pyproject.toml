@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "tradingbottv"
 version = "0.1.0"
 description = "Optimization utilities for BinanceTraderBot"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [
     {name = "TradingBotTV"}
 ]

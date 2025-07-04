@@ -48,7 +48,7 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
 
 ## Wymagania
 - .NET 8 SDK
-- Python 3.8+
+- Python 3.10+
 
 ## Instalacja
 1. Zainstaluj pakiet `.NET 8 SDK`:
