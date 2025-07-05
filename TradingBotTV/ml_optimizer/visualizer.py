@@ -10,11 +10,21 @@ from .monitor import MONITOR_FILE
 from .risk import value_at_risk, max_drawdown
 
 
-def plot_metrics(path: str | Path = MONITOR_FILE) -> plt.Figure:
+def plot_metrics(
+    path: str | Path = MONITOR_FILE,
+    recent: int | None = 500,
+) -> plt.Figure:
     """Return a matplotlib figure with metrics plotted over time."""
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(path)
+
     df = pd.read_csv(path, names=["timestamp", "name", "value"])
+    if recent:
+        df = df.tail(recent)
     if df.empty:
         raise ValueError("metrics file is empty")
+
     df["timestamp"] = pd.to_datetime(df["timestamp"])
     pivot = df.pivot(index="timestamp", columns="name", values="value")
     fig, ax = plt.subplots()

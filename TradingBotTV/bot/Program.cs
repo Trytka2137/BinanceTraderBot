@@ -19,12 +19,19 @@ namespace Bot
             ConfigManager.Load();
             await PythonDatabaseBridge.InitDbAsync().ConfigureAwait(false);
 
-            var pairs = await SymbolScanner.GetTradingPairsAsync().ConfigureAwait(false);
-            var best = await SymbolScanner.GetHighestVolumePairAsync(pairs).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(best))
+            if (string.IsNullOrWhiteSpace(ConfigManager.Symbol))
             {
-                BotLogger.Log($"\uD83D\uDCCA Wybrano par\u0119 o najwy\u017Cszej likwidno\u015Bci: {best}");
-                ConfigManager.OverrideSymbol(best);
+                var pairs = await SymbolScanner.GetTradingPairsAsync().ConfigureAwait(false);
+                var best = await SymbolScanner.GetHighestVolumePairAsync(pairs).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(best))
+                {
+                    BotLogger.Log($"\uD83D\uDCCA Wybrano par\u0119 o najwy\u017Cszej likwidno\u015Bci: {best}");
+                    ConfigManager.OverrideSymbol(best);
+                }
+            }
+            else
+            {
+                BotLogger.Log($"\u2699\uFE0F U\u017Cywam pary {ConfigManager.Symbol}");
             }
 
             // Start serwera webhook, silnika strategii oraz WebSocketów w tle
