@@ -1,5 +1,7 @@
 """Utility exports for the :mod:`TradingBotTV.ml_optimizer` package."""
 
+from .resource_manager import configure_resources as _configure_resources
+
 from .backtest import (
     backtest_macd_strategy,
     backtest_strategy,
@@ -37,13 +39,17 @@ from .fundamental import (
     cache_fundamental_data_regularly,
 )
 from .expert_ai import generate_expert_report
-from .analytics import (
-    bollinger_bands,
-    stochastic_oscillator,
-    order_book_imbalance,
-    detect_price_anomalies,
-    autoencoder_anomaly_scores,
-)
+try:
+    from .analytics import (
+        bollinger_bands,
+        stochastic_oscillator,
+        order_book_imbalance,
+        detect_price_anomalies,
+        autoencoder_anomaly_scores,
+    )
+except Exception:  # pragma: no cover - TensorFlow not available
+    bollinger_bands = stochastic_oscillator = order_book_imbalance = None
+    detect_price_anomalies = autoencoder_anomaly_scores = None
 from .auto_ml import optuna_optimize
 from .ml_models import (
     train_predictive_model,
@@ -124,11 +130,16 @@ __all__ = [
     "fetch_coingecko_market_data",
     "fetch_messari_asset_metrics",
     "fetch_github_activity",
-    "bollinger_bands",
-    "stochastic_oscillator",
-    "order_book_imbalance",
-    "detect_price_anomalies",
-    "autoencoder_anomaly_scores",
+]
+if bollinger_bands is not None:
+    __all__ += [
+        "bollinger_bands",
+        "stochastic_oscillator",
+        "order_book_imbalance",
+        "detect_price_anomalies",
+        "autoencoder_anomaly_scores",
+    ]
+__all__ += [
     "train_predictive_model",
     "optimize_predictive_model",
     "backtest_tick_strategy",
@@ -182,3 +193,5 @@ __all__ = [
     "fetch_political_crypto_hashtags",
     "generate_expert_report",
 ]
+
+_configure_resources()

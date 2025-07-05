@@ -30,6 +30,6 @@ def test_train_learns_best_thresholds(monkeypatch):
     # Disable state saving
     monkeypatch.setattr(rl, "save_state", lambda state: None)
 
-    buy, sell = rl.train("TEST", episodes=60)
+    buy, sell = rl.train("TEST", episodes=60, use_multiprocessing=False)
     assert abs(buy - 28) <= 6
     assert abs(sell - 72) <= 6

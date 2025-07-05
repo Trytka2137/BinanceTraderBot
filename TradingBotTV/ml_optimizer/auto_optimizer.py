@@ -3,12 +3,12 @@ from pathlib import Path
 
 import numpy as np
 
-from .data_fetcher import fetch_klines
-from .backtest import backtest_strategy
-from .logger import get_logger
-from .monitor import record_metric
-from .alerts import send_discord_message
-from .state_utils import (
+from TradingBotTV.ml_optimizer.data_fetcher import fetch_klines
+from TradingBotTV.ml_optimizer.backtest import backtest_strategy
+from TradingBotTV.ml_optimizer.logger import get_logger
+from TradingBotTV.ml_optimizer.monitor import record_metric
+from TradingBotTV.ml_optimizer.alerts import send_discord_message
+from TradingBotTV.ml_optimizer.state_utils import (
     load_state as load_json_state,
     save_state as save_json_state,
 )

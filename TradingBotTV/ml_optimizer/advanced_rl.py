@@ -7,8 +7,13 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
-from tensorflow import keras
-from tensorflow.keras import layers
+
+try:  # TensorFlow 2.x exposes Keras as a submodule
+    from tensorflow import keras
+    from tensorflow.keras import layers
+except Exception:  # pragma: no cover - fall back to standalone Keras
+    import keras  # type: ignore
+    from keras import layers
 
 
 @dataclass
