@@ -52,14 +52,17 @@ def create_app(
     frame.pack(pady=5)
 
     def toggle_trading() -> None:
+        """Toggle live trading via the local dashboard."""
         try:
             requests.post("http://localhost:5001/toggle", timeout=2)
         except Exception:
             pass
-        trading_var.set(not trading_var.get())
+        btn_text = "Stop Bot" if trading_var.get() else "Start Bot"
+        toggle_btn.config(text=btn_text)
 
     def toggle_training() -> None:
-        training_var.set(not training_var.get())
+        """Enable or disable training mode."""
+        pass
 
     tk.Checkbutton(
         frame, text="Trading", variable=trading_var, command=toggle_trading
@@ -67,6 +70,13 @@ def create_app(
     tk.Checkbutton(
         frame, text="Training", variable=training_var, command=toggle_training
     ).pack(side=tk.LEFT, padx=5)
+
+    def toggle_bot() -> None:
+        trading_var.set(not trading_var.get())
+        toggle_trading()
+
+    toggle_btn = tk.Button(frame, text="Stop Bot", command=toggle_bot)
+    toggle_btn.pack(side=tk.LEFT, padx=5)
 
     cfg_frame = tk.LabelFrame(root, text="Configuration")
     cfg_frame.pack(padx=5, pady=5, fill=tk.X)
@@ -96,17 +106,6 @@ def create_app(
         textvariable=amount_var,
         width=10,
     ).grid(row=3, column=1, sticky="w", padx=5)
-    tk.Entry(cfg_frame, textvariable=api_key_var, width=40) \
-        .grid(row=0, column=1, padx=5)
-    tk.Label(cfg_frame, text="API Secret").grid(row=1, column=0, sticky="e")
-    tk.Entry(cfg_frame, textvariable=api_secret_var, width=40, show="*") \
-        .grid(row=1, column=1, padx=5)
-    tk.Label(cfg_frame, text="Symbol").grid(row=2, column=0, sticky="e")
-    tk.Entry(cfg_frame, textvariable=symbol_var, width=20) \
-        .grid(row=2, column=1, sticky="w", padx=5)
-    tk.Label(cfg_frame, text="Amount").grid(row=3, column=0, sticky="e")
-    tk.Entry(cfg_frame, textvariable=amount_var, width=10) \
-        .grid(row=3, column=1, sticky="w", padx=5)
 
     def save_config() -> None:
         data = {"binance": {}, "trading": {}}
@@ -129,29 +128,54 @@ def create_app(
         text="Save",
         command=save_config,
     ).grid(row=4, column=0, columnspan=2, pady=5)
-    tk.Button(cfg_frame, text="Save", command=save_config) \
-        .grid(row=4, column=0, columnspan=2, pady=5)
     log_text = ScrolledText(root, height=10, width=80)
     log_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
+
+    cmd_text = ScrolledText(root, height=10, width=80)
+    cmd_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
+
+    def tail(path: Path, lines: int = 200) -> str:
+        if not path.exists():
+            return ""
+        data = path.read_text().splitlines()[-lines:]
+        return "\n".join(data)
 
     def refresh_logs() -> None:
         texts: list[str] = []
         for path in (opt_log, bot_log):
-            if path.exists():
-                texts.append(path.read_text())
+            snippet = tail(path)
+            if snippet:
+                texts.append(snippet)
         log_text.delete("1.0", tk.END)
         log_text.insert(tk.END, "\n".join(texts))
         root.after(5000, refresh_logs)
 
+    def refresh_cmds() -> None:
+        cmd_text.delete("1.0", tk.END)
+        cmd_text.insert(tk.END, tail(bot_log, 50))
+        root.after(3000, refresh_cmds)
+
     refresh_logs()
+    refresh_cmds()
 
     try:
-        fig = plot_metrics(metrics_path)
+        fig = plot_metrics(metrics_path, recent=300)
     except Exception:
         fig = plt.figure()
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.draw()
     canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    def refresh_plot() -> None:
+        try:
+            fig = plot_metrics(metrics_path, recent=300)
+        except Exception:
+            fig = plt.figure()
+        canvas.figure = fig
+        canvas.draw()
+        root.after(10000, refresh_plot)
+
+    refresh_plot()
 
     return root
 
