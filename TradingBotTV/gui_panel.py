@@ -169,6 +169,7 @@ def create_app(
     def refresh_plot() -> None:
         try:
             fig = plot_metrics(metrics_path, recent=300)
+            fig = plot_metrics(metrics_path)
         except Exception:
             fig = plt.figure()
         canvas.figure = fig
