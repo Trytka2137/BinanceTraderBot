@@ -144,6 +144,7 @@ def create_app(
         with path.open("r") as fh:
             deque_lines = deque(fh, maxlen=lines)
         return "".join(deque_lines)
+
         if not path.exists():
             return ""
         data = path.read_text().splitlines()[-lines:]
