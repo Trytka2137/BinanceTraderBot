@@ -1,10 +1,13 @@
 """Simple reinforcement learning optimizer for RSI thresholds."""
 
 import random
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+
+import psutil
 
 from .data_fetcher import fetch_klines
 from .backtest import backtest_strategy
@@ -56,6 +59,7 @@ def train(
     population: int = 20,
     elite_frac: float = 0.2,
     seed: int | None = None,
+    use_multiprocessing: bool = True,
 ) -> tuple[int, int]:
     """Train thresholds using a simple cross-entropy method.
 
@@ -74,6 +78,9 @@ def train(
         Random seed ensuring deterministic behaviour. When ``None`` a seed
         is drawn from ``random`` module's state. This makes the function
         reproducible when ``random.seed`` has been called by the caller.
+    use_multiprocessing : bool, optional
+        When ``True`` candidate evaluations run across all CPU cores.
+        Set ``False`` to disable multiprocessing, e.g. during testing.
     """
 
     if seed is not None:
@@ -94,19 +101,25 @@ def train(
         logger.warning('No data fetched – aborting training')
         return int(round(mean_buy)), int(round(mean_sell))
 
+    def _evaluate(args: tuple[int, int]) -> tuple[float, int, int]:
+        b, s = args
+        b = int(np.clip(b, 20, 40))
+        s = int(np.clip(s, 60, 80))
+        pnl = backtest_strategy(
+            df,
+            rsi_buy_threshold=b,
+            rsi_sell_threshold=s,
+        )
+        return pnl, b, s
+
     for _ in range(episodes):
         buys = np.random.normal(mean_buy, std_buy, population).astype(int)
         sells = np.random.normal(mean_sell, std_sell, population).astype(int)
-        results = []
-        for b, s in zip(buys, sells):
-            b = int(np.clip(b, 20, 40))
-            s = int(np.clip(s, 60, 80))
-            pnl = backtest_strategy(
-                df,
-                rsi_buy_threshold=b,
-                rsi_sell_threshold=s,
-            )
-            results.append((pnl, b, s))
+        if use_multiprocessing:
+            with ProcessPoolExecutor(max_workers=psutil.cpu_count()) as exe:
+                results = list(exe.map(_evaluate, zip(buys, sells)))
+        else:
+            results = [_evaluate(pair) for pair in zip(buys, sells)]
         results.sort(reverse=True)
         elite = results[: max(1, int(population * elite_frac))]
         mean_buy = np.mean([b for _, b, _ in elite])
