@@ -1,5 +1,7 @@
 """Utility exports for the :mod:`TradingBotTV.ml_optimizer` package."""
 
+from .resource_manager import configure_resources as _configure_resources
+
 from .backtest import (
     backtest_macd_strategy,
     backtest_strategy,
@@ -182,3 +184,5 @@ __all__ = [
     "fetch_political_crypto_hashtags",
     "generate_expert_report",
 ]
+
+_configure_resources()
