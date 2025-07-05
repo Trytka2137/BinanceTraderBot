@@ -1,9 +1,9 @@
 import sys
 import psutil
-
 if sys.platform != "win32":
-    import resource
-
+import resource
+import resource
+import psutil
 try:
     import tensorflow as tf
 except Exception:  # noqa: BLE001
@@ -26,6 +26,7 @@ def configure_resources(
         limit = int(total_mem * ram_fraction)
         if sys.platform != "win32":
             resource.setrlimit(resource.RLIMIT_AS, (limit, limit))
+        resource.setrlimit(resource.RLIMIT_AS, (limit, limit))
     except Exception:
         pass
 
