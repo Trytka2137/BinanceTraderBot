@@ -78,6 +78,7 @@ def create_app(
 
     btn_label = "Stop Bot" if trading_var.get() else "Start Bot"
     toggle_btn = tk.Button(frame, text=btn_label, command=toggle_bot)
+    toggle_btn = tk.Button(frame, text="Stop Bot", command=toggle_bot)
     toggle_btn.pack(side=tk.LEFT, padx=5)
 
     cfg_frame = tk.LabelFrame(root, text="Configuration")
@@ -143,6 +144,10 @@ def create_app(
         with path.open("r") as fh:
             deque_lines = deque(fh, maxlen=lines)
         return "".join(deque_lines)
+        if not path.exists():
+            return ""
+        data = path.read_text().splitlines()[-lines:]
+        return "\n".join(data)
 
     def refresh_logs() -> None:
         texts: list[str] = []
@@ -173,6 +178,7 @@ def create_app(
     def refresh_plot() -> None:
         try:
             fig = plot_metrics(metrics_path, recent=300)
+            fig = plot_metrics(metrics_path)
         except Exception:
             fig = plt.figure()
         canvas.figure = fig
