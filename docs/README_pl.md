@@ -141,6 +141,10 @@ również podejrzeć ostatni log transakcji.
 Jeżeli do funkcji `run_dashboard` przekażesz parametr `tradingview_url`,
 panel wyświetli dodatkowo wykres TradingView w ramce iframe.
 
+Alternatywnie możesz uruchomić aplikację okienkową poleceniem
+`python -m TradingBotTV.gui_panel`. Panel posiada przycisk **Start/Stop**,
+dwa okna logów oraz dynamicznie aktualizowany wykres metryk.
+
 ## Jak uruchomić testy
 
 1. Zainstaluj zależności Pythona i `flake8`:

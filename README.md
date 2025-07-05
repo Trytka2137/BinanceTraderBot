@@ -89,12 +89,13 @@ Wprowadzono również moduł `paper_trading`, który pozwala na testowanie strat
    Gotowe pliki znajdziesz w katalogu `dist/`.
    W folderze `Trytonator2137` pojawi się plik `Trytonator2137.exe`, a
    w `dist/python` odpowiedniki wygenerowane przez PyInstaller.
-5. Desktopowy panel z wykresami i logami uruchomisz poleceniem
-   (pozwala on także zapisać klucze API i podstawowe parametry):
-5. Desktopowy panel z wykresami i logami uruchomisz poleceniem:
+5. Desktopowy panel z wykresami oraz dwoma oknami logów uruchomisz
+   poleceniem:
    ```bash
    python -m TradingBotTV.gui_panel
    ```
+   Aplikacja udostępnia przycisk **Start/Stop** oraz podgląd ostatnich
+   komend bota.
 6. Sprawdź instalację uruchamiając testy i analizę stylu:
    ```bash
    pytest
@@ -139,10 +140,10 @@ Uruchomiony jest też prosty panel pod adresem `http://localhost:5001`.
 Wyświetla on PnL, łączną wielkość pozycji oraz przycisk start/stop.
 Panel nie korzysta z biblioteki Dash i nie pozwala na wpisanie kluczy API ani
 linków – służy jedynie do szybkiego podglądu i włączania bądź wyłączania handlu.
-Jeśli preferujesz aplikację okienkową, uruchom `python -m TradingBotTV.gui_panel`,
-aby zobaczyć te same informacje wraz z logami i wykresami oraz zapisać
-klucze API w pliku konfiguracyjnym.
-aby zobaczyć te same informacje wraz z logami i wykresami.
+Jeśli preferujesz aplikację okienkową, uruchom
+`python -m TradingBotTV.gui_panel`. Pokazuje ona wykres metryk,
+ostatnie logi oraz listę komend, a także umożliwia zapis kluczy API
+w konfiguracji.
 
 Proces optymalizacji (`auto_optimizer.py` lub `rl_optimizer.py`) wykonuje się automatycznie co 15, 30 i 60 minut, zapisując najlepsze parametry w `model_state.json`.
 
