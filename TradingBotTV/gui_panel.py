@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
+from collections import deque
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -75,6 +76,8 @@ def create_app(
         trading_var.set(not trading_var.get())
         toggle_trading()
 
+    btn_label = "Stop Bot" if trading_var.get() else "Start Bot"
+    toggle_btn = tk.Button(frame, text=btn_label, command=toggle_bot)
     toggle_btn = tk.Button(frame, text="Stop Bot", command=toggle_bot)
     toggle_btn.pack(side=tk.LEFT, padx=5)
 
@@ -135,6 +138,12 @@ def create_app(
     cmd_text.pack(padx=5, pady=5, fill=tk.BOTH, expand=False)
 
     def tail(path: Path, lines: int = 200) -> str:
+        """Return the last ``lines`` from ``path`` efficiently."""
+        if not path.exists():
+            return ""
+        with path.open("r") as fh:
+            deque_lines = deque(fh, maxlen=lines)
+        return "".join(deque_lines)
         if not path.exists():
             return ""
         data = path.read_text().splitlines()[-lines:]
